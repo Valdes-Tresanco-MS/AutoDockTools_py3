@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 2/5/20 4:49                                                                  #
+#  Modification date: 3/5/20 0:44                                                                  #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -20,12 +20,6 @@
 # Copyright: M. Sanner TSRI 2000
 #
 #############################################################################
-
-#
-# $Header: /opt/cvs/python/packages/share1.5/MolKit/pdbParser.py,v 1.132.2.1 2015/08/29 01:26:36 sanner Exp $
-#
-# $Id: pdbParser.py,v 1.132.2.1 2015/08/29 01:26:36 sanner Exp $
-#
 
 """Module pdbParser.
 
@@ -79,8 +73,6 @@ class PdbParser(MoleculeParser):
         'SPRSDE', 'SSBOND', 'TER', 'TITLE', 'TURN', 'TVECT'
     ]
 
-    ##      def __del__(self):
-    ##          print 'FreeParser'
     AminoAcids = {
         'ALA': 1,
         'ILE': 1,
@@ -101,7 +93,6 @@ class PdbParser(MoleculeParser):
         'HIS': 1,
         'LYS': 1,
         'ASP': 1,
-        'GLU': 1,
     }
 
     def __init__(self, filename=None, allLines=None, modelsAs='molecules'):
@@ -228,7 +219,7 @@ NOTE: The list currently registered parsers is in
         if callable(parser):
             self.pdbRecordParser[key] = parser
         elif parser is None:
-            if key in list(self.pdbRecordParser.keys()):
+            if key in self.pdbRecordParser:
                 del self.pdbRecordParser[key]
         else:
             if key == 'ATOM':
@@ -331,7 +322,6 @@ NOTE: The list currently registered parsers is in
             indices = [c[6:11], c[11:16], c[16:21], c[21:26], c[26:31],
                        c[31:36], c[36:41], c[41:46], c[46:51], c[51:56],
                        c[56:61]]
-            # indices = list(map(strip, indices))
             indices = [x.strip() for x in indices]
             if int(indices[0]) in self.mol.atmNum:
                 a1 = self.mol.atmNum[int(indices[0])]
@@ -352,7 +342,7 @@ NOTE: The list currently registered parsers is in
                     atms.append(b.atom1)
                     atms.append(b.atom2)
 
-                if not a2 in atms and not a1.isBonded(a2):
+                if a2 not in atms and not a1.isBonded(a2):
                     # check if the bond a1-a2 has not been created yet.
                     bond = Bond(a1, a2, check=0)
 
@@ -416,8 +406,7 @@ NOTE: The list currently registered parsers is in
                     hAt.hbonds = [hbond]
             except:
                 import sys
-                print("Unable to parse Hydrogen Bond Record in", \
-                      self.filename, file=sys.stderr)
+                print("Unable to parse Hydrogen Bond Record in", self.filename, file=sys.stderr)
                 print(c, file=sys.stderr)
 
     def parse_PDB_atoms(self, atoms, mol):
@@ -437,14 +426,14 @@ NOTE: The list currently registered parsers is in
             if atRec[:4] != 'ATOM' and atRec[:6] != 'HETATM':
                 continue
 
+            if atRec.startswith('ATOM   5050'):
+                pass
             try:
                 at = self.parse_PDB_ATOM_record(atRec, mol)
                 if at is not None:
                     ats.append(at)
             except Exception as inst:
-                # print "Error while parsing line %d in %s:\n"+atRec
-                lineno = self.allLines.index(atRec)
-                raise RuntimeError("Error while parsing line %d in %s: %s" % (lineno, self.filename, atRec))
+                raise RuntimeError("Error parsing the following line in pdb:\n"+atRec)
 
         mol.allAtoms = mol.allAtoms + AtomSet(ats)
 
@@ -501,9 +490,6 @@ NOTE: The list currently registered parsers is in
                                      mol.curChain, top=mol)
                 # Add a hasCA and hasO flags to the residue and set it to 0
                 mol.curRes.hasCA = 0
-                mol.curRes.CAatom = None
-                mol.curRes.Oatom = None
-                mol.curRes.C1atom = None
                 mol.curRes.hasO = 0
         # parse atom info
 
@@ -512,25 +498,19 @@ NOTE: The list currently registered parsers is in
         name, element, charge = self.getPDBAtomName(rec[12:16], rec[76:78],
                                                     rec[78:80])
 
+        if name == 'CA':
+            # Set the flag hasCA to 1 if the atom name is CA
+            mol.curRes.hasCA = 1
+
+        if name == 'O' or name == 'OXT' or (len(name)>3 and name[:3]=='OCT'):
+            # Set the hasO flag to 2 if atom name is O or OXT
+            mol.curRes.hasO = 2
+
         # WHY lower ??? why not test elem=='L'
         elem = element.lower()
         if elem == 'l':
             element = 'Xx'
         atom = Atom(name, mol.curRes, element, top=mol)
-
-        if name == 'CA' or name[:3] == 'CA@':
-            # Set the flag hasCA to 1 if the atom name is CA
-            mol.curRes.hasCA = 1
-            mol.curRes.CAatom = atom
-
-        elif name == 'O' or name == 'OXT' or (len(name) > 3 and name[:3] == 'OCT'):
-            # Set the hasO flag to 2 if atom name is O or OXT
-            mol.curRes.hasO = 2
-            mol.curRes.Oatom = atom
-
-        elif name == 'C1*':
-            mol.curRes.C1atom = atom
-
         atom._coords = [[float(rec[30:38]), float(rec[38:46]),
                          float(rec[46:54])]]
         atom.segID = rec[72:76].strip()
@@ -580,7 +560,7 @@ NOTE: The list currently registered parsers is in
                             l.alternate.append(atom)
 
         # call the progress bar
-        # self.updateProgressBar()
+        self.updateProgressBar()
 
         return atom
 
@@ -589,11 +569,10 @@ NOTE: The list currently registered parsers is in
         # To be DONE
         orig_element = element.strip()
         if not orig_element.isalpha() or element == '  ' or element == '':
+
             element = name[0:2].strip()
             if not element:
-                element = name.strip()[0]
-                # warn("Chemical element type is missing for '%s', Please correct the pdb file"%name)
-                # raise
+                warn("Chemical element type is missing for %s!, Please correct the pdb file"%name)
 
         if element and element[0].isdigit():
             if orig_element:
@@ -614,10 +593,9 @@ NOTE: The list currently registered parsers is in
 
         if len(name) > 1 and name[1] == 'H':
             # if name[0] in ('0','1','2','3'):
-            # if name[0].isdigit(): # MS commented out to allow LipidWrapper PDB files
-            # to get Hydrogens atom types right
-            name = name[1:].strip() + name[0]
-            element = 'H'
+            if name[0].isdigit():
+                name = name[1:].strip() + name[0]
+                element = 'H'
         # old style names: 'HE12' in columns 12-15
         # if name[0]=='H' and len(name)==4 and name[2] in ('1','2','3') \
         if name[0] == 'H' and len(name) == 4 and name[2].isdigit() \
@@ -626,7 +604,6 @@ NOTE: The list currently registered parsers is in
             element = 'H'
         if len(element) == 2:
             element = element[0] + element[1].lower()
-        # print strip(name), element, charge
         return name.strip(), element, charge
 
     def configureProgressBar(self, **kw):
@@ -640,9 +617,8 @@ NOTE: The list currently registered parsers is in
 
     def addModel(self, atoms):
         """Add a conformation to the first chains of the molecule"""
-        l = lambda x: [float(x[30:38]), float(x[38:46]), float(x[46:54])]
-        coords = list(map(l, atoms))
-        list(map(Atom.addConformation, self.mol.chains[0].residues.atoms, coords))
+        coords = [[float(x[30:38]), float(x[38:46]), float(x[46:54])] for x in atoms]
+        map(Atom.addConformation, self.mol.chains[0].residues.atoms, coords)
 
     def parse(self, objClass=Protein):
         """Reads a PDB that is PDB specs compliants"""
@@ -660,8 +636,8 @@ NOTE: The list currently registered parsers is in
         # self.checkForRemark4()
         totalAtomNumber = len(self.getAtomsLines(-2, 0))
         # configure the progress bar, initialize it, set mode to 'increment'
-        # self.configureProgressBar(init=1, mode='increment',
-        #                          labeltext='parse atoms', max=totalAtomNumber)
+        self.configureProgressBar(init=1, mode='increment',
+                                 labeltext='parse atoms', max=totalAtomNumber)
 
         if 'ATOM' in self.pdbRecordParser:
             # deal with ATOM first to make sure self.mol,
@@ -673,7 +649,7 @@ NOTE: The list currently registered parsers is in
                 self.mol.allAtoms = AtomSet([])
                 self.mol.parser = self
                 if self.mol.name == 'NoName':
-                    if not self.filename is None:
+                    if self.filename:
                         self.mol.name = basename(splitext(self.filename)[0])
 
                 molList = self.mol.setClass()
@@ -739,7 +715,7 @@ NOTE: The list currently registered parsers is in
                     mol.allAtoms = AtomSet([])
                     mol.parser = self
                     if mol.name == 'NoName':
-                        if not self.filename is None:
+                        if self.filename:
                             mol.name = basename(splitext(self.filename)[0])
                     self.pdbRecordParser[record](self.allLines[:mBeg], mol)
                     if len(mol.allAtoms):
@@ -752,8 +728,8 @@ NOTE: The list currently registered parsers is in
                     mnum = 1
                 else:
                     mnum = int(mNum.strip())
-                # self.configureProgressBar(labeltext='parse atoms Model '+\
-                #                         mNum.strip()+'/%d'%len(modelEnd))
+                self.configureProgressBar(labeltext='parse atoms Model '+\
+                                        mNum.strip()+'/%d'%len(modelEnd))
                 self.mol = objClass()
                 self.mol.parser = self
                 if self.mol.name == 'NoName':
@@ -774,7 +750,7 @@ NOTE: The list currently registered parsers is in
                     for mBeg, mEnd, mNum in modelEnd[1:]:
                         if mNum == "": mNum = str(mnum)
                         labeltext = 'parse atoms Model%d  of %d' % (mnum, len(modelEnd))
-                        # self.configureProgressBar(labeltext='parse atoms Model%d  of %d'%(mnum, len(modelEnd)))
+                        self.configureProgressBar(labeltext='parse atoms Model%d  of %d'%(mnum, len(modelEnd)))
                         # mNum.strip()+'/%d'%len(modelEnd))
 
                         newmol = objClass()
@@ -790,15 +766,12 @@ NOTE: The list currently registered parsers is in
                             self.pdbRecordParser['CONECT'](records)
 
                 elif self.modelsAs == 'chains':  # create a new chain for each model
-                    print('NOT YET IMPLEMENTED')
-                    raise RuntimeError
+                    raise NotImplemented('NOT YET IMPLEMENTED')
 
                 elif self.modelsAs == 'conformations':  # add a conformation to molecule
                     atms = self.mol.allAtoms
                     for mBeg, mEnd, mNum in modelEnd[1:]:
-                        # self.configureProgressBar(
-                        #    labeltext='parse atoms Model '+\
-                        #    mNum.strip()+'/%d'%len(modelEnd))
+                        self.configureProgressBar(labeltext='parse atoms Model ' + mNum.strip()+'/%d'%len(modelEnd))
 
                         mol = objClass()
                         self.pdbRecordParser[record](self.allLines[mBeg + 1:mEnd], mol)
@@ -849,7 +822,7 @@ NOTE: The list currently registered parsers is in
         # set progress bar mode to 'increment' and initialize it
         # lenRecs = len(self.pdbRecordParser.keys())
         # self.configureProgressBar(init=1, mode='increment', max=lenRecs)
-        for record in list(self.pdbRecordParser.keys()):
+        for record in self.pdbRecordParser:
             # self.configureProgressBar(labeltext='parse '+record)
             # self.updateProgressBar()
             if record == 'HETATM':
@@ -884,24 +857,24 @@ NOTE: The list currently registered parsers is in
             results = molList[0].vina_results[:]
             if len(molList) == len(results):
                 for m, r in zip(molList, results):
-                    m.vina_energy, m.vina_rmsd_lb, m.vina_rmsd_ub = list(map(float, r))
+                    m.vina_energy, m.vina_rmsd_lb, m.vina_rmsd_ub = [float(x) for x in r]
                     # print m.name, ':',  m.vina_energy, ',', m.vina_rmsd_lb,',', m.vina_rmsd_ub
             elif len(results):
                 m = molList[0]
                 m.vina_results = results
-                m.vina_energy, m.vina_rmsd_lb, m.vina_rmsd_ub = list(map(float, results[0]))
+                m.vina_energy, m.vina_rmsd_lb, m.vina_rmsd_ub = [float(x) for x in results[0]]
 
         # have to assign ad4 attributes here
         if hasattr(molList[0], 'ad4_results'):
             results = molList[0].ad4_results[:]
             if len(molList) == len(results):
                 for m, r in zip(molList, results):
-                    m.ad4_energy = list(map(float, r))
+                    m.ad4_energy = [float(x) for x in r]
                     # print m.name, ':',  m.ad4_energy
             elif len(results):
                 m = molList[0]
                 m.ad4_results = results
-                m.ad4_energy = list(map(float, results[0]))
+                m.ad4_energy = [float(x) for x in results[0]]
 
         return molList
 
@@ -934,8 +907,7 @@ NOTE: The list currently registered parsers is in
                     listOfMol[i].model.append(listOfMol[j])
 
     def getAtomsLines(self, ter, begChain):
-        l = lambda x: x[:4] == 'ATOM' or x[:6] == 'HETATM'
-        atoms = list(filter(l, self.allLines[begChain:ter + 1]))
+        atoms = [x for x in self.allLines[begChain:ter + 1] if x[:4] == 'ATOM' or x[:6] == 'HETATM']
         return atoms
 
     def parse_PDB_Helix(self, lines):
@@ -1293,66 +1265,20 @@ was not found in chain %s" % (endData, chain.id))
         if has_filename:
             fptr = open(filename, 'w')
         ct = 0
-        for line in comments:
-            newLines.append("USER    %s\n" % line)
-        insertConnectAt = None
-        for ln, l in enumerate(self.allLines):
+        for l in self.allLines:
             if l.find("ATOM") == 0 or l.find("HETATM") == 0:
                 cc = coords[ct]
                 ct = ct + 1
                 new_l = l[:30] + "%8.3f%8.3f%8.3f" % (cc[0], cc[1], cc[2]) + l[54:]
-                lastAtomLine = ln
             else:
                 new_l = l
-            if withBondsFor is not None and new_l[:6] == 'CONECT':
-                if insertConnectAt is None:
-                    insertConnectAt = len(newLines)
-            elif new_l[:6] == 'TER':
-                insertConnectAt = ln + 1
-            else:
                 newLines.append(new_l)
-
-        if withBondsFor is not None:
-            allBonds = withBondsFor.allAtoms.bonds[0]
-            for b in allBonds:
-                rec = 'CONECT%5i%5i' % (b.atom1.number, b.atom2.number)
-                if insertConnectAt is None:
-                    newLines.append(rec + '\n')
-                else:
-                    newLines.insert(insertConnectAt, rec + '\n')
-
         if has_filename:
             for new_l in newLines:
                 fptr.write(new_l)
         else:
             return newLines
 
-    ## def write_with_new_coords(self, coords, filename=None, comments=[]):
-    ##     if len(coords)!=len(self.mol.allAtoms):
-    ##         print "ERROR: length of new coordinates %d does not match %d " %(len(coords), len(self.mol.allAtoms))
-    ##         print "ERROR: unable to continue"
-    ##         return
-    ##     has_filename = filename is not None
-    ##     newLines = []
-    ##     if has_filename:
-    ##         fptr = open(filename, 'w')
-    ##     ct = 0
-    ##     for line in comments:
-    ##         newLines.append("USER    %s\n"%line)
-
-    ##     for l in self.allLines:
-    ##         if l.find("ATOM")==0 or l.find("HETATM")==0:
-    ##             cc = coords[ct]
-    ##             ct = ct + 1
-    ##             new_l = l[:30]+"%8.3f%8.3f%8.3f" %(cc[0],cc[1],cc[2]) + l[54:]
-    ##         else:
-    ##             new_l = l
-    ##         newLines.append(new_l)
-    ##     if has_filename:
-    ##         for new_l in newLines:
-    ##             fptr.write(new_l)
-    ##     else:
-    ##         return newLines
 
 
 class PQRParser(PdbParser):
@@ -1411,14 +1337,18 @@ class PQRParser(PdbParser):
                 # Add a hasCA and hasO flags to the residue and set it to 0
                 mol.curRes.hasCA = 0
                 mol.curRes.hasO = 0
-                mol.curRes.CAatom = None
-                mol.curRes.Oatom = None
-                mol.curRes.C1atom = None
 
         if use_split:
             name = rec[2]
         else:
-            name = orig_rec[12:17].strip()
+            name = strip(orig_rec[12:17])
+        if name == 'CA':
+            # Set the flag hasCA to 1 if the atom name is CA
+            mol.curRes.hasCA = 1
+
+        if name == 'O' or name == 'OXT':
+            # Set the hasO flag to 2 if atom name is O or OXT
+            mol.curRes.hasO = 2
 
         if use_split:
             element = rec[2][0]
@@ -1427,20 +1357,7 @@ class PQRParser(PdbParser):
         elem = element.lower()
         if elem == 'l':
             element = 'Xx'
-
         atom = Atom(name, mol.curRes, element, top=mol)
-        if name == 'CA' or name[:3] == 'CA@':
-            # Set the flag hasCA to 1 if the atom name is CA
-            mol.curRes.hasCA = 1
-            mol.curRes.CAatom = atom
-
-        elif name == 'O' or name == 'OXT':
-            # Set the hasO flag to 2 if atom name is O or OXT
-            mol.curRes.hasO = 2
-            mol.curRes.Oatom = atom
-
-        elif name == 'C1*':
-            mol.curRes.C1atom = atom
 
         if use_split:
             if rec[0] == 'ATOM':
@@ -1529,11 +1446,15 @@ class F2DParser(PQRParser):
                 # Add a hasCA and hasO flags to the residue and set it to 0
                 mol.curRes.hasCA = 0
                 mol.curRes.hasO = 0
-                mol.curRes.CAatom = None
-                mol.curRes.Oatom = None
-                mol.curRes.C1atom = None
 
         name = rec[2]
+        if name == 'CA':
+            # Set the flag hasCA to 1 if the atom name is CA
+            mol.curRes.hasCA = 1
+
+        if name == 'O' or name == 'OXT':
+            # Set the hasO flag to 2 if atom name is O or OXT
+            mol.curRes.hasO = 2
 
         element = rec[2][0]
         elem = element.lower()
@@ -1548,18 +1469,6 @@ class F2DParser(PQRParser):
             atom.hetatm = 1
 
         atom.number = int(rec[1])
-        if name == 'CA' or name[:3] == 'CA@':
-            # Set the flag hasCA to 1 if the atom name is CA
-            mol.curRes.hasCA = 1
-            mol.curRes.CAatom = atom
-
-        if name == 'O' or name == 'OXT':
-            # Set the hasO flag to 2 if atom name is O or OXT
-            mol.curRes.hasO = 2
-            mol.curRes.Oatom = atom
-
-        elif name == 'C1*':
-            mol.curRes.C1atom = atom
         mol.atmNum[atom.number] = atom
 
         atom._coords = [[float(rec[5]), float(rec[6]), float(rec[7])]]
@@ -1660,7 +1569,8 @@ class PdbqParser(PdbParser):
             self.mol.ROOT = self.mol.chains.residues.atoms.get(lambda x: x._uniqIndex == 0)[0]
 
     def parse_PDB_TORSDOF(self, rec):
-        if not len(rec): return
+        if not len(rec):
+            return
         self.mol.TORSDOF = int(rec[0].split()[1])
 
     def parse_PDB_REMARK(self, rec):
@@ -1723,21 +1633,25 @@ class PdbqParser(PdbParser):
 
                 # res = mol.curChain.get( na )
                 # if res:
-                # mol.curRes = res[0]
+                #     mol.curRes = res[0]
                 # else:
-                # mol.curRes = Residue(resName, resSeq, icode,
-                # mol.curChain,
-                # top=mol)
+                #     mol.curRes = Residue(resName, resSeq, icode,
+                                               #mol.curChain,
+                                               #top=mol)
                 # Add a hasCA and hasO flags to the residue and set it to 0
                 mol.curRes.hasCA = 0
                 mol.curRes.hasO = 0
-                mol.curRes.CAatom = None
-                mol.curRes.Oatom = None
-                mol.curRes.C1atom = None
 
         # handle atom names (calcium, hydrogen) and find element type
         # check validity of chemical element column and charge column
         name, element, charge = self.getPDBAtomName(rec[12:16], "  ", None)
+        if name == 'CA':
+            # Set the flag hasCA to 1 if the atom name is CA
+            mol.curRes.hasCA = 1
+
+        if name == 'O' or name == 'OXT':
+            # Set the hasO flag to 2 if atom name is O or OXT
+            mol.curRes.hasO = 2
 
         elem = element.lower()
         if elem == 'l':
@@ -1780,19 +1694,6 @@ class PdbqParser(PdbParser):
             autodock_element = element
 
         atom = Atom(name, mol.curRes, element, top=mol)
-        if name == 'CA' or name[:3] == 'CA@':
-            # Set the flag hasCA to 1 if the atom name is CA
-            mol.curRes.hasCA = 1
-            mol.curRes.CAatom = atom
-
-        elif name == 'O' or name == 'OXT':
-            # Set the hasO flag to 2 if atom name is O or OXT
-            mol.curRes.hasO = 2
-            mol.curRes.Oatom = atom
-
-        elif name == 'C1*':
-            mol.curRes.C1atom = atom
-
         atom._coords = [[float(rec[30:38]), float(rec[38:46]),
                          float(rec[46:54])]]
         ##          atom.segID = strip(rec[72:76])
@@ -2324,9 +2225,7 @@ class PdbqtParser(PdbqParser):
                 # Add a hasCA and hasO flags to the residue and set it to 0
                 mol.curRes.hasCA = 0
                 mol.curRes.hasO = 0
-                mol.curRes.CAatom = None
-                mol.curRes.Oatom = None
-                mol.curRes.C1atom = None
+
 
         if rec[26] != ' ': mol.curRes.icode = rec[26]
 
@@ -2336,6 +2235,13 @@ class PdbqtParser(PdbqParser):
         # check validity of chemical element column and charge column
         # name, element, charge = self.getPDBAtomName(rec[12:16],"  ",None)
         name, z, y = self.getPDBAtomName(rec[12:16], rec[76:], None)
+        if name == 'CA':
+            # Set the flag hasCA to 1 if the atom name is CA
+            mol.curRes.hasCA = 1
+
+        if name == 'O' or name == 'OXT':
+            # Set the hasO flag to 2 if atom name is O or OXT
+            mol.curRes.hasO = 2
 
         autodock_element = rec[76:].strip()
 
@@ -2356,19 +2262,6 @@ class PdbqtParser(PdbqParser):
             element = autodock_element
 
         atom = Atom(name, mol.curRes, element, top=mol)
-        if name == 'CA' or name[:3] == 'CA@':
-            # Set the flag hasCA to 1 if the atom name is CA
-            mol.curRes.hasCA = 1
-            mol.curRes.CAatom = atom
-
-        elif name == 'O' or name == 'OXT':
-            # Set the hasO flag to 2 if atom name is O or OXT
-            mol.curRes.hasO = 2
-            mol.curRes.Oatom = atom
-
-        elif name == 'C1*':
-            mol.curRes.C1atom = atom
-
         atom._coords = [[float(rec[30:38]), float(rec[38:46]),
                          float(rec[46:54])]]
 
@@ -2534,9 +2427,7 @@ class PdbqsParser(PdbParser):
                 # Add a hasCA and hasO flags to the residue and set it to 0
                 mol.curRes.hasCA = 0
                 mol.curRes.hasO = 0
-                mol.curRes.CAatom = None
-                mol.curRes.Oatom = None
-                mol.curRes.C1atom = None
+
 
         if rec[26] != ' ': mol.curRes.icode = rec[26]
 
@@ -2545,6 +2436,14 @@ class PdbqsParser(PdbParser):
         # handle atom names (calcium, hydrogen) and find element type
         # check validity of chemical element column and charge column
         name, element, charge = self.getPDBAtomName(rec[12:16], "  ", None)
+        if name == 'CA':
+            # Set the flag hasCA to 1 if the atom name is CA
+            mol.curRes.hasCA = 1
+
+        if name == 'O' or name == 'OXT':
+            # Set the hasO flag to 2 if atom name is O or OXT
+            mol.curRes.hasO = 2
+
         elem = element.lower()
         if elem == 'l':
             autodock_element = 'element'
@@ -2586,19 +2485,6 @@ class PdbqsParser(PdbParser):
             autodock_element = element
 
         atom = Atom(name, mol.curRes, element, top=mol)
-        if name == 'CA' or name[:3] == 'CA@':
-            # Set the flag hasCA to 1 if the atom name is CA
-            mol.curRes.hasCA = 1
-            mol.curRes.CAatom = atom
-
-        elif name == 'O' or name == 'OXT':
-            # Set the hasO flag to 2 if atom name is O or OXT
-            mol.curRes.hasO = 2
-            mol.curRes.Oatom = atom
-
-        elif name == 'C1*':
-            mol.curRes.C1atom = atom
-
         atom._coords = [[float(rec[30:38]), float(rec[38:46]),
                          float(rec[46:54])]]
         if rec[:4] == 'ATOM':
@@ -2667,7 +2553,6 @@ if __name__ == '__main__':
     mol = Protein()
     mol.read("/tsri/pdb/struct/%s.pdb" % sys.argv[1], PdbParser())
     print("Done")
-
     # bond stuff
     print("building bonds")
     mol.parser.parse_PDB_CONECT(mol.parser.getRecords(mol.parser.parser.allLines, 'CONECT'))
@@ -2730,23 +2615,11 @@ if __name__ == '__main__':
     a.parent.parent.getRoot()
     mol.getRoot()
 
-
-    # find atoms with laternate lcoations
+    # find atoms with laternate locations
     mol.chains.residues.atoms.get(lambda x: hasattr(x, 'altLoc'))
-
-    # compute molecular surfaces for all residues
-    #    import msms
-    #    srf = []
-    #    mol.defaultRadii()
-    #    for res in mol.chains.residues:
-    #        s = msms.MSMS( coords = res.atoms.coord, radii=res.atoms.radius )
-    #        s.compute()
-    #        s.display()
 
     # test secondary structure stuff
     mol.getSSFromFile()
-
-    # test tree spliting and merging
 
     # first test split the fisrt chain in 2
     nbc = len(mol.chains)
