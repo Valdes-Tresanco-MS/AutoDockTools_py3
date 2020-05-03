@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 3/5/20 0:44                                                                  #
+#  Modification date: 3/5/20 0:48                                                                  #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -59,7 +59,7 @@ from os.path import splitext, basename
 from MolKit.molecule import Atom, Bond, HydrogenBond, AtomSet
 from MolKit.moleculeParser import MoleculeParser
 from MolKit.protein import Protein, Chain, Residue, ProteinSet
-
+from warnings import warn
 
 class PdbParser(MoleculeParser):
     PDBtags = [
@@ -353,7 +353,7 @@ NOTE: The list currently registered parsers is in
         if len(lines) == 0: return
         # 6:11 corresponds to documentation's 7-11
         for c in lines:
-            dAtName = strip(c[12:16])
+            dAtName = c[12:16].strip()
             dAtPType = c[17:20]
             dAtPNum = int(c[22:27])
             dAtPName = dAtPType + str(dAtPNum)
@@ -363,20 +363,20 @@ NOTE: The list currently registered parsers is in
             dAtChId = c[21]
             dname = self.mol.name + ':' + dAtChId + ':' + dAtPName + ':' + dAtName
 
-            hAtName = strip(c[29:33])
+            hAtName = c[29:33].strip()
             if len(hAtName):
                 if len(hAtName) == 4:
                     hAtName = hAtName[1:] + hAtName[0]
                 elif len(hAtName) > 1:
                     if hAtName[1] == 'H':
                         if hAtName[0] in ('1', '2', '3'):
-                            hAtName = strip(hAtName[1:]) + hAtName[0]
+                            hAtName = hAtName[1:].strip() + hAtName[0]
                 # construct the full name of this hydrogen
                 hAtChId = c[33]
                 hAtPNum = c[36:41]
                 h_full_name = self.mol.name + ':' + dAtChId + ':' + dAtPName + ':' + hAtName
 
-            aAtName = strip(c[43:47])
+            aAtName = c[43:47].strip()
             aAtPType = c[48:51]
             aAtPNum = int(c[53:58])
             aAtPName = aAtPType + str(aAtPNum)
@@ -1341,7 +1341,7 @@ class PQRParser(PdbParser):
         if use_split:
             name = rec[2]
         else:
-            name = strip(orig_rec[12:17])
+            name = orig_rec[12:17].strip()
         if name == 'CA':
             # Set the flag hasCA to 1 if the atom name is CA
             mol.curRes.hasCA = 1
@@ -1589,7 +1589,7 @@ class PdbqParser(PdbParser):
     def parse_PDB_ATOM_record(self, rec, mol):
         """Parse PDB ATOM records using the pdb columns specifications"""
         # Handle the alternate location using a flag.
-        rec = strip(rec)
+        rec = rec.strip()
         if rec[16] != ' ':
             self.altLoc = rec[16]
         else:
@@ -1821,12 +1821,12 @@ class PdbqtParser(PdbqParser):
                 ll = nl.split()
                 # Docking info
                 if nl.find('AD_rec') > 0:
-                    self.AD_rec = strip(ll[-1])
+                    self.AD_rec = ll[-1].strip()
                 elif nl.find('AD_runs,rmstol,tot_clusters>') > 0:
                     self.AD_runs, self.rmstol, self.tot_clusters = ll[-1].split(',')
                     self.AD_runs = int(self.AD_runs)
                     self.rmstol = float(self.rmstol)
-                    self.tot_clusters = int(strip(self.tot_clusters))
+                    self.tot_clusters = int(self.tot_clusters.strip())
                 elif nl.find('AD_dlg_list>') > 0:  # last is '\n'
                     self.AD_dlg_list = ll[2:]
                 elif nl.find('AD_results>') > 0:
@@ -2301,7 +2301,7 @@ class PdbqtParser(PdbqParser):
         ##THIS IS THE KEY PDBQ DIFFERENCE:
         ##          atom.segID = strip(rec[72:76])
         try:
-            charge = float(strip(rec[70:76]))
+            charge = float(rec[70:76].strip())
         except:
             charge = None
         if charge is not None:
@@ -2397,7 +2397,7 @@ class PdbqsParser(PdbParser):
 
         # check for residue break
         resName = rec[17:20]
-        resSeq = strip(rec[22:26])  # WARNING resSeq is a STRING
+        resSeq = rec[22:26].strip()  # WARNING resSeq is a STRING
         if rec[26] != ' ':
             icode = rec[26]
         else:
