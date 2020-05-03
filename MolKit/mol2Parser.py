@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 2/5/20 2:14                                                                  #
+#  Modification date: 3/5/20 3:24                                                                  #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -20,12 +20,6 @@
 # Copyright: M. Sanner TSRI 2000
 #
 #############################################################################
-
-#
-# $Header: /opt/cvs/python/packages/share1.5/MolKit/mol2Parser.py,v 1.15.2.2 2016/02/12 01:12:48 annao Exp $
-#
-# $Id: mol2Parser.py,v 1.15.2.2 2016/02/12 01:12:48 annao Exp $
-#
 
 import os
 
@@ -63,7 +57,6 @@ class Mol2Parser(MoleculeParser):
         self.counter = 0
         self.setsDatas = []
         # self.molList = []
-        self.model = False
 
     def getKeysAndLinesIndices(self):
         """ Function to build a dictionary where the keys will be the
@@ -83,7 +76,7 @@ class Mol2Parser(MoleculeParser):
             if self.allLines[i][:9] == '@<TRIPOS>':
                 if self.keysAndLinesIndices:
                     self.keysAndLinesIndices[record].append(i)
-                record = str.strip(self.allLines[i])
+                record = self.allLines[i].strip()
                 self.keysAndLinesIndices[record] = [i + 1]
                 i = i + 1
             else:
@@ -149,10 +142,6 @@ class Mol2Parser(MoleculeParser):
         two residues with the same name but belonging to two different
         chains then the value corresponding to that key is a list of
         the chains ID."""
-        # atomlines = map(
-        #    string.split,
-        #    self.allLines[self.keysAndLinesIndices['@<TRIPOS>ATOM'][0]:
-        #                  self.keysAndLinesIndices['@<TRIPOS>ATOM'][1]])
         atomlines = [x.split() for x in self.allLines[self.keysAndLinesIndices['@<TRIPOS>ATOM'][0]:
                                                       self.keysAndLinesIndices['@<TRIPOS>ATOM'][1]]]
         subst_chain = {}
@@ -191,7 +180,7 @@ class Mol2Parser(MoleculeParser):
         else:
             # case 3: at least 1 substructure and 1 chain --> 4 levels tree.
             # subst_chain = {}
-            substlines = list(map(str.split, substlines))
+            substlines = [x.strip() for x in substlines]
             for line in substlines:
                 if len(line) < 6 or line[5] == '****':
                     continue
@@ -203,7 +192,7 @@ class Mol2Parser(MoleculeParser):
                         else:
                             subst_chain[line[1]] = line[5]
                     except:
-                        if line[1] in list(subst_chain.keys()):
+                        if line[1] in subst_chain:
                             list(subst_chain[line[1]]).append('')
                         else:
                             subst_chain[line[1]] = ''
@@ -266,9 +255,6 @@ class Mol2Parser(MoleculeParser):
         self.mol.curRes = Residue()
         self.mol.curRes.hasCA = 0
         self.mol.curRes.hasO = 0
-        self.mol.curRes.CAatom = None
-        self.mol.curRes.Oatom = None
-        self.mol.curRes.C1atom = None
 
         self.mol.levels = [Protein, Residue, Atom]
         for atmline in atomlines:
@@ -290,17 +276,14 @@ class Mol2Parser(MoleculeParser):
                                               self.mol,
                                               top=self.mol)
             name = atmline[1]
-
-            atom = Atom(name, self.mol.curRes, top=self.mol, chemicalElement=atmline[5].split('.')[0])
+            if name == 'CA':
+                self.mol.curRes.hasCA = 1
+            if name == 'O':
+                self.mol.curRes.hasO = 2
+            atom = Atom(name, self.mol.curRes, top = self.mol, chemicalElement = atmline[5].split('.')[0])
             # atom.element = atmline[5][0]
             atom.element = atom.chemElem
             atom.number = int(atmline[0])
-            if name == 'CA' or name[:3] == 'CA@':
-                self.mol.curRes.hasCA = 1
-                self.mol.curRes.CAatom = atom
-            if name == 'O':
-                self.mol.curRes.hasO = 2
-                self.mol.curRes.Oatom = atom
             self.mol.atmNum[atom.number] = atom
             atom._coords = [[float(atmline[2]), float(atmline[3]),
                              float(atmline[4])]]
@@ -330,23 +313,19 @@ class Mol2Parser(MoleculeParser):
         self.mol.atmNum = {}
         self.mol.parser = self
         if self.mol.name == 'NoName':
-            self.mol.name = os.path.basename(os.path.splitext
-                                             (self.filename)[0])
+            self.mol.name = os.path.basename(os.path.splitext(self.filename)[0])
         self.mol.curChain = Chain()
         self.mol.curRes = Residue()
         self.mol.levels = [Protein, Chain, Residue, Atom]
         i = 1
-        chainID = ' '
         for atmline in atomlines:
             if len(atmline) >= 10:
                 status = atmline[9].split('|')
-            else:
-                status = None
-
-            ## if len(atmline) == 8:# and len(atmline[5])>5:
-            ##     tmp = [atmline[5][:5], atmline[5][5:]]
-            ##     atmline[5] = tmp[0]
-            ##     atmline.insert(6, tmp[1])
+            else: status = None
+            if len(atmline) == 8:
+                tmp = [atmline[5][:5], atmline[5][5:]]
+                atmline[5] = tmp[0]
+                atmline.insert(6, tmp[1])
 
             if status and status[0] == 'WATER':
                 chainID = 'W'
@@ -366,7 +345,7 @@ class Mol2Parser(MoleculeParser):
                 else:
                     chainID = 'default'
 
-            elif type(subst_chain[atmline[7]]) is bytes:
+            elif type(subst_chain[atmline[7]]) is str:
                 # that is to say that only chains has this substructure name.
                 chainID = subst_chain[atmline[7]]
 
@@ -402,22 +381,18 @@ class Mol2Parser(MoleculeParser):
                                               self.mol.curChain,
                                               top=self.mol)
             name = atmline[1]
-
-            atom = Atom(name, self.mol.curRes, top=self.mol,
-                        chemicalElement=atmline[5].split('.')[0])
+            if name == 'CA':
+                self.mol.curRes.hasCA = 1
+            if name == 'O' :
+                self.mol.curRes.hasO = 2
+            atom = Atom(name, self.mol.curRes, top=self.mol, chemicalElement=atmline[5].split('.')[0])
             # atom.element = atmline[5][0]
             atom.element = atom.chemElem
             atom.number = int(atmline[0])
-            if name == 'CA' or name[:3] == 'CA@':
-                self.mol.curRes.hasCA = 1
-                self.mol.curRes.CAatom = atom
-            if name == 'O':
-                self.mol.curRes.hasO = 2
-                self.mol.curRes.Oatom = atom
             self.mol.atmNum[atom.number] = atom
             atom._coords = [[float(atmline[2]), float(atmline[3]),
                              float(atmline[4])]]
-            if len(atmline) > 8:
+            if len(atmline) >= 9:
                 atom._charges['mol2'] = float(atmline[8])
                 atom.chargeSet = 'mol2'
             #            atom.conformation = 0
@@ -433,13 +408,13 @@ class Mol2Parser(MoleculeParser):
 
     def parse_MOL2_Molecule(self, mollines):
         """Function to parse the Molecule records"""
-        mollines = [ x.split() for x in mollines]
+        mollines = [x.split() for x in mollines]
         return mollines
 
     def parse_MOL2_Bonds(self, bondlines):
         """ Function to build the bonds object using the bond record of
         the mol2 file."""
-        bondlines = list(map(str.split, bondlines))
+        bondlines = [x.split() for x in bondlines]
         for bd in bondlines:
             at1 = self.mol.atmNum[int(bd[1])]
             at2 = self.mol.atmNum[int(bd[2])]
