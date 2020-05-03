@@ -1,0 +1,14 @@
+<component name="CopyrightManager">
+  <settings default="AutoDockTools py3">
+    <LanguageOptions name="Python">
+      <option name="fileTypeOverride" value="3" />
+      <option name="block" value="false" />
+      <option name="separateBefore" value="true" />
+      <option name="separateAfter" value="true" />
+      <option name="lenBefore" value="100" />
+      <option name="lenAfter" value="100" />
+      <option name="box" value="true" />
+      <option name="filler" value="#" />
+    </LanguageOptions>
+  </settings>
+</component>

@@ -1,0 +1,7 @@
+<component name="CopyrightManager">
+  <copyright>
+    <option name="keyword" value="Disclaimer" />
+    <option name="notice" value="################################################################################&#10;# Disclaimer&#10;# This file is a python3 translation of AutoDockTools (v.1.5.7)&#10;# Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)&#10;# Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME&#10;# There is no guarantee that it works like the original distribution,&#10;# but feel free to tell us if you get any difference to correct the code.&#10;#&#10;# Please use this cite the original reference.&#10;# If you think my work helps you, just keep this note intact on your program.&#10;# &#10;# Modification date: &amp;#36;file.lastModified&#10;################################################################################&#10;" />
+    <option name="myName" value="AutoDockTools py3" />
+  </copyright>
+</component>
