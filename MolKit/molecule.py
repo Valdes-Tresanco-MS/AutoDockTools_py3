@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 2/5/20 1:41                                                                  #
+#  Modification date: 3/5/20 2:01                                                                  #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -21,12 +21,6 @@
 #
 #############################################################################
 
-#
-# $Header: /opt/cvs/python/packages/share1.5/MolKit/molecule.py,v 1.96.2.4 2016/02/20 01:32:12 annao Exp $
-#
-# $Id: molecule.py,v 1.96.2.4 2016/02/20 01:32:12 annao Exp $
-#
-
 """
 This module implements the classes Atom, AtomSet, Bond, BondSet and Molecule.
 The class Molecule is expected to be specialized to represent molecular
@@ -35,19 +29,18 @@ structures with higher level of hierarchies (see protein.py)
 
 import re
 from itertools import zip_longest
-
-# from hbtree import bhtreelib
-import numpy
-from MolKit.tree import TreeNode, TreeNodeSet, TreeNodeSetSelector
 from math import sqrt
-# import misc
+
+import numpy as np
+
+from MolKit.tree import TreeNode, TreeNodeSet, TreeNodeSetSelector
 from mglutil.util import misc
-from numpy import sum, array, less_equal, nonzero, argsort
+
+# import misc
 
 global bhtreeFlag
 try:
     import bhtree
-
     bhtreeFlag = 1
 except:
     bhtreeFlag = 0
@@ -79,7 +72,7 @@ class AtomSet(TreeNodeSet):
                 for a in objects:
                     molDict[a.top].append(a)
 
-                for k, v in list(molDict.items()):
+                for k, v in molDict.items():
                     if len(v) == len(k.allAtoms):  # special case all atoms
                         strr += k.name + ':::;'
                     else:
@@ -88,53 +81,10 @@ class AtomSet(TreeNodeSet):
 
             self.stringRepr = strr
 
-    #    def get(self, selectionString, selector=None, sets=None,
-    #                    caseSensitive=True, escapeCharacters=False):
-    #        if selector is None:
-    #            selector = AtomSetSelector()
-    #            selector.caseSensitive = caseSensitive
-    #            selector.escapeCharacters = escapeCharacters
-    #        #results, msg = selector.select(self, selectionString, sets,
-    #        selectionStringRepr = str(selectionString)
-    #        results = selector.processListItem(self, selectionString, sets)
-    #        selectionStringRepr = '&' + selectionStringRepr
-    #        results.setStringRepr(selectionStringRepr)
-    #        return results
-    #
-    #
     def getSelector(self):
         if self.selector == None:
             self.selector = AtomSetSelector()
         return self.selector
-
-    ##     def get(self, selectionString, selector=None, sets=None,
-    ##             caseSensitive=True, escapeCharacters=False,
-    ##             returnMsg=False):
-    ##         """
-    ##         selects from self.data, objects of self.elementType specified by selectionString
-    ##         """
-    ##         #print "AS: get: selectionString=", selectionString
-    ##         if selector is None:
-    ##             selector = AtomSetSelector()
-    ##             selector.caseSensitive = caseSensitive
-    ##             selector.escapeCharacters = escapeCharacters
-    ##         selectionStringRepr = '%s/s/%s'%(self.stringRepr, str(selectionString))
-    ##         if type(selectionString)==types.StringType:
-    ##             result, msg = selector.select(self, selectionString)
-    ##             result = self.ReturnType(result)
-    ##             result.setStringRepr(selectionStringRepr)
-    ##             if returnMsg: result = (result, msg)
-    ##             return result
-    ##         elif callable(selectionString):
-    ##             result = filter(selectionString, self.data)
-    ##             if len(result)==len(self.data):
-    ##                 return self
-    ##             else:
-    ##                 result = self.ReturnType(result)
-    ##                 result.setStringRepr(selectionStringRepr)
-    ##                 return self.ReturnType(result)
-    ##         else:
-    ##             raise RuntimeError("argument has to be a function or a string")
 
     def __getattr__(self, member):
         if member == 'coords':  # added because calling coords method is expensive
@@ -160,7 +110,7 @@ class AtomSet(TreeNodeSet):
 
             # WARNING this assumes no duplicate atoms in the set
             uni = AtomSet(self.data)
-            uni._bndIndex_ = list(range(len(uni)))
+            uni._bndIndex_ = range(len(uni))
             uni._inset = 1
             uni._inbnd = 0
 
@@ -203,21 +153,21 @@ class AtomSet(TreeNodeSet):
 
             l = []
             for d in result:
-                l = l + list(d.keys())
+                l = l + d
             keys = misc.uniq(l)
 
             if raiseExceptionForMissingKey:
                 try:
                     res = {}
                     for k in keys:
-                        res[k] = list(map(lambda x, k=k: x[k], result))
+                        res[k] = map(lambda x, k=k: x[k], result)
                     result = res
                 except:
                     raise RuntimeError('inconsistent set of keys across nodes')
             else:
                 res = {}
                 for k in keys:
-                    res[k] = list(map(lambda x, k=k: x.get(k), result))
+                    res[k] = map(lambda x, k=k: x.get(k), result)
                 result = res
 
         return result
@@ -257,7 +207,7 @@ class AtomSet(TreeNodeSet):
     def setCharges(self, chargeSet):
         """Set the charge attribute for each atom in the set"""
         assert type(chargeSet) == type('abc')
-        assert chargeSet in list(self.data[0]._charges.keys())
+        assert chargeSet in self.data[0]._charges.keys()
         # previously this made no sense:
         # assert chargeSet not in self.data[0]._charges.keys()
         for a in self.data:
@@ -266,7 +216,7 @@ class AtomSet(TreeNodeSet):
     def delCharges(self, chargeSet):
         """Delete the _charges entry for each atom in the set"""
         assert type(chargeSet) == type('abc')
-        assert chargeSet in list(self.data[0]._charges.keys())
+        assert chargeSet in self.data[0]._charges.keys()
         for a in self.data:
             del a._charges[chargeSet]
 
@@ -365,7 +315,7 @@ class Atom(TreeNode):
         self.chargeSet = None
 
     def isBelow(self, Klass):
-        from .protein import Protein
+        from protein import Protein
         if Klass in (Molecule, Protein):  # try both Molecule and Protein
             l = TreeNode.isBelow(self, Molecule)
             if l > 0:  # not below
@@ -424,7 +374,7 @@ class Atom(TreeNode):
             # get the alternate coords.
             coords = [self.coords, ] + self.alternate.coords
             # compute the average as a list of coords.
-            avCoords = (sum(coords, 0) / len(coords)).tolist()
+            avCoords = (np.sum(coords, 0) / len(coords)).tolist()
         else:
             # only one coords.
             avCoords = self.coords
@@ -445,18 +395,16 @@ class Atom(TreeNode):
 class AtomSetSelector(TreeNodeSetSelector):
     atomList = {}
     atomList['backbone'] = {}.fromkeys(['C', 'CA', 'N', 'O'])
-    atomList['backbone+h'] = {}.fromkeys(['C', 'CA', 'N', 'O'])  # H are handle explicitly
-    # atomList['backbone+h']={}.fromkeys(['C','CA','N','O','HN',
-    #                                    'HN1','HN2', 'HA'])
+    atomList['backbone+h']={}.fromkeys(['C','CA','N','O','HN',
+                                        'HN1','HN2', 'HA'])
     atomList['sidechain'] = {}.fromkeys([
         'SG', 'SD', 'CB', 'CG', 'CD', 'CD1', 'CD2', 'CE',
         'CE1', 'CE2', 'CE3', 'CG1', 'CG2', 'CZ', 'CZ2', 'CZ3', 'CH2',
         'ND1', 'ND2', 'NE', 'NE1', 'NE2', 'NH1', 'NH2', 'NZ',
         'OD1', 'OD2', 'OG', 'OG1', 'OE1', 'OE2', 'OH',
-        # 'HD1', 'HE1', 'HE2', 'HE', 'HE21', 'HE22','HH22','HH11','HH12',
-        # 'HG', 'HG1', 'HH21', 'HD22', 'HD21', 'HZ1','HZ2','HZ3','HH','HB1',
-        # 'HB2','HB3', 'HG2', 'HD2'
-    ])
+    'HD1', 'HE1', 'HE2', 'HE', 'HE21', 'HE22','HH22','HH11','HH12',
+    'HG', 'HG1', 'HH21', 'HD22', 'HD21', 'HZ1','HZ2','HZ3','HH','HB1',
+    'HB2','HB3', 'HG2', 'HD2'])
 
     atomList['hetatm'] = {}.fromkeys([])
 
@@ -472,26 +420,19 @@ class AtomSetSelector(TreeNodeSetSelector):
          "OP1", "OP2"])
     NAatomList['backbone+h'] = {}.fromkeys([
         'O1P', 'O2P', 'P', "C1'", "C2'", "C3'", "C4'", "C5'", "O2'", "O3'",
-        "O4'", "O5'", "2HO'", "O5T",
-        # "H1'", "1H2'", "2H2'", "H3'", "H4'",
-        # "1H5'", "2H5'", "H5T",  "H3T",
+        "O4'", "O5'", "2HO'", "O5T", "H1'", "1H2'", "2H2'", "H3'", "H4'",
+        "1H5'", "2H5'", "H5T",  "H3T",
         # sargis added the following atoms that were not available in
         # jmol wiki (10/06/2009)
-        "OP1", "OP2",  # "H5'", "H5''",  "H2''", "H2'", "HO3'", "HO5'"
-    ])
+        "OP1","OP2", "H5'", "H5''",  "H2''", "H2'", "HO3'", "HO5'"])
     NAatomList['sidechain'] = {}.fromkeys([
         "N1", "C2", "N3", "C4", "C5", "C6", "N7", "C8", "N9", "O2", "N4",
         "N2", "N6", "C5M", "O6", "O4", "S4",
         # sargis added the following atoms that were not available in
         # jmol wiki (10/06/2009)
-        "C7",
-        # "H71", "H72", "H73", "H1", "H22", "H21", "H2", "H3","H5",
-        # "H6", "H8", "H41", "H42", "H61", "H62"
-    ])
+        "C7", "H71", "H72", "H73", "H1", "H22", "H21", "H2", "H3","H5",
+        "H6", "H8", "H41", "H42", "H61", "H62"])
     NAatomList['hetatm'] = {}.fromkeys([])
-
-    # NAatomList['NucBackbone'] = {}.fromkeys([
-    #    "P","O1P","O2P","O5'","C5'","C4'","O4'","C3'","O3'","C2'","C1'"])
 
     def __init__(self):
         TreeNodeSetSelector.__init__(self)
@@ -501,7 +442,7 @@ class AtomSetSelector(TreeNodeSetSelector):
         # check for pre-defined filtering lists
         if item == 'hetatm':
             return nodes.get(lambda x: x.hetatm == 1)
-        elif item in list(self.atomList.keys()) or item in list(self.NAatomList.keys()):
+        elif item in self.atomList:
             # cannot just lists of names for filtering
             # want to restrict to atoms in std residues
             return self.getNamedAtomSet(nodes, item)
@@ -533,7 +474,7 @@ class AtomSetSelector(TreeNodeSetSelector):
         selNodes = None
         parentNodes = nodes.parent.uniq()
         for par in parentNodes:
-            nds = AtomSet(list(filter(lambda x, par=par: x.parent == par, nodes)))
+            nds = AtomSet(filter(lambda x, par=par: x.parent == par, nodes))
             firstNodes = self.processListItem(nds, levItList[0])
             lastNodes = self.processListItem(nds, levItList[-1])
             newNodes = None
@@ -547,64 +488,26 @@ class AtomSetSelector(TreeNodeSetSelector):
         return selNodes
 
     def getNamedAtomSet(self, nodes, item):
-        # nodes are atoms
-        # item is a set name such as backbone
-
-        # We proceed by chain as the sets are different for AA and Nuc
-        perChain = {}
+        #here get all atoms w/ name in  atomList[item]
+        #AND 8/2004: whose parents are std residues...
+        alist = self.atomList[item]
         from MolKit.PDBresidueNames import AAnames
-        for atom in nodes:
-            c = atom.parent.parent
-            try:
-                perChain[c].append(atom)
-            except KeyError:
-                perChain[c] = [atom]
-        aalist = {}
-        nuklist = {}
-        for chain, atoms in list(perChain.items()):
-            if chain.isDna():
-                nuklist.update(self.NAatomList[item])
-            else:
-                aalist.update(self.atomList[item])
-        atoms = []
-        if len(aalist):
-            # atoms.extend([x for x in nodes if aalist.has_key(x.name)])
-            atoms.extend([x for x in nodes if x.name in aalist and \
-                          x.parent.type.upper() in AAnames])
-        if len(nuklist):
-            atoms.extend([x for x in nodes if x.name in nuklist])
-        hs = []
-        if item == 'backbone+h' or item == 'sidechain':
-            # add hydrogen bound to atoms that were selected
-            for a in atoms:
-                for b in a.bonds:
-                    a1 = b.atom1
-                    if a1 == a: a1 = b.atom2
-                    if a1.element == 'H':
-                        hs.append(a1)
+        res_atoms = [x for x in nodes if alist.has_key(x.name) and \
+                     AAnames.has_key(x.parent.type.upper())]
 
-        return AtomSet(atoms + hs).uniq()
-
-        ## #here get all atoms w/ name in  atomList[item]
-        ## #AND 8/2004: whose parents are std residues...
+##         if nodes.data and True in nodes.data[0].top.chains.isDna():
+##             alist.extend(self.NAatomList[item])
+##             res_atoms = nodes
+##         else:
+##             #only get atoms in standard residues
+##             reslist = self.std_residues_types
+##             res_atoms = filter(lambda x, nodes=nodes: x.parent.type in reslist, nodes)
+        ans = filter(lambda x, alist=alist, res_atoms=res_atoms: x.name in alist, res_atoms)
+        #previously:
+        #ans = filter(lambda x, alist=alist, nodes=nodes: x.name in alist, nodes)
+        return AtomSet(ans)
 
 
-##         alist = self.atomList[item]
-##         from MolKit.PDBresidueNames import AAnames
-##         res_atoms = [x for x in nodes if alist.has_key(x.name) and \
-##                      AAnames.has_key(x.parent.type.upper())]
-
-## ##         if nodes.data and True in nodes.data[0].top.chains.isDna():
-## ##             alist.extend(self.NAatomList[item])
-## ##             res_atoms = nodes
-## ##         else:
-## ##             #only get atoms in standard residues
-## ##             reslist = self.std_residues_types
-## ##             res_atoms = filter(lambda x, nodes=nodes: x.parent.type in reslist, nodes)
-##         ans = filter(lambda x, alist=alist, res_atoms=res_atoms: x.name in alist, res_atoms)
-##         #previously:
-##         #ans = filter(lambda x, alist=alist, nodes=nodes: x.name in alist, nodes)
-##         return AtomSet(ans)
 
 
 #######################################################################
@@ -637,7 +540,7 @@ class BondSet(TreeNodeSet):
         for d in self.data:
             u[d.atom1] = 1
             u[d.atom2] = 1
-        return AtomSet(list(u.keys()))
+        return AtomSet(u.keys())
 
     def getSelector(self):
         if self.selector == None:
@@ -712,12 +615,12 @@ class Bond:
         # 1- Atom1 is the origin atom and atom2 is the end atom
         atm1 = self.atom1
         # inring = hasattr(self.atom1, 'ring')
-        atm1Coords = array(atm1.coords)
+        atm1Coords = np.array(atm1.coords)
 
         # 1- First vector is the vector that linked self.atom1 -> self.atom2
         # atm2 = CZ
         atm2 = self.atom2
-        atm2Coords = array(atm2.coords)
+        atm2Coords = np.array(atm2.coords)
         # Vect1 = atm1 -> atm2 is defined selfy the selfond you are trying
         # to draw.
         a1vect1 = atm2Coords - atm1Coords
@@ -753,8 +656,8 @@ class Bond:
                         atm0 = atmsInRing[atm1ind + 1]
 
                     atm3 = atmsInRing[atm2ind - 1]
-                atm0Coords = array(atm0.coords)
-                atm3Coords = array(atm3.coords)
+                atm0Coords = np.array(atm0.coords)
+                atm3Coords = np.array(atm3.coords)
                 a1vect2 = atm0Coords - atm1Coords
                 a2vect2 = atm3Coords - atm2Coords
             else:
@@ -772,7 +675,7 @@ class Bond:
             a1sum = a1vect1 + a1vect2
 
         # Normalize this vector,
-        a1len = sqrt(sum(a1sum * a1sum))
+        a1len = sqrt(np.sum(a1sum * a1sum))
         a1norm = a1sum / a1len
         v1 = atm1.dispVec = 0.20 * a1norm
 
@@ -783,7 +686,7 @@ class Bond:
             # SumVector:
             a2sum = a2vect1 + a2vect2
         # Normalize this vector,
-        a2len = sqrt(sum(a2sum * a2sum))
+        a2len = sqrt(np.sum(a2sum * a2sum))
         a2norm = a2sum / a1len
         v2 = atm2.dispVec = 0.20 * a2norm
 
@@ -798,13 +701,13 @@ class Bond:
                 # SumVector:
                 a2sum = a2vect1 - a2vect2
             # Normalize this vector,
-            a2len = sqrt(sum(a2sum * a2sum))
+            a2len = sqrt(np.sum(a2sum * a2sum))
             a2norm = a2sum / a1len
             v2 = atm2.dispVec = 0.20 * a2norm
 
     def getSecondVector(self, oriAtm, endAtm):
         branches = oriAtm.bonds
-        oriAtmCoords = array(oriAtm.coords)
+        oriAtmCoords = np.array(oriAtm.coords)
         if len(branches) == 1:
             # No other bonds than the one we are looking at.
             # have to take the other atom of the bond vect3.
@@ -823,7 +726,7 @@ class Bond:
                 atm3 = branch.atom2
             else:
                 atm3 = branch.atom1
-            atm3Coords = array(atm3.coords)
+            atm3Coords = np.array(atm3.coords)
             a1vect2 = atm3Coords - oriAtmCoords
         else:
             results = []
@@ -843,7 +746,7 @@ class Bond:
                 atm3 = vect2.atom2
             else:
                 atm3 = vect2.atom1
-            atm3Coords = array(atm3.coords)
+            atm3Coords = np.array(atm3.coords)
             a1vect2 = atm3Coords - oriAtmCoords
         return a1vect2
 
@@ -879,10 +782,10 @@ class Bond:
 
             # Get the branches coming from that branch
             if self.atom1 == oriStack[bondStackIndex]:
-                bonds = list(filter(lambda x, b=bond: x != b, self.atom2.bonds))
+                bonds = filter(lambda x, b=bond: x != b, self.atom2.bonds)
                 oriAtm = self.atom2
             else:
-                bonds = list(filter(lambda x, b=bond: x != b, self.atom1.bonds))
+                bonds = filter(lambda x, b=bond: x != b, self.atom1.bonds)
                 oriAtm = self.atom1
 
             if len(bonds) == 0:
@@ -1100,10 +1003,10 @@ class MoleculeSet(TreeNodeSet):
 
 
 def dist(a1, a2):
-    c1 = array(a1.coords)
-    c2 = array(a2.coords)
+    c1 = np.array(a1.coords)
+    c2 = np.array(a2.coords)
     d = c2 - c1
-    return sqrt(sum(d * d))
+    return sqrt(np.sum(d * d))
 
 
 class Molecule(TreeNode):
@@ -1177,9 +1080,9 @@ class Molecule(TreeNode):
                 print(a.full_name() + "-" + str(len(a.bonds)) + " bonds")
         mol.allAtoms = mol.allAtoms - npHSet
 
-        chList = list(npHSet[0]._charges.keys())
+        chList = npHSet[0]._charges.keys()
         for at in npHSet:
-            chs = list(at._charges.keys())
+            chs = at._charges.keys()
             for c in chList:
                 if c not in chs:
                     chList.remove(c)
@@ -1246,12 +1149,12 @@ class Molecule(TreeNode):
         mol = self
         mol.buildBondsByDistance()
         ats = mol.allAtoms
-        atomCoords = numpy.array(ats.coords, 'f')
+        atomCoords = np.array(ats.coords, 'f')
         bht = bhtree.bhtreelib.BHtree(atomCoords, None, 10)
         closePD = bht.closePointsDist2
         cutoff = 2.0
-        indices = numpy.zeros((len(atomCoords),)).astype('i')
-        dist2 = numpy.zeros((len(atomCoords),)).astype('f')
+        indices = np.zeros((len(atomCoords),)).astype('i')
+        dist2 = np.zeros((len(atomCoords),)).astype('f')
 
         # Search atom without bond and build one bond for it with its closest atom
         for a in ats:
@@ -1309,15 +1212,15 @@ class Molecule(TreeNode):
         Return all atoms of atomList withing cut_off of atom.
         if sort==1 the returned atoms are sorted from closest to furthest
         """
-        c1 = array(point)
-        c2 = array(atomList.coords)
+        c1 = np.array(point)
+        c2 = np.array(atomList.coords)
         diff = c2 - c1
-        dist = sum(diff * diff, 1)
-        close = less_equal(dist, cut_off * cut_off)
-        closeAtoms = atomList[nonzero(close)]
+        dist = np.sum(diff * diff, 1)
+        close = np.less_equal(dist, cut_off * cut_off)
+        closeAtoms = atomList[np.nonzero(close)]
         if sort:
-            d = dist[nonzero(close)]
-            closeAtoms = closeAtoms[argsort(d)]
+            d = dist[np.nonzero(close)]
+            closeAtoms = closeAtoms[np.argsort(d)]
         return AtomSet(list(closeAtoms))
 
     def _atomRadius(self, atom, united=1):
@@ -1455,7 +1358,7 @@ if united is true large atomic radii are used for atoms which have no hydrogens
         bonds = []
         for i in range(la - 1):
             a1 = atoms[i]
-            c1 = array(a1.coords)
+            c1 = np.array(a1.coords)
             cov_rad1 = a1.bondOrderRadius
             for j in range(i + 1, la):
                 a2 = atoms[j]
@@ -1465,10 +1368,10 @@ if united is true large atomic radii are used for atoms which have no hydrogens
                     else:
                         if a1.altname != a2.altname:
                             continue
-                c2 = array(a2.coords)
+                c2 = np.array(a2.coords)
                 cov_radsum = (cov_rad1 + a2.bondOrderRadius) * 1.175
                 diff = c1 - c2
-                d = sum(diff * diff)
+                d = np.sum(diff * diff)
                 if d < cov_radsum * cov_radsum:
                     if not a1.isBonded(a2):
                         bonds.append(
@@ -1590,7 +1493,7 @@ if united is true large atomic radii are used for atoms which have no hydrogens
     def getCenter(self):
         """sets self.center<-getCenter(self)"""
         coords = self.allAtoms.coords
-        self.center = sum(coords, 0) / (len(coords) * 1.0)
+        self.center = np.sum(coords, 0) / (len(coords) * 1.0)
         self.center = list(self.center)
         for i in range(3):
             self.center[i] = round(self.center[i], 4)
@@ -1604,12 +1507,12 @@ if united is true large atomic radii are used for atoms which have no hydrogens
         coords = self.allAtoms.coords
         atSet = AtomSet([])
         ats = AtomSet([])
-        atar = numpy.array(self.allAtoms.data)
+        atar = np.array(self.allAtoms.data)
         for center in centerList:
-            d = coords - numpy.array(center, 'f')
+            d = coords - np.array(center, 'f')
             d = d * d
-            d = numpy.sum(d, 1)
-            atindex = numpy.nonzero(numpy.less(d, radius * radius))
+            d = np.sum(d, 1)
+            atindex = np.nonzero(np.less(d, radius * radius))
             newats = atar[atindex]
             if len(newats) > 0:
                 ats = ats + AtomSet(newats)
@@ -1661,19 +1564,17 @@ if united is true large atomic radii are used for atoms which have no hydrogens
         bond_dict = {}
         for b in atoms.bonds[0]:
             bond_dict[b] = 1
-        bnds = list(bond_dict.keys())
         # first pass: try to connect pieces
-        for b in bnds:
+        for b in bond_dict:
             ind1 = b.atom1
             ind2 = b.atom2
             found = b in fb
             if not found:
                 for d in l:
-                    d_keys = list(d.keys())
-                    if ind1 in d_keys:
+                    if ind1 in d:
                         d[ind2] = 1
                         fb.append(b)
-                    elif ind2 in d_keys:
+                    elif ind2 in d:
                         d[ind1] = 1
                         fb.append(b)
                 if not b in fb:
@@ -1825,17 +1726,6 @@ class MoleculeSetSelector(TreeNodeSetSelector):
         self.level = MoleculeSet
 
 
-class MolecularSystems(TreeNodeSet):
-    """
-    Class to represent sets of objects holding multiple Molecules.
-    """
-
-    def __init__(self, objects=None):
-        TreeNodeSet.__init__(self, objects, MolecularSystem)
-
-
-MoleculeGroups = MolecularSystems
-
 
 class MolecularSystem(TreeNode):
     """
@@ -1843,8 +1733,7 @@ class MolecularSystem(TreeNode):
     """
 
     def __init__(self, name='NoName', parent=None, elementType=None,
-                 list=None, childrenName='molecules',
-                 setClass=MolecularSystems,
+                 list=None, childrenName='molecules', setClass=None,
                  childrenSetClass=MoleculeSet, top=None, childIndex=None,
                  assignUniqIndex=1):
         """MolecularSystem constructor.
@@ -1857,26 +1746,3 @@ class MolecularSystem(TreeNode):
                           childrenName, setClass, childrenSetClass, top,
                           childIndex, assignUniqIndex)
         self.bonds = BondSet([])
-
-    def __len__(self):
-        return len(self.children)
-
-
-class MoleculeGroup(MolecularSystem):
-    """
-    Class to represent an multiple Molecules.
-    """
-
-    def __init__(self, name='NoName', parent=None, elementType=None,
-                 list=None, childrenName='molecules',
-                 setClass=MoleculeGroups,
-                 childrenSetClass=MoleculeSet, top=None, childIndex=None,
-                 assignUniqIndex=1):
-        MolecularSystem.__init__(
-            self, name=name, parent=parent, elementType=elementType,
-            list=list, childrenName=childrenName, setClass=setClass,
-            childrenSetClass=MoleculeSet, top=top, childIndex=childIndex,
-            assignUniqIndex=assignUniqIndex)
-
-        self.elementType = (Molecule, MoleculeGroup)
-        self.children.elementType = (Molecule, MoleculeGroup)
