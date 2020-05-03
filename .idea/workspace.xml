@@ -26,7 +26,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dade6379-1666-4ac7-9de4-69950a5437c6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/MolKit/data/all_aminoct94_dat.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/data/all_aminoct94_dat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/data/all_nuc94_dat.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/data/all_nuc94_dat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/data/allct_dat.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/data/allct_dat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/data/allnt_dat.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/data/allnt_dat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/data/build_all_in.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/data/build_all_in.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/data/nh2e_dat.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/data/nh2e_dat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/data/opls_nacl_dat.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/data/opls_nacl_dat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/data/opls_uni_dat.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/data/opls_uni_dat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/data/opls_unict_dat.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/data/opls_unict_dat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/data/opls_unint_dat.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/data/opls_unint_dat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/data/qkollua.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/data/qkollua.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/data/uni_dat.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/data/uni_dat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/data/unict_dat.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/data/unict_dat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/data/unint_dat.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/data/unint_dat.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -186,7 +198,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1588466872659</updated>
-      <workItem from="1588466873766" duration="16378000" />
+      <workItem from="1588466873766" duration="16530000" />
     </task>
     <task id="LOCAL-00001" summary="add disclaimer and minor changes">
       <created>1588467466843</created>
@@ -279,7 +291,28 @@
       <option name="project" value="LOCAL" />
       <updated>1588491972711</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="updated MolKit &gt; data &gt; all_aminoct94_dat.py">
+      <created>1588492023549</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1588492023549</updated>
+    </task>
+    <task id="LOCAL-00015" summary="updated MolKit &gt; data &gt; all_aminont94_dat.py">
+      <created>1588492056258</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1588492056258</updated>
+    </task>
+    <task id="LOCAL-00016" summary="updated MolKit &gt; data &gt; all_dat.py">
+      <created>1588492118464</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1588492118464</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -300,7 +333,10 @@
     <MESSAGE value="updated MolKit &gt; torTree.py" />
     <MESSAGE value="updated MolKit &gt; data &gt; __init__.py" />
     <MESSAGE value="updated MolKit &gt; data &gt; all_amino94_dat.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated MolKit &gt; data &gt; all_amino94_dat.py" />
+    <MESSAGE value="updated MolKit &gt; data &gt; all_aminoct94_dat.py" />
+    <MESSAGE value="updated MolKit &gt; data &gt; all_aminont94_dat.py" />
+    <MESSAGE value="updated MolKit &gt; data &gt; all_dat.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated MolKit &gt; data &gt; all_dat.py" />
   </component>
   <component name="WindowStateProjectService">
     <state x="414" y="175" width="1273" height="690" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588483040743">
@@ -311,10 +347,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="707" y="384" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.1040@0.0.1920.1040" timestamp="1588477911914" />
-    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2" timestamp="1588491972035">
+    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2" timestamp="1588492117604">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1588491972035" />
+    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1588492117604" />
     <state x="92" y="92" width="1736" height="856" key="DiffContextDialog" timestamp="1588491681368">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
