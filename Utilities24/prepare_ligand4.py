@@ -13,8 +13,6 @@
 #                                                                                                  #
 # ##################################################################################################
 
-import os
-
 from AutoDockTools.MoleculePreparation import AD4LigandPreparation
 from MolKit import Read
 
@@ -208,11 +206,12 @@ if __name__ == '__main__':
         preserved = {}
         preserved_types = preserve_charge_types.split(',')
         for t in preserved_types:
-            if not len(t): continue
-                ats = mol.allAtoms.get(lambda x: x.autodock_element == t)
-                for a in ats:
-                    if a.chargeSet is not None:
-                        preserved[a] = [a.chargeSet, a.charge]
+            if not len(t):
+                continue
+            ats = mol.allAtoms.get(lambda x: x.autodock_element == t)
+            for a in ats:
+                if a.chargeSet is not None:
+                    preserved[a] = [a.chargeSet, a.charge]
 
 
     if verbose:
@@ -237,8 +236,8 @@ if __name__ == '__main__':
             atom._charges[chargeList[0]] = chargeList[1]
             atom.chargeSet = chargeList[0]
             # FIXME: ?
-            if verbose:
-                print("set charge on ", atom.full_name(), " to ", atom.charge)
+            # if verbose:
+            #     print("set charge on ", atom.full_name(), " to ", atom.charge)
 
     if verbose:
         print("returning ", mol.returnCode)
