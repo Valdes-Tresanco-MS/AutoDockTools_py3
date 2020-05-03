@@ -26,7 +26,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dade6379-1666-4ac7-9de4-69950a5437c6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/MolKit/mol2Parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/mol2Parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/pdbWriter.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/pdbWriter.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,7 +53,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/mol2Parser.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/pdbWriter.py" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -63,7 +63,7 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="copyright.filetypes.Python" />
-    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/mol2Parser.py" />
+    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/pdbWriter.py" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -73,7 +73,7 @@
       <recent name="D:\Drive\scripts\PROG_PROJECTS\AutoDockTools_py3\AutoDockTools" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.prepare_receptor4">
+  <component name="RunManager" selected="Python.prepare_ligand4">
     <configuration name="prepare_ligand4" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="AutoDockTools_py3" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -169,9 +169,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.prepare_ligand4" />
         <item itemvalue="Python.prepare_receptor4" />
         <item itemvalue="Python.test" />
-        <item itemvalue="Python.prepare_ligand4" />
         <item itemvalue="Python.prepare_ligand4" />
       </list>
     </recent_temporary>
@@ -186,7 +186,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1588466872659</updated>
-      <workItem from="1588466873766" duration="18449000" />
+      <workItem from="1588466873766" duration="19520000" />
     </task>
     <task id="LOCAL-00001" summary="add disclaimer and minor changes">
       <created>1588467466843</created>
@@ -398,7 +398,14 @@
       <option name="project" value="LOCAL" />
       <updated>1588493772342</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="updated MolKit &gt; mol2Parser.py">
+      <created>1588494262200</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1588494262200</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -408,7 +415,6 @@
     <option name="UPDATE_COPYRIGHT" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="updated pdbParser" />
     <MESSAGE value="updated molecule" />
     <MESSAGE value="updated moleculeParser" />
     <MESSAGE value="updated MolKit &gt; protein" />
@@ -433,9 +439,18 @@
     <MESSAGE value="updated MolKit &gt; data &gt; build_all_in.py" />
     <MESSAGE value="updated MolKit &gt; data &gt; qkollua.py" />
     <MESSAGE value="updated MolKit &gt; mmcifParser.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated MolKit &gt; mmcifParser.py" />
+    <MESSAGE value="updated MolKit &gt; mol2Parser.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated MolKit &gt; mol2Parser.py" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="586" y="198" key="#Inspections" timestamp="1588494675975">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="586" y="198" key="#Inspections/0.0.1920.1040@0.0.1920.1040" timestamp="1588494675975" />
+    <state x="552" y="178" width="816" height="729" key="#Intentions" timestamp="1588494595936">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="552" y="178" width="816" height="729" key="#Intentions/0.0.1920.1040@0.0.1920.1040" timestamp="1588494595936" />
     <state x="414" y="175" width="1273" height="690" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588483040743">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -444,34 +459,34 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="707" y="384" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.1040@0.0.1920.1040" timestamp="1588477911914" />
-    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2" timestamp="1588493771489">
+    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2" timestamp="1588494261306">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1588493771489" />
-    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog" timestamp="1588494247312">
+    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1588494261306" />
+    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog" timestamp="1588495319309">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588494247312" />
-    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1588493847638">
+    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588495319309" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1588494302901">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588493847638" />
-    <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1588494240487">
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588494302901" />
+    <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1588495316556">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588494240487" />
-    <state width="1877" height="282" key="GridCell.Tab.0.center" timestamp="1588494240487">
+    <state width="1877" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588495316556" />
+    <state width="1877" height="282" key="GridCell.Tab.0.center" timestamp="1588495316556">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588494240487" />
-    <state width="1877" height="282" key="GridCell.Tab.0.left" timestamp="1588494240487">
+    <state width="1877" height="282" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588495316556" />
+    <state width="1877" height="282" key="GridCell.Tab.0.left" timestamp="1588495316556">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588494240487" />
-    <state width="1877" height="282" key="GridCell.Tab.0.right" timestamp="1588494240487">
+    <state width="1877" height="282" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588495316556" />
+    <state width="1877" height="282" key="GridCell.Tab.0.right" timestamp="1588495316556">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588494240487" />
+    <state width="1877" height="282" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588495316556" />
     <state x="461" y="165" width="1157" height="710" key="SettingsEditor" timestamp="1588467378596">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -484,7 +499,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/AutoDockTools_py3$prepare_ligand4.coverage" NAME="prepare_ligand4 Coverage Results" MODIFIED="1588467154610" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Utilities24" />
     <SUITE FILE_PATH="coverage/AutoDockTools_py3$test.coverage" NAME="test Coverage Results" MODIFIED="1588490975123" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/AutoDockTools_py3$prepare_ligand4__1_.coverage" NAME="prepare_ligand4 Coverage Results" MODIFIED="1588489307707" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
-    <SUITE FILE_PATH="coverage/AutoDockTools_py3$prepare_receptor4.coverage" NAME="prepare_receptor4 Coverage Results" MODIFIED="1588494240483" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
+    <SUITE FILE_PATH="coverage/AutoDockTools_py3$prepare_receptor4.coverage" NAME="prepare_receptor4 Coverage Results" MODIFIED="1588495311611" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
+    <SUITE FILE_PATH="coverage/AutoDockTools_py3$prepare_ligand4__1_.coverage" NAME="prepare_ligand4 Coverage Results" MODIFIED="1588495316551" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
   </component>
 </project>
