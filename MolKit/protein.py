@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
+#  Modification date: 3/5/20 2:35                                                                  #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -20,12 +20,6 @@
 # Copyright: M. Sanner TSRI 2000
 #
 #############################################################################
-
-#
-# $Header: /opt/cvs/python/packages/share1.5/MolKit/protein.py,v 1.65.2.2 2016/02/12 01:12:48 annao Exp $
-#
-# $Id: protein.py,v 1.65.2.2 2016/02/12 01:12:48 annao Exp $
-#
 
 """
 This Module implements the classes Residue, Chain and Protein.
@@ -38,25 +32,9 @@ in a 4 level tree (from leafs to root: atoms, residues, chains, molecule)
 
 from MolKit.tree import TreeNode, TreeNodeSet, TreeNodeSetSelector
 from MolKit.molecule import Molecule, MoleculeSet, Atom, AtomSet, Bond
+from mglutil.math.torsion import torsion
 import re
-# from types import ...
-NoneType = type(None)
-Type = type(str)
-Type = type(int)
-Type = type(tuple)
-Type = type(float)
-Type = type(list)
-#from string import split, upper, find
-def split(s, *args):
-    return s.split(*args)
-
-def upper(s, *args):
-    return s.upper(*args)
-
-def find(s, *args):
-    return s.find(*args)
-
-from numpy import sum
+import numpy as np
 global bhtreeFlag
 try:
     import bhtree
@@ -107,7 +85,7 @@ class ResidueSet(TreeNodeSet):
                 for a in objects:
                     molDict[a.top].append(a)
 
-                for k,v in list(molDict.items()):
+                for k,v in molDict.items():
                     ## this line was causing an endless loop when we select
                     ## Chain A in protease in Dashboard and then clcik on
                     ## display line column for chain A
@@ -128,75 +106,16 @@ class ResidueSet(TreeNodeSet):
 
             self.stringRepr = strr
 
-
-#    def get(self, selectionString, selector=None, sets=None,
-#                    caseSensitive=True, escapeCharacters=False):
-#        if selector is None:
-#            selector = ResidueSetSelector()
-#            selector.caseSensitive = caseSensitive
-#            selector.escapeCharacters = escapeCharacters
-#        #results, msg = selector.select(self, selectionString, sets,
-#        selectionStringRepr = str(selectionString)
-#        results = selector.processListItem(self, selectionString, sets)
-#        selectionStringRepr = '&' + selectionStringRepr
-#        results.setStringRepr(selectionStringRepr)
-#        return results
-
-
     def getSelector(self):
         if self.selector==None:
             self.selector = ResidueSetSelector()
         return self.selector
-
-##     def get(self, selectionString, selector=None, sets=None,
-##                     caseSensitive=True, escapeCharacters=False,
-##                     returnMsg=False):
-##         """
-##         selects from self.data, objects of self.elementType specified by selectionString
-##         """
-##         #print "RS: get: selectionString=", selectionString
-
-##         if selector is None:
-##             selector = ResidueSetSelector()
-##             selector.caseSensitive = caseSensitive
-##             selector.escapeCharacters = escapeCharacters
-##         selectionStringRepr = '&' + str(selectionString)
-##         if type(selectionString)==StringType:
-##             result, msg = selector.select(self, selectionString)
-##             result = self.ReturnType(result)
-##             result.setStringRepr(selectionStringRepr)
-##             if returnMsg: result = (result, msg)
-##             return result
-##             #if selector.select(self, selectionString)[0] is None:
-##             #    return self.ReturnType([])
-##             #else:
-##             #    return selector.select(self, selectionString)[0]
-##         elif callable(selectionString):
-##             result = filter(selectionString, self.data)
-##             if len(result)==len(self.data):
-##                 return self
-##             else:
-##                 result = self.ReturnType(result)
-##                 result.setStringRepr(selectionStringRepr)
-##                 return result
-##         else:
-##             raise RuntimeError("argument has to be a function or a string")
-
-
-from mglutil.math.torsion import torsion
 
 class Residue(ProteinMolecule):
     """Class to represent an amino acide. Inherits from tree element"""
 
     _bbname = ['N', 'CA', 'C', 'O']
     _bbtype = ['N', 'C', 'C', 'O']
-
-
-
-##     def __del__(self):
-##         self.__dict__.clear()
-##         ProteinMolecule.__del__(self)
-
 
     def __init__(self, type='UNK', number=-1, icode='', parent=None,
                  elementType=Atom, list=None, childrenName='atoms',
@@ -217,9 +136,6 @@ class Residue(ProteinMolecule):
         self.type = type
         self.number = number
         self.hasCA = False
-        self.CAatom = None
-        self.Oatom = None
-        self.C1atom = None
         self.icode = icode
         self.psi  = None # not calculated
         self.phi  = None # not calculated
@@ -227,7 +143,7 @@ class Residue(ProteinMolecule):
     def getPsi(self):
         """  compute PSI N(i),CA(i),C(i),N(i+1) """
         nextResidue = self.getNext()
-        if self.getNext() is not None and nextResidue.CAatom is not None:
+        if self.getNext() is not None and nextResidue.hasCA:
             try:
                 names = [name.split("@")[0] for name in self.atoms.name]
                 idx=names.index('N') ; at1 = self.atoms[idx]
@@ -249,7 +165,7 @@ class Residue(ProteinMolecule):
         if self.getPrevious() is not None:
             from mglutil.math.torsion import torsion
             prevResidue = self.getPrevious()
-            if prevResidue is None or prevResidue.CAatom==None:
+            if prevResidue is None or not prevResidue.hasCA:
                 self.phi = 0.
             else:
                 try:
@@ -569,13 +485,13 @@ class ResidueSetSelector(TreeNodeSetSelector):
                 n_str = n_str + self.r_keyD.get(r.type,'J')
                 #n_str = n_str + r_keyD[r.type]
             #print 'in chain ', ch.name, '->', n_str
-            ind1 = find(n_str, item)
+            ind1 = n_str.find(item)
             if ind1==-1:
                 continue
                 #return None
             result.extend(res_nodes[ind1:ind1+len(item)])
             for i in range(ind1+1, len(res_nodes)):
-                ind1 = find(n_str[i], item)
+                ind1 = n_str[i].find(item)
                 if ind1>-1:
                     result.extend(res_nodes[ind1:ind1+len(item)])
         if not len(result):
@@ -587,7 +503,7 @@ class ResidueSetSelector(TreeNodeSetSelector):
     def getRange(self, nodes, item):
         if len(nodes)<2:
             return None
-        levItList=split(item, '-')
+        levItList=item.split('-')
         if len(levItList)!=2: return None
         #if levItList[0][0]=='#' or levItList[1][0]=='#':
         if levItList[0][0]=='#' and levItList[1][0]=='#':
@@ -602,11 +518,11 @@ class ResidueSetSelector(TreeNodeSetSelector):
 
     def getResidueRelRange(self, nodes, item):
         #this needs to be done on a PER CHAIN basis:
-        levItList = split(item, '-')
+        levItList = item.split('-')
         selNodes = None
         parentNodes = ChainSet(nodes.parent.uniq())
         for par in parentNodes:
-            nds = ResidueSet(list(filter(lambda x, par=par: x.parent==par, nodes)))
+            nds = ResidueSet(filter(lambda x, par=par: x.parent==par, nodes))
             if len(nds)<2: continue
             firstNodes = self.processListItem(nds, levItList[0])
             lastNodes = self.processListItem(nds, levItList[1])
@@ -622,7 +538,7 @@ class ResidueSetSelector(TreeNodeSetSelector):
     def processListItem(self, nodes, item, sets=None):
 
         # check for pre-defined filtering lists
-        if item.lower() in list(self.residueList.keys()):
+        if item.lower() in self.residueList:
             item = item.lower()
 
             # lists might have been extended
@@ -668,9 +584,8 @@ class ResidueSetSelector(TreeNodeSetSelector):
 
 
     def testSequence(self, item):
-        import numpy
         try:
-            ans = numpy.add.reduce(list(map(self.testR,item)))==len(item)
+            ans = np.add.reduce(list(map(self.testR,item)))==len(item)
         except:
             ans = 0
         return ans
@@ -808,7 +723,6 @@ class Chain(ProteinMolecule):
                           childrenName, setClass, childrenSetClass, top,
                           childIndex, assignUniqIndex)
         self.id = id
-        self.name = id
         self.hasBonds = 0 # 1 for bondsByDistance is supported
         self.gaps = []    # list to store tuple (Res, Res) define the edge of a gap
 
@@ -834,10 +748,10 @@ class Chain(ProteinMolecule):
         #diff = [0,0,0]
         p = 0
         # Get the C atom of the first residue res1 :
-        c = res1.atoms.get(lambda x: split(x.name)[0]=='C')
+        c = res1.atoms.get(lambda x: x.name.split()[0]=='C')
 
         if c is None or len(c) == 0: c = res1.atoms.get(lambda x:
-                                        split(x.name)[0]=='O3*')
+                                        x.name.split()[0]=='O3*')
         # Get the N atom of the second Residue only if the first residue
         # has a C atom.
         if not c is None and len(c) != 0:
@@ -845,9 +759,9 @@ class Chain(ProteinMolecule):
             cx, cy, cz = c[0].coords
             cov_radc = c[0].bondOrderRadius
 
-            n = res2.atoms.get(lambda x: split(x.name)[0]=='N')
+            n = res2.atoms.get(lambda x: x.name.split()[0]=='N')
             if n is None or len(n) == 0:
-                n = res2.atoms.get(lambda x:split(x.name)[0]=='P')
+                n = res2.atoms.get(lambda x:x.name.split()[0]=='P')
             if n is not None and len(n)!=0:
                 nx, ny,nz = n[0].coords
                 cov_radsum = (cov_radc + n[0].bondOrderRadius)*1.1
@@ -888,7 +802,7 @@ class Chain(ProteinMolecule):
         for i in range(len(self.residues)):
             res = self.residues[i]
             bonds.extend( res.buildBondsByDistance() )
-            if upper(res.type) in ['HOH', 'DOD']: continue
+            if res.type.upper() in ['HOH', 'DOD']: continue
             # Now we try to connect residues together.
             if i < len(self.residues)-1:
                 bond =  self.connectResidues(res, self.residues[i+1], cut_off)
@@ -1178,10 +1092,9 @@ class Protein(ProteinMolecule):
 
     def _copy_atom_attr(self, newat, at):
         for item in list(at.__dict__.items()):
-            if type(item[1]) in [NoneType,StringType,
-                                 IntType,FloatType]:
+            if type(item[1]) in [None,str, int,float]:
                 exec('newat.%s=item[1]' %item[0])
-            if type(item[1]) in [ListType, TupleType]:
+            if type(item[1]) in [list, tuple]:
                 exec('newat.%s=item[1][:]' %item[0])
 
 
