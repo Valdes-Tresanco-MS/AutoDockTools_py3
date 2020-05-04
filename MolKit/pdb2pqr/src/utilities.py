@@ -1,3 +1,18 @@
+# ##################################################################################################
+#  Disclaimer                                                                                      #
+#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
+#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
+#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
+#  There is no guarantee that it works like the original distribution,                             #
+#  but feel free to tell us if you get any difference to correct the code.                         #
+#                                                                                                  #
+#  Please use this cite the original reference.                                                    #
+#  If you think my work helps you, just keep this note intact on your program.                     #
+#                                                                                                  #
+#  Modification date: 4/5/20 13:33                                                                 #
+#                                                                                                  #
+# ##################################################################################################
+
 """
     Utilities for PDB2PQR Suite
 
@@ -42,31 +57,15 @@
 
     ----------------------------
 """
+import math
+import os
+import sys
 
 __date__ = "28 February 2006"
 __author__ = "Todd Dolinsky"
 SMALL = 1.0e-7
 DIHEDRAL = 57.2958
 
-# ##################################################################################################
-#  Disclaimer                                                                                      #
-#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
-#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
-#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
-#  There is no guarantee that it works like the original distribution,                             #
-#  but feel free to tell us if you get any difference to correct the code.                         #
-#                                                                                                  #
-#  Please use this cite the original reference.                                                    #
-#  If you think my work helps you, just keep this note intact on your program.                     #
-#                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
-#                                                                                                  #
-# ##################################################################################################
-
-import _py2k_string as string
-import math
-import os
-import sys
 
 def sortDictByValue(dict):
     """
@@ -80,8 +79,9 @@ def sortDictByValue(dict):
     items = [(v, k) for k, v in list(dict.items())]
     items.sort()
     items.reverse()
-    items = [ k for v, k in items]
+    items = [k for v, k in items]
     return items
+
 
 def shortestPath(graph, start, end, path=[]):
     """
@@ -118,6 +118,7 @@ def shortestPath(graph, start, end, path=[]):
                     shortest = newpath
     return shortest
 
+
 def analyzeConnectivity(map, key):
     """
         Analyze the connectivity of a given map using the key value.
@@ -144,30 +145,32 @@ def analyzeConnectivity(map, key):
 
     return list
 
-def getAngle(coords1, coords2, coords3):
-        """
-            Get the angle between three coordinates
 
-            Parameters
-                coords1:  The first coordinate set (atom)
-                coords2:  The second (vertex) coordinate set (atom)
-                coords3:  The third coordinate set (atom)
-            Returns
-                angle:  The angle between the atoms (float)
-        """
-        angle = 0.0
-        c1 = subtract(coords3, coords2)
-        c2 = subtract(coords1, coords2)
-        norm1 = normalize(c1)
-        norm2 = normalize(c2)
-        dotted = dot(norm1, norm2)
-        if dotted > 1.0: # If normalized, this is due to rounding error
-            dotted = 1.0
-        rad = abs(math.acos(dotted))
-        angle = rad*180.0/math.pi
-        if angle > 180.0:
-            angle = 360.0 - angle
-        return angle
+def getAngle(coords1, coords2, coords3):
+    """
+        Get the angle between three coordinates
+
+        Parameters
+            coords1:  The first coordinate set (atom)
+            coords2:  The second (vertex) coordinate set (atom)
+            coords3:  The third coordinate set (atom)
+        Returns
+            angle:  The angle between the atoms (float)
+    """
+    angle = 0.0
+    c1 = subtract(coords3, coords2)
+    c2 = subtract(coords1, coords2)
+    norm1 = normalize(c1)
+    norm2 = normalize(c2)
+    dotted = dot(norm1, norm2)
+    if dotted > 1.0:  # If normalized, this is due to rounding error
+        dotted = 1.0
+    rad = abs(math.acos(dotted))
+    angle = rad * 180.0 / math.pi
+    if angle > 180.0:
+        angle = 360.0 - angle
+    return angle
+
 
 def getFFfile(name):
     """
@@ -176,14 +179,10 @@ def getFFfile(name):
     """
     path = ""
     dirs = sys.path + ["dat"]
-    if name in ["amber", "charmm", "parse", "tyl06"]: name = name.upper()
+    if name in ["amber", "charmm", "parse", "tyl06"]:
+        name = name.upper()
 
-    names = ["dat/%s.DAT" % name]
-
-    names.append("%s.DAT" % name)
-    names.append("%s.dat" % name)
-    names.append("dat/%s" % name)
-    names.append(name)
+    names = ["dat/%s.DAT" % name, "%s.DAT" % name, "%s.dat" % name, "dat/%s" % name, name]
 
     for guess in names:
         if os.path.isfile(guess):
@@ -197,6 +196,7 @@ def getFFfile(name):
     # If we get here return empty string
 
     return ""
+
 
 def getNamesFile(name):
     """
@@ -209,10 +209,10 @@ def getNamesFile(name):
     """
     path = ""
     dirs = sys.path + ["dat"]
-    if name in ["amber", "charmm", "parse", "tyl06"]: name = name.upper()
+    if name in ["amber", "charmm", "parse", "tyl06"]:
+        name = name.upper()
 
-    names = ["dat/%s.names" % name]
-    names.append("%s.names" % name)
+    names = ["dat/%s.names" % name, "%s.names" % name]
 
     for guess in names:
         if os.path.isfile(guess):
@@ -226,6 +226,7 @@ def getNamesFile(name):
     # If we get here return empty string
 
     return ""
+
 
 def getDatFile(name):
     """
@@ -249,6 +250,7 @@ def getDatFile(name):
 
     return path
 
+
 def getPDBFile(path):
     """
         Obtain a PDB file.  First check the path given on the command
@@ -262,7 +264,7 @@ def getPDBFile(path):
             file:  File object containing PDB file (file object)
     """
 
-    import os, urllib.request, urllib.parse, urllib.error
+    import os, urllib.request, urllib.error
 
     file = None
     if not os.path.isfile(path):
@@ -272,6 +274,7 @@ def getPDBFile(path):
     else:
         file = open(path)
     return file
+
 
 def distance(coords1, coords2):
     """
@@ -291,9 +294,10 @@ def distance(coords1, coords2):
     p = coords2[0] - coords1[0]
     q = coords2[1] - coords1[1]
     r = coords2[2] - coords1[2]
-    dist = math.sqrt(p*p + q*q + r*r)
+    dist = math.sqrt(p * p + q * q + r * r)
 
     return dist
+
 
 def add(coords1, coords2):
     """
@@ -308,7 +312,8 @@ def add(coords1, coords2):
     x = coords1[0] + coords2[0]
     y = coords1[1] + coords2[1]
     z = coords1[2] + coords2[2]
-    return [x,y,z]
+    return [x, y, z]
+
 
 def subtract(coords1, coords2):
     """
@@ -323,7 +328,8 @@ def subtract(coords1, coords2):
     x = coords1[0] - coords2[0]
     y = coords1[1] - coords2[1]
     z = coords1[2] - coords2[2]
-    return [x,y,z]
+    return [x, y, z]
+
 
 def cross(coords1, coords2):
     """
@@ -336,11 +342,12 @@ def cross(coords1, coords2):
             list:  Cross product coords2 and coords1 (list)
     """
     list = []
-    x = coords1[1]*coords2[2] -  coords1[2]*coords2[1]
-    y = coords1[2]*coords2[0] -  coords1[0]*coords2[2]
-    z = coords1[0]*coords2[1] -  coords1[1]*coords2[0]
-    list = [x,y,z]
+    x = coords1[1] * coords2[2] - coords1[2] * coords2[1]
+    y = coords1[2] * coords2[0] - coords1[0] * coords2[2]
+    z = coords1[0] * coords2[1] - coords1[1] * coords2[0]
+    list = [x, y, z]
     return list
+
 
 def dot(coords1, coords2):
     """
@@ -354,8 +361,9 @@ def dot(coords1, coords2):
     """
     value = 0.0
     for i in range(3):
-        value += coords1[i]*coords2[i]
+        value += coords1[i] * coords2[i]
     return value
+
 
 def normalize(coords):
     """
@@ -367,22 +375,25 @@ def normalize(coords):
             list: normalized coordinates (list)
     """
     list = []
-    dist = math.sqrt(pow(coords[0],2) + pow(coords[1],2) + pow(coords[2],2))
+    dist = math.sqrt(pow(coords[0], 2) + pow(coords[1], 2) + pow(coords[2], 2))
     if dist > SMALL:
-        a = coords[0]/dist
-        b = coords[1]/dist
-        c = coords[2]/dist
-        list = [a,b,c]
+        a = coords[0] / dist
+        b = coords[1] / dist
+        c = coords[2] / dist
+        list = [a, b, c]
     else:
         list = coords
     return list
+
 
 def factorial(n):
     """
         Returns the factorial of the given number n
     """
-    if n <= 1 : return 1
-    return n*factorial(n-1)
+    if n <= 1:
+        return 1
+    return n * factorial(n - 1)
+
 
 def getDihedral(coords1, coords2, coords3, coords4):
     """
@@ -415,8 +426,7 @@ def getDihedral(coords1, coords2, coords3, coords4):
     else:
         value = DIHEDRAL * math.acos(scal)
 
-    chiral = dot(cross(Anorm, Bnorm),list32)
+    chiral = dot(cross(Anorm, Bnorm), list32)
     if chiral < 0:
         value = value * -1.0
     return value
-
