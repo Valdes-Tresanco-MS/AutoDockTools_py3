@@ -26,7 +26,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dade6379-1666-4ac7-9de4-69950a5437c6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/MolKit/distanceSelector.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/distanceSelector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/genPdbParser.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/genPdbParser.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,7 +54,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/distanceSelector.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/genPdbParser.py" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -63,7 +64,7 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/distanceSelector.py" />
+    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/genPdbParser.py" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -187,7 +188,7 @@
       <option name="presentableId" value="Default" />
       <updated>1588466872659</updated>
       <workItem from="1588466873766" duration="21530000" />
-      <workItem from="1588561745843" duration="4020000" />
+      <workItem from="1588561745843" duration="5095000" />
     </task>
     <task id="LOCAL-00001" summary="add disclaimer and minor changes">
       <created>1588467466843</created>
@@ -469,7 +470,21 @@
       <option name="project" value="LOCAL" />
       <updated>1588565581380</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="updated MolKit &gt; distanceSelector.py">
+      <created>1588565780481</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1588565780481</updated>
+    </task>
+    <task id="LOCAL-00042" summary="updated MolKit &gt; GapFinder.py">
+      <created>1588565970355</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1588565970355</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -479,8 +494,6 @@
     <option name="UPDATE_COPYRIGHT" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="updated MolKit &gt; data &gt; all_dat.py" />
-    <MESSAGE value="updated MolKit &gt; data &gt; all_nuc94_dat.py" />
     <MESSAGE value="updated MolKit &gt; data &gt; allct_dat.py" />
     <MESSAGE value="updated MolKit &gt; data &gt; allnt_dat.py" />
     <MESSAGE value="updated MolKit &gt; data &gt; opls_nacl_dat.py" />
@@ -504,7 +517,9 @@
     <MESSAGE value="updated MolKit &gt; bondSelector.py" />
     <MESSAGE value="updated MolKit &gt; chargeCalculator.py" />
     <MESSAGE value="updated MolKit &gt; chargeMass.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated MolKit &gt; chargeMass.py" />
+    <MESSAGE value="updated MolKit &gt; distanceSelector.py" />
+    <MESSAGE value="updated MolKit &gt; GapFinder.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated MolKit &gt; GapFinder.py" />
   </component>
   <component name="WindowStateProjectService">
     <state x="586" y="198" key="#Inspections" timestamp="1588494675975">
@@ -523,34 +538,34 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="707" y="384" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.1040@0.0.1920.1040" timestamp="1588477911914" />
-    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2" timestamp="1588565580642">
+    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2" timestamp="1588565969572">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1588565580642" />
-    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog" timestamp="1588565771234">
+    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1588565969572" />
+    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog" timestamp="1588566152151">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588565771234" />
-    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1588565653288">
+    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588566152151" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1588565977425">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588565653288" />
-    <state width="1877" height="161" key="GridCell.Tab.0.bottom" timestamp="1588565527963">
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588565977425" />
+    <state width="1877" height="161" key="GridCell.Tab.0.bottom" timestamp="1588566842556">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="161" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588565527963" />
-    <state width="1877" height="161" key="GridCell.Tab.0.center" timestamp="1588565527963">
+    <state width="1877" height="161" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588566842556" />
+    <state width="1877" height="161" key="GridCell.Tab.0.center" timestamp="1588566842555">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="161" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588565527963" />
-    <state width="1877" height="161" key="GridCell.Tab.0.left" timestamp="1588565527963">
+    <state width="1877" height="161" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588566842555" />
+    <state width="1877" height="161" key="GridCell.Tab.0.left" timestamp="1588566842554">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="161" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588565527963" />
-    <state width="1877" height="161" key="GridCell.Tab.0.right" timestamp="1588565527963">
+    <state width="1877" height="161" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588566842554" />
+    <state width="1877" height="161" key="GridCell.Tab.0.right" timestamp="1588566842556">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="161" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588565527963" />
+    <state width="1877" height="161" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588566842556" />
     <state x="461" y="165" width="1157" height="710" key="SettingsEditor" timestamp="1588561804387">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -559,11 +574,15 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1588496795724" />
+    <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1588566465074">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588566465074" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/AutoDockTools_py3$prepare_ligand4.coverage" NAME="prepare_ligand4 Coverage Results" MODIFIED="1588561806820" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
     <SUITE FILE_PATH="coverage/AutoDockTools_py3$test.coverage" NAME="test Coverage Results" MODIFIED="1588563216432" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/AutoDockTools_py3$prepare_ligand4__1_.coverage" NAME="prepare_ligand4 Coverage Results" MODIFIED="1588495316551" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
-    <SUITE FILE_PATH="coverage/AutoDockTools_py3$prepare_receptor4.coverage" NAME="prepare_receptor4 Coverage Results" MODIFIED="1588565527957" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
+    <SUITE FILE_PATH="coverage/AutoDockTools_py3$prepare_receptor4.coverage" NAME="prepare_receptor4 Coverage Results" MODIFIED="1588566842547" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
   </component>
 </project>
