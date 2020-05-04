@@ -1,3 +1,18 @@
+# ##################################################################################################
+#  Disclaimer                                                                                      #
+#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
+#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
+#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
+#  There is no guarantee that it works like the original distribution,                             #
+#  but feel free to tell us if you get any difference to correct the code.                         #
+#                                                                                                  #
+#  Please use this cite the original reference.                                                    #
+#  If you think my work helps you, just keep this note intact on your program.                     #
+#                                                                                                  #
+#  Modification date: 4/5/20 12:50                                                                 #
+#                                                                                                  #
+# ##################################################################################################
+
 """
     Routines for PDB2PQR
 
@@ -47,25 +62,9 @@
 __date__ = "28 February 2006"
 __author__ = "Todd Dolinsky"
 
-# ##################################################################################################
-#  Disclaimer                                                                                      #
-#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
-#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
-#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
-#  There is no guarantee that it works like the original distribution,                             #
-#  but feel free to tell us if you get any difference to correct the code.                         #
-#                                                                                                  #
-#  Please use this cite the original reference.                                                    #
-#  If you think my work helps you, just keep this note intact on your program.                     #
-#                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
-#                                                                                                  #
-# ##################################################################################################
-
-from .pdb import *
-from .structures import *
 from .aa import *
 from .na import *
+
 
 class Protein:
     """
@@ -98,14 +97,14 @@ class Protein:
         numChains = 1
         count = 0
 
-        for record in pdblist: # Find number of chains
+        for record in pdblist:  # Find number of chains
             if isinstance(record, TER):
                 numChains += 1
 
         for record in pdblist:
             if isinstance(record, ATOM) or isinstance(record, HETATM):
 
-                if record.chainID == "" and numChains > 1 and record.resName not in ["WAT","HOH"]:
+                if record.chainID == "" and numChains > 1 and record.resName not in ["WAT", "HOH"]:
                     # Assign a chain ID
                     record.chainID = string.ascii_uppercase[count]
 
@@ -114,16 +113,16 @@ class Protein:
                 resName = record.resName
                 iCode = record.iCode
 
-                if previousAtom == None:
+                if previousAtom is None:
                     previousAtom = record
-                
+
                 if chainID not in dict:
                     myChain = Chain(chainID)
                     dict[chainID] = myChain
-                        
+
                 if resSeq != previousAtom.resSeq or \
-                      iCode != previousAtom.iCode or \
-                      chainID != previousAtom.chainID:
+                        iCode != previousAtom.iCode or \
+                        chainID != previousAtom.chainID:
                     myResidue = self.createResidue(residue, previousAtom.resName)
                     dict[previousAtom.chainID].addResidue(myResidue)
                     residue = []
@@ -138,9 +137,10 @@ class Protein:
 
             elif isinstance(record, MODEL):
                 numModels += 1
-                if residue == []: continue
+                if not residue:
+                    continue
                 if numModels > 1:
-                    myResidue = self.createResidue(residue, previousAtom.resName)    
+                    myResidue = self.createResidue(residue, previousAtom.resName)
                     dict[previousAtom.chainID].addResidue(myResidue)
                     break
 
@@ -156,7 +156,7 @@ class Protein:
         self.chainmap = dict.copy()
 
         # Make a list for sequential ordering of chains
-        
+
         if "" in dict:
             dict["ZZ"] = dict[""]
             del dict[""]
@@ -174,7 +174,7 @@ class Protein:
                 residue = chain.residues[0]
                 if isinstance(residue, Amino):
                     raise ValueError("Unable to support amino acid chains of only one residue (%s)" % residue)
-                
+
             for residue in chain.getResidues():
                 self.residues.append(residue)
 
@@ -193,7 +193,7 @@ class Protein:
         """
         try:
             refobj = self.referencemap[resname]
-            if refobj.name != resname: #Patched!
+            if refobj.name != resname:  # Patched!
                 obj = "%s(residue, refobj)" % refobj.name
                 residue = eval(obj)
                 residue.reference = refobj
@@ -217,7 +217,8 @@ class Protein:
         self.reSerialize()
         text = []
         for atom in atomlist:
-            if not chainflag: atom.chainID = ""
+            if not chainflag:
+                atom.chainID = ""
             text.append("%s\n" % str(atom))
         return text
 
@@ -251,22 +252,22 @@ class Protein:
         file.write("<BODY>\n")
         file.write("<H3>This is a developmental page including the atom type for the atoms in the PQR file.</H3><P>\n")
         file.write("<TABLE CELLSPACING=2 CELLPADDING=2 BORDER=1>\n")
-        file.write("<tr><th>Atom Number</th><th>Atom Name</th><th>Residue Name</th><th>Chain ID</th><th>AMBER Atom Type</th><th>CHARMM Atom Type</th></tr>\n")
-       
+        file.write("<tr><th>Atom Number</th><th>Atom Name</th><th>Residue Name</th><th>Chain ID</th><th>AMBER Atom "
+                   "Type</th><th>CHARMM Atom Type</th></tr>\n")
+
         for atom in self.getAtoms():
             if isinstance(atom.residue, Amino) or \
-               isinstance(atom.residue, WAT) or \
-               isinstance(atom.residue, Nucleic):
+                    isinstance(atom.residue, WAT) or \
+                    isinstance(atom.residue, Nucleic):
                 resname = atom.residue.ffname
             else:
                 resname = atom.residue.name
 
             ambergroup = amberff.getGroup(resname, atom.name)
-            charmmgroup  = charmmff.getGroup(resname, atom.name)
-        
-            
-            file.write("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n" % (atom.serial, atom.name, resname, atom.chainID, ambergroup, charmmgroup))
-        
+            charmmgroup = charmmff.getGroup(resname, atom.name)
+
+            file.write("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n" % (
+                atom.serial, atom.name, resname, atom.chainID, ambergroup, charmmgroup))
 
         file.write("</table>\n")
         file.write("</BODY></HTML>\n")
@@ -275,7 +276,7 @@ class Protein:
         # Return the original numbers back
         for atom in self.getAtoms():
             atom.serial = numcache[atom]
-    
+
         del numcache
         del amberff
         del charmmff
@@ -294,7 +295,7 @@ class Protein:
             Return the list of residues in the entire protein
         """
         return self.residues
-    
+
     def numResidues(self):
         """
             Get the number of residues for the entire protein (including
@@ -345,8 +346,9 @@ class Protein:
             for residue in chain.get("residues"):
                 rescharge = residue.getCharge()
                 charge = charge + rescharge
-                if isinstance(residue, Nucleic):               
-                    if residue.is3term or residue.is5term: continue
+                if isinstance(residue, Nucleic):
+                    if residue.is3term or residue.is5term:
+                        continue
                 if float("%i" % rescharge) != rescharge:
                     misslist.append(residue)
         return misslist, charge
