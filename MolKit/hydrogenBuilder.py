@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
+#  Modification date: 4/5/20 0:02                                                                  #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -21,26 +21,21 @@
 #
 #############################################################################
 
-#
-# $Header: /opt/cvs/python/packages/share1.5/MolKit/hydrogenBuilder.py,v 1.7 2008/12/08 18:04:17 sargis Exp $
-#
-# $Id: hydrogenBuilder.py,v 1.7 2008/12/08 18:04:17 sargis Exp $
-#
-
 """
 This module implements the HydrogenBuilder classes which add hydrogens to AtomSets.
 
 """
 
 from MolKit.molecule import Atom, AtomSet, Bond
-from PyBabel.atomTypes import AtomHybridization
 from PyBabel.addh import AddHydrogens
-from PyBabel.cycle import RingFinder
 from PyBabel.aromatic import Aromatic
+from PyBabel.atomTypes import AtomHybridization
 from PyBabel.bo import BondOrder
+from PyBabel.cycle import RingFinder
 
-#this is for future use
-#from AutoDockTools.observer import Subject
+
+# this is for future use
+# from AutoDockTools.observer import Subject
 
 
 class HydrogenBuilder:
@@ -53,29 +48,27 @@ but be warned that it apparently fails to add hydrogens correctly to cyclic
 carbons.....
     """
 
-
     def __init__(self, htype='all', renumber=1, method='noBondOrder'):
-        #NB: noBondOrder is for pdb files
+        # NB: noBondOrder is for pdb files
         self.htype = 'all'
         self.renumber = renumber
         self.method = method
 
-
     def addHydrogens(self, mol):
-        #check for bonds
-        if len(mol.allAtoms.bonds[0])==0:
+        # check for bonds
+        if len(mol.allAtoms.bonds[0]) == 0:
             mol.buildBondsByDistance()
         bonds = mol.allAtoms.bonds[0]
-        #could have preset babel_types
-        #so check if allAtoms are already typed
+        # could have preset babel_types
+        # so check if allAtoms are already typed
         try:
             t = mol.allAtoms.babel_type
         except:
-            #if all are not pretyped, type them
+            # if all are not pretyped, type them
             babel = AtomHybridization()
             babel.assignHybridization(mol.allAtoms)
 
-        if self.method=='withBondOrder':
+        if self.method == 'withBondOrder':
             mol.rings = RingFinder()
             mol.rings.findRings2(mol.allAtoms, mol.allAtoms.bonds[0])
             mol.rings.bondRings = {}
@@ -83,7 +76,7 @@ carbons.....
                 r = mol.rings.rings[ind]
                 for b in r['bonds']:
                     if b not in mol.rings.bondRings:
-                        mol.rings.bondRings[b] = [ind,]
+                        mol.rings.bondRings[b] = [ind, ]
                     else:
                         mol.rings.bondRings[b].append(ind)
             bo = BondOrder()
@@ -92,7 +85,7 @@ carbons.....
             # do aromatic here
             arom = Aromatic(mol.rings)
             arom.find_aromatic_atoms(mol.allAtoms)
-            
+
         hat = AddHydrogens().addHydrogens(mol.allAtoms, method=self.method)
         bondedAtomDict = {}  # key is heavy atom
         for a in hat:
@@ -103,24 +96,24 @@ carbons.....
 
         # now create Atom object for hydrogens
         # and add the to the residues's atom list
-        molNewHs = AtomSet([]) # list of created H atoms for this molecule
-        heavyAtoms = AtomSet([]) # list of atoms that need new radii
-        
+        molNewHs = AtomSet([])  # list of created H atoms for this molecule
+        heavyAtoms = AtomSet([])  # list of atoms that need new radii
+
         for heavyAtom, HatmsDscr in list(bondedAtomDict.items()):
-            #don't add hydrogens to carbons: polar Only!!!
-            if self.htype!='all' and heavyAtom.element=='C': 
+            # don't add hydrogens to carbons: polar Only!!!
+            if self.htype != 'all' and heavyAtom.element == 'C':
                 continue
             res = heavyAtom.parent
             # find where to insert H atom
-            childIndex = res.children.index(heavyAtom)+1
+            childIndex = res.children.index(heavyAtom) + 1
 
             # loop over H atoms description to be added
             # start at the end to number correctly
             l = len(HatmsDscr)
-            for i in range(l-1,-1,-1):
+            for i in range(l - 1, -1, -1):
                 a = HatmsDscr[i]
                 # build H atom's name
-                if len(heavyAtom.name)==1:
+                if len(heavyAtom.name) == 1:
                     name = 'H' + heavyAtom.name
                 else:
                     name = 'H' + heavyAtom.name[1:]
@@ -128,7 +121,7 @@ carbons.....
                 # if more than 1 H atom, add H atom index
                 # for instance HD11, HD12, Hd13 (index is 1,2,3)
                 if l > 1:
-                    name = name + str(i+1)
+                    name = name + str(i + 1)
 
                 # create the H atom object
                 atom = Atom(name, res, top=heavyAtom.top,
@@ -136,11 +129,12 @@ carbons.....
                             childIndex=childIndex, assignUniqIndex=0)
 
                 # set atoms attributes
-                atom._coords = [ a[0] ]
-                if hasattr(a[1], 'segID'): atom.segID = a[1].segID
+                atom._coords = [a[0]]
+                if hasattr(a[1], 'segID'):
+                    atom.segID = a[1].segID
                 atom.hetatm = 0
                 atom.alternate = []
-                #atom.element = 'H'
+                # atom.element = 'H'
                 atom.occupancy = 1.0
                 atom.conformation = 0
                 atom.temperatureFactor = 0.0
@@ -148,9 +142,9 @@ carbons.....
                 atom.babel_type = a[3]
                 atom.babel_organic = 1
                 atom.radius = 1.2
-                
+
                 # create the Bond object bonding Hatom to heavyAtom
-                bond = Bond( a[1], atom, bondOrder=1)
+                bond = Bond(a[1], atom, bondOrder=1)
 
                 # add the created atom the the list
                 molNewHs.append(atom)
@@ -159,14 +153,13 @@ carbons.....
                 # create the color entries for all geoemtries
                 # available for the heavyAtom
                 for key, value in list(heavyAtom.colors.items()):
-                    atom.colors[key]=(0.0, 1.0, 1.0)
-                    atom.opacities[key]=1.0
+                    atom.colors[key] = (0.0, 1.0, 1.0)
+                    atom.opacities[key] = 1.0
 
         mol.allAtoms = mol.chains.residues.atoms
         if self.renumber:
-            mol.allAtoms.number = list(range(1, len(mol.allAtoms)+1))
+            mol.allAtoms.number = list(range(1, len(mol.allAtoms) + 1))
         return len(molNewHs)
-
 
 
 class PolarHydrogenBuilder(HydrogenBuilder):
@@ -176,6 +169,5 @@ class PolarHydrogenBuilder(HydrogenBuilder):
 
     def __init__(self, htype='polarOnly', renumber=1, method='noBondOrder'):
         HydrogenBuilder.__init__(self, htype=htype, renumber=renumber,
-                    method=method)
+                                 method=method)
         self.htype = 'polarOnly'
-
