@@ -1,3 +1,18 @@
+# ##################################################################################################
+#  Disclaimer                                                                                      #
+#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
+#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
+#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
+#  There is no guarantee that it works like the original distribution,                             #
+#  but feel free to tell us if you get any difference to correct the code.                         #
+#                                                                                                  #
+#  Please use this cite the original reference.                                                    #
+#  If you think my work helps you, just keep this note intact on your program.                     #
+#                                                                                                  #
+#  Modification date: 4/5/20 11:54                                                                 #
+#                                                                                                  #
+# ##################################################################################################
+
 """
     Amino Acid Structures for PDB2PQR
 
@@ -47,23 +62,8 @@
 __date__ = "28 December 2006"
 __author__ = "Todd Dolinsky"
 
-# ##################################################################################################
-#  Disclaimer                                                                                      #
-#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
-#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
-#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
-#  There is no guarantee that it works like the original distribution,                             #
-#  but feel free to tell us if you get any difference to correct the code.                         #
-#                                                                                                  #
-#  Please use this cite the original reference.                                                    #
-#  If you think my work helps you, just keep this note intact on your program.                     #
-#                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
-#                                                                                                  #
-# ##################################################################################################
-
-import _py2k_string as string
 from .structures import *
+
 
 class Amino(Residue):
     """
@@ -79,6 +79,7 @@ class Amino(Residue):
                     convert from the alternate naming scheme to the
                     main naming scheme.
     """
+
     def __init__(self, atoms, ref):
         sampleAtom = atoms[-1]
 
@@ -105,7 +106,7 @@ class Amino(Residue):
         # Create each atom
 
         for a in atoms:
-            if a.name in ref.altnames: # Rename atoms
+            if a.name in ref.altnames:  # Rename atoms
                 a.name = ref.altnames[a.name]
 
             if a.name not in self.map:
@@ -123,12 +124,12 @@ class Amino(Residue):
         """
         oldatom = self.atoms[0]
         newatom = Atom(oldatom, "ATOM", self)
-        newatom.set("x",newcoords[0])
-        newatom.set("y",newcoords[1])
-        newatom.set("z",newcoords[2])
+        newatom.set("x", newcoords[0])
+        newatom.set("y", newcoords[1])
+        newatom.set("z", newcoords[2])
         newatom.set("name", atomname)
-        newatom.set("occupancy",1.00)
-        newatom.set("tempFactor",0.00)
+        newatom.set("occupancy", 1.00)
+        newatom.set("tempFactor", 0.00)
         newatom.added = 1
         self.addAtom(newatom)
 
@@ -145,8 +146,10 @@ class Amino(Residue):
             for bond in atom.reference.bonds:
                 if self.hasAtom(bond):
                     bondatom = self.map[bond]
-                    if bondatom not in atom.bonds: atom.bonds.append(bondatom)
-                    if atom not in bondatom.bonds: bondatom.bonds.append(atom)
+                    if bondatom not in atom.bonds:
+                        atom.bonds.append(bondatom)
+                    if atom not in bondatom.bonds:
+                        bondatom.bonds.append(atom)
         except KeyError:
             atom.reference = None
 
@@ -196,6 +199,7 @@ class ALA(Amino):
         Amino.__init__(self, atoms, ref)
         self.reference = ref
 
+
 class ARG(Amino):
     """
         Arginine class
@@ -215,6 +219,7 @@ class ARG(Amino):
         Amino.__init__(self, atoms, ref)
         self.reference = ref
 
+
 class ASN(Amino):
     """
         Asparagine class
@@ -233,6 +238,7 @@ class ASN(Amino):
         """
         Amino.__init__(self, atoms, ref)
         self.reference = ref
+
 
 class ASP(Amino):
     """
@@ -258,8 +264,10 @@ class ASP(Amino):
            Set the name to use for the forcefield based on the current
            state.
         """
-        if "ASH" in self.patches or self.name == "ASH": self.ffname = "ASH"
+        if "ASH" in self.patches or self.name == "ASH":
+            self.ffname = "ASH"
         Amino.setState(self)
+
 
 class CYS(Amino):
     """
@@ -287,11 +295,16 @@ class CYS(Amino):
             Set the state of the CYS object.  If SS-bonded, use CYX.  If
             negatively charged, use CYM.  If HG is not present, use CYX.
         """
-        if "CYX" in self.patches or self.name == "CYX": self.ffname = "CYX"
-        elif self.SSbonded: self.ffname = "CYX"
-        elif "CYM" in self.patches or self.name == "CYM": self.ffname = "CYM"
-        elif not self.hasAtom("HG"): self.ffname = "CYX"
+        if "CYX" in self.patches or self.name == "CYX":
+            self.ffname = "CYX"
+        elif self.SSbonded:
+            self.ffname = "CYX"
+        elif "CYM" in self.patches or self.name == "CYM":
+            self.ffname = "CYM"
+        elif not self.hasAtom("HG"):
+            self.ffname = "CYX"
         Amino.setState(self)
+
 
 class GLN(Amino):
     """
@@ -311,6 +324,7 @@ class GLN(Amino):
         """
         Amino.__init__(self, atoms, ref)
         self.reference = ref
+
 
 class GLU(Amino):
     """
@@ -336,7 +350,8 @@ class GLU(Amino):
            Set the name to use for the forcefield based on the current
            state.
         """
-        if "GLH" in self.patches or self.name == "GLH": self.ffname = "GLH"
+        if "GLH" in self.patches or self.name == "GLH":
+            self.ffname = "GLH"
         Amino.setState(self)
 
 
@@ -358,6 +373,7 @@ class GLY(Amino):
         """
         Amino.__init__(self, atoms, ref)
         self.reference = ref
+
 
 class HIS(Amino):
     """
@@ -387,21 +403,26 @@ class HIS(Amino):
             hdonor flags.  Otherwise HID is used as the default.
         """
         if "HIP" not in self.patches and self.name not in ["HIP", "HSP"]:
-            if self.getAtom("ND1").hdonor and not \
-                   self.getAtom("ND1").hacceptor:
-                if self.hasAtom("HE2"): self.removeAtom("HE2")
-            elif self.getAtom("NE2").hdonor and not \
-                     self.getAtom("NE2").hacceptor:
-                if self.hasAtom("HD1"): self.removeAtom("HD1")
-            else: # Default to HID
-                if self.hasAtom("HE2"): self.removeAtom("HE2")
+            if self.getAtom("ND1").hdonor and not self.getAtom("ND1").hacceptor:
+                if self.hasAtom("HE2"):
+                    self.removeAtom("HE2")
+            elif self.getAtom("NE2").hdonor and not self.getAtom("NE2").hacceptor:
+                if self.hasAtom("HD1"):
+                    self.removeAtom("HD1")
+            else:  # Default to HID
+                if self.hasAtom("HE2"):
+                    self.removeAtom("HE2")
 
-        if self.hasAtom("HD1") and self.hasAtom("HE2"): self.ffname = "HIP"
-        elif self.hasAtom("HD1"): self.ffname = "HID"
-        elif self.hasAtom("HE2"): self.ffname = "HIE"
+        if self.hasAtom("HD1") and self.hasAtom("HE2"):
+            self.ffname = "HIP"
+        elif self.hasAtom("HD1"):
+            self.ffname = "HID"
+        elif self.hasAtom("HE2"):
+            self.ffname = "HIE"
         else:
             raise ValueError("Invalid type for %s!" % str(self))
         Amino.setState(self)
+
 
 class ILE(Amino):
     """
@@ -422,6 +443,7 @@ class ILE(Amino):
         Amino.__init__(self, atoms, ref)
         self.reference = ref
 
+
 class LEU(Amino):
     """
         Leucine class
@@ -440,6 +462,7 @@ class LEU(Amino):
         """
         Amino.__init__(self, atoms, ref)
         self.reference = ref
+
 
 class LYS(Amino):
     """
@@ -464,8 +487,10 @@ class LYS(Amino):
         """
             Determine if this is LYN or not
         """
-        if "LYN" in self.patches or self.name == "LYN": self.ffname = "LYN"
+        if "LYN" in self.patches or self.name == "LYN":
+            self.ffname = "LYN"
         Amino.setState(self)
+
 
 class MET(Amino):
     """
@@ -486,6 +511,7 @@ class MET(Amino):
         Amino.__init__(self, atoms, ref)
         self.reference = ref
 
+
 class PHE(Amino):
     """
         Phenylalanine class
@@ -504,6 +530,7 @@ class PHE(Amino):
         """
         Amino.__init__(self, atoms, ref)
         self.reference = ref
+
 
 class PRO(Amino):
     """
@@ -537,6 +564,7 @@ class PRO(Amino):
             else:
                 self.ffname = "C%s" % self.ffname
 
+
 class SER(Amino):
     """
         Serine class
@@ -555,6 +583,7 @@ class SER(Amino):
         """
         Amino.__init__(self, atoms, ref)
         self.reference = ref
+
 
 class THR(Amino):
     """
@@ -575,6 +604,7 @@ class THR(Amino):
         Amino.__init__(self, atoms, ref)
         self.reference = ref
 
+
 class TRP(Amino):
     """
         Tryptophan class
@@ -593,6 +623,7 @@ class TRP(Amino):
         """
         Amino.__init__(self, atoms, ref)
         self.reference = ref
+
 
 class TYR(Amino):
     """
@@ -617,8 +648,10 @@ class TYR(Amino):
         """
             See if the TYR is negative or not
         """
-        if "TYM" in self.patches or self.name == "TYM": self.ffname = "TYM"
+        if "TYM" in self.patches or self.name == "TYM":
+            self.ffname = "TYM"
         Amino.setState(self)
+
 
 class VAL(Amino):
     """
@@ -673,16 +706,16 @@ class WAT(Residue):
         # Create each atom
 
         for a in atoms:
-            if a.name in ref.altnames: # Rename atoms
+            if a.name in ref.altnames:  # Rename atoms
                 a.name = ref.altnames[a.name]
 
             atom = Atom(a, "HETATM", self)
             atomname = atom.get("name")
             if atomname not in self.map:
                 self.addAtom(atom)
-            else: # Don't add duplicate atom with altLoc field
+            else:  # Don't add duplicate atom with altLoc field
                 oldatom = self.getAtom(atomname)
-                oldatom.set("altLoc","")
+                oldatom.set("altLoc", "")
 
     def createAtom(self, atomname, newcoords):
         """
@@ -694,12 +727,12 @@ class WAT(Residue):
         """
         oldatom = self.atoms[0]
         newatom = Atom(oldatom, "HETATM", self)
-        newatom.set("x",newcoords[0])
-        newatom.set("y",newcoords[1])
-        newatom.set("z",newcoords[2])
+        newatom.set("x", newcoords[0])
+        newatom.set("y", newcoords[1])
+        newatom.set("z", newcoords[2])
         newatom.set("name", atomname)
-        newatom.set("occupancy",1.00)
-        newatom.set("tempFactor",0.00)
+        newatom.set("occupancy", 1.00)
+        newatom.set("tempFactor", 0.00)
         newatom.added = 1
         self.addAtom(newatom)
 
@@ -716,10 +749,13 @@ class WAT(Residue):
             for bond in atom.reference.bonds:
                 if self.hasAtom(bond):
                     bondatom = self.map[bond]
-                    if bondatom not in atom.bonds: atom.bonds.append(bondatom)
-                    if atom not in bondatom.bonds: bondatom.bonds.append(atom)
+                    if bondatom not in atom.bonds:
+                        atom.bonds.append(bondatom)
+                    if atom not in bondatom.bonds:
+                        bondatom.bonds.append(atom)
         except KeyError:
             atom.reference = None
+
 
 class LIG(Residue):
     """
@@ -754,16 +790,16 @@ class LIG(Residue):
         # Create each atom
 
         for a in atoms:
-            if a.name in ref.altnames: # Rename atoms
+            if a.name in ref.altnames:  # Rename atoms
                 a.name = ref.altnames[a.name]
 
             atom = Atom(a, "HETATM", self)
             atomname = atom.get("name")
             if atomname not in self.map:
                 self.addAtom(atom)
-            else: # Don't add duplicate atom with altLoc field
+            else:  # Don't add duplicate atom with altLoc field
                 oldatom = self.getAtom(atomname)
-                oldatom.set("altLoc","")
+                oldatom.set("altLoc", "")
 
     def createAtom(self, atomname, newcoords):
         """
@@ -775,12 +811,12 @@ class LIG(Residue):
         """
         oldatom = self.atoms[0]
         newatom = Atom(oldatom, "HETATM", self)
-        newatom.set("x",newcoords[0])
-        newatom.set("y",newcoords[1])
-        newatom.set("z",newcoords[2])
+        newatom.set("x", newcoords[0])
+        newatom.set("y", newcoords[1])
+        newatom.set("z", newcoords[2])
         newatom.set("name", atomname)
-        newatom.set("occupancy",1.00)
-        newatom.set("tempFactor",0.00)
+        newatom.set("occupancy", 1.00)
+        newatom.set("tempFactor", 0.00)
         newatom.added = 1
         self.addAtom(newatom)
 
@@ -797,7 +833,9 @@ class LIG(Residue):
             for bond in atom.reference.bonds:
                 if self.hasAtom(bond):
                     bondatom = self.map[bond]
-                    if bondatom not in atom.bonds: atom.bonds.append(bondatom)
-                    if atom not in bondatom.bonds: bondatom.bonds.append(atom)
+                    if bondatom not in atom.bonds:
+                        atom.bonds.append(bondatom)
+                    if atom not in bondatom.bonds:
+                        bondatom.bonds.append(atom)
         except KeyError:
             atom.reference = None
