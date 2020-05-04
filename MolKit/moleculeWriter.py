@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
+#  Modification date: 4/5/20 0:21                                                                  #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -20,12 +20,6 @@
 # Copyright: M. Sanner TSRI 2000
 #
 #############################################################################
-
-#
-# $Header: /opt/cvs/python/packages/share1.5/MolKit/moleculeWriter.py,v 1.1.1.1 2001/04/03 19:47:52 gillet Exp $
-#
-# $Id: moleculeWriter.py,v 1.1.1.1 2001/04/03 19:47:52 gillet Exp $
-#
 
 class MoleculeWriter:
 
