@@ -1,3 +1,18 @@
+# ##################################################################################################
+#  Disclaimer                                                                                      #
+#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
+#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
+#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
+#  There is no guarantee that it works like the original distribution,                             #
+#  but feel free to tell us if you get any difference to correct the code.                         #
+#                                                                                                  #
+#  Please use this cite the original reference.                                                    #
+#  If you think my work helps you, just keep this note intact on your program.                     #
+#                                                                                                  #
+#  Modification date: 4/5/20 13:31                                                                 #
+#                                                                                                  #
+# ##################################################################################################
+
 """
     Structures for PDB2PQR
 
@@ -47,27 +62,11 @@
 __date__ = "28 February 2006"
 __author__ = "Todd Dolinsky"
 
-BACKBONE = ["N","CA","C","O","O2","HA","HN","H","tN"]
+BACKBONE = ["N", "CA", "C", "O", "O2", "HA", "HN", "H", "tN"]
 
-# ##################################################################################################
-#  Disclaimer                                                                                      #
-#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
-#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
-#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
-#  There is no guarantee that it works like the original distribution,                             #
-#  but feel free to tell us if you get any difference to correct the code.                         #
-#                                                                                                  #
-#  Please use this cite the original reference.                                                    #
-#  If you think my work helps you, just keep this note intact on your program.                     #
-#                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
-#                                                                                                  #
-# ##################################################################################################
-
-import _py2k_string as string
 from .pdb import *
-from .utilities import *
 from .quatfit import *
+
 
 class Chain:
     """
@@ -101,7 +100,8 @@ class Chain:
             Returns
                 item:     The value of the member
         """
-        if name == "atoms": self.getAtoms()
+        if name == "atoms":
+            self.getAtoms()
         else:
             try:
                 item = getattr(self, name)
@@ -202,7 +202,7 @@ class Residue:
 
         atomclass = ""
         for a in atoms:
-            if isinstance(a,ATOM):
+            if isinstance(a, ATOM):
                 atomclass = "ATOM"
             elif isinstance(a, HETATM):
                 atomclass = "HETATM"
@@ -210,14 +210,14 @@ class Residue:
             atomname = atom.get("name")
             if atomname not in self.map:
                 self.addAtom(atom)
-            else: # Don't add duplicate atom
+            else:  # Don't add duplicate atom
                 oldatom = self.getAtom(atomname)
-                oldatom.set("altLoc","")
+                oldatom.set("altLoc", "")
 
         if self.name == "HOH":
             self.name = "WAT"
             for atom in self.atoms:
-                atom.set("resName","WAT")
+                atom.set("resName", "WAT")
 
     def __str__(self):
         """
@@ -279,7 +279,8 @@ class Residue:
             Returns
                 item:          The value of the member
         """
-        if name == "resSeq": self.setResSeq(value)
+        if name == "resSeq":
+            self.setResSeq(value)
         else:
             try:
                 setattr(self, name, value)
@@ -309,8 +310,8 @@ class Residue:
         self.iCode = ""
         self.resSeq = value
         for atom in self.atoms:
-            atom.set("resSeq",value)
-            atom.set("iCode","")
+            atom.set("resSeq", value)
+            atom.set("iCode", "")
 
     def setChainID(self, value):
         """
@@ -365,7 +366,7 @@ class Residue:
                 newname: The new atom name (string)
         """
         atom = self.map[oldname]
-        atom.set("name",newname)
+        atom.set("name", newname)
         self.map[newname] = atom
         del self.map[oldname]
 
@@ -382,12 +383,12 @@ class Residue:
         """
         oldatom = self.atoms[0]
         newatom = Atom(oldatom, type, self)
-        newatom.set("x",newcoords[0])
-        newatom.set("y",newcoords[1])
-        newatom.set("z",newcoords[2])
+        newatom.set("x", newcoords[0])
+        newatom.set("y", newcoords[1])
+        newatom.set("z", newcoords[2])
         newatom.set("name", name)
-        newatom.set("occupancy",1.00)
-        newatom.set("tempFactor",0.00)
+        newatom.set("occupancy", 1.00)
+        newatom.set("tempFactor", 0.00)
         self.addAtom(newatom)
 
     def addMissing(self, value):
@@ -415,8 +416,10 @@ class Residue:
         return self.atoms
 
     def hasAtom(self, name):
-        if name in self.map: return 1
-        else: return 0
+        if name in self.map:
+            return 1
+        else:
+            return 0
 
     def getCharge(self):
         """
@@ -430,7 +433,7 @@ class Residue:
         charge = 0.0
         for atom in self.atoms:
             atomcharge = atom.get("ffcharge")
-            if atomcharge != None:
+            if atomcharge is not None:
                 charge = charge + atomcharge
 
         charge = float("%.4f" % charge)
@@ -465,7 +468,8 @@ class Residue:
         # Determine which atoms to rotate
 
         for atom in atom2.bonds:
-            if atom == atom1: continue
+            if atom == atom1:
+                continue
             moveatoms.append(atom)
             movecoords.append(subtract(atom.getCoords(), atom1.getCoords()))
 
@@ -479,12 +483,12 @@ class Residue:
             atom.set("y", y)
             atom.set("z", z)
 
-
     def setDonorsAndAcceptors(self):
         """
             Set the donors and acceptors within the residue
         """
-        if not hasattr(self, "reference"): return
+        if not hasattr(self, "reference"):
+            return
         for atom in self.getAtoms():
             atomname = atom.get("name")
             resname = self.name
@@ -496,18 +500,18 @@ class Residue:
                 bonded = 0
                 for bondedatom in atom.bonds:
                     if bondedatom.isHydrogen():
-                        atom.set("hdonor",1)
+                        atom.set("hdonor", 1)
                         bonded = 1
                         break
                 if not bonded and self.reference.name == "HIS":
-                    atom.set("hacceptor",1)
+                    atom.set("hacceptor", 1)
 
             elif atomname.startswith("O") or \
-                 (atomname.startswith("S") and self.reference.name == "CYS"):
-                atom.set("hacceptor",1)
+                    (atomname.startswith("S") and self.reference.name == "CYS"):
+                atom.set("hacceptor", 1)
                 for bondedatom in atom.bonds:
                     if bondedatom.isHydrogen():
-                        atom.set("hdonor",1)
+                        atom.set("hdonor", 1)
                         break
 
     def reorder(self):
@@ -515,10 +519,14 @@ class Residue:
             Reorder the atoms to start with N, CA, C, O if they exist
         """
         templist = []
-        if self.hasAtom("N"): templist.append(self.getAtom("N"))
-        if self.hasAtom("CA"): templist.append(self.getAtom("CA"))
-        if self.hasAtom("C"): templist.append(self.getAtom("C"))
-        if self.hasAtom("O"): templist.append(self.getAtom("O"))
+        if self.hasAtom("N"):
+            templist.append(self.getAtom("N"))
+        if self.hasAtom("CA"):
+            templist.append(self.getAtom("CA"))
+        if self.hasAtom("C"):
+            templist.append(self.getAtom("C"))
+        if self.hasAtom("O"):
+            templist.append(self.getAtom("O"))
 
         # Add remaining atoms
         for atom in self.atoms:
@@ -528,6 +536,7 @@ class Residue:
         # Change the list pointer
 
         self.atoms = templist[:]
+
 
 class Atom(ATOM):
     """
@@ -589,43 +598,47 @@ class Atom(ATOM):
             Returns
                 str: String with ATOM/HETATM field set appropriately
         """
-        str = ""
+        text = ""
         tstr = self.type
-        str = str + string.ljust(tstr, 6)[:6]
+        text = text + tstr.ljust(6)[:6]
         tstr = "%d" % self.serial
-        str = str + string.rjust(tstr, 5)[:5]
-        str = str + " "
+        text = text + tstr.rjust(5)[:5]
+        text = text + " "
         tstr = self.name
         if len(tstr) == 4:
-            str = str + string.ljust(tstr, 4)[:4]
+            text = text + tstr.ljust(4)[:4]
         else:
-            str = str + " " + string.ljust(tstr, 3)[:3]
+            text = text + " " + tstr.ljust(3)[:3]
 
         tstr = self.resName
         if len(tstr) == 4:
-            str = str + string.ljust(tstr, 4)[:4]
+            text = text + tstr.ljust(4)[:4]
         else:
-            str = str + " " + string.ljust(tstr, 3)[:3]
+            text = text + " " + tstr.ljust(3)[:3]
 
-        str = str + " "
+        text = text + " "
         tstr = self.chainID
-        str = str + string.ljust(tstr, 1)[:1]
+        text = text + tstr.ljust(1)[:1]
         tstr = "%d" % self.resSeq
-        str = str + string.rjust(tstr, 4)[:4]
-        str = str + "    "
+        text = text + tstr.rjust(4)[:4]
+        text = text + "    "
         tstr = "%8.3f" % self.x
-        str = str + string.ljust(tstr, 8)[:8]
+        text = text + tstr.ljust(8)[:8]
         tstr = "%8.3f" % self.y
-        str = str + string.ljust(tstr, 8)[:8]
+        text = text + tstr.ljust(8)[:8]
         tstr = "%8.3f" % self.z
-        str = str + string.ljust(tstr, 8)[:8]
-        if self.ffcharge != None: ffcharge = "%.4f" % self.ffcharge
-        else: ffcharge = "0.0000"
-        str = str + string.rjust(ffcharge, 8)[:8]
-        if self.radius != None: ffradius = "%.4f" % self.radius
-        else: ffradius = "0.0000"
-        str = str + string.rjust(ffradius, 7)[:7]
-        return str
+        text = text + tstr.ljust(8)[:8]
+        if self.ffcharge is not None:
+            ffcharge = "%.4f" % self.ffcharge
+        else:
+            ffcharge = "0.0000"
+        text = text + ffcharge.rjust(8)[:8]
+        if self.radius != None:
+            ffradius = "%.4f" % self.radius
+        else:
+            ffradius = "0.0000"
+        text = text + ffradius.rjust(7)[:7]
+        return text
 
     def get(self, name):
         """
@@ -732,7 +745,8 @@ class Atom(ATOM):
                 value: 1 if Atom is a Hydrogen, 0 otherwise
         """
         value = 0
-        if self.name[0] == "H": value = 1
+        if self.name[0] == "H":
+            value = 1
         return value
 
     def isBackbone(self):
@@ -756,8 +770,7 @@ class Atom(ATOM):
                 1 if atom has a reference object, 0 otherwise.
         """
 
-        if self.reference != None: return 1
-        else: return 0
-
-
-
+        if self.reference is not None:
+            return 1
+        else:
+            return 0
