@@ -1,3 +1,18 @@
+# ##################################################################################################
+#  Disclaimer                                                                                      #
+#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
+#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
+#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
+#  There is no guarantee that it works like the original distribution,                             #
+#  but feel free to tell us if you get any difference to correct the code.                         #
+#                                                                                                  #
+#  Please use this cite the original reference.                                                    #
+#  If you think my work helps you, just keep this note intact on your program.                     #
+#                                                                                                  #
+#  Modification date: 4/5/20 3:23                                                                  #
+#                                                                                                  #
+# ##################################################################################################
+
 """
     Utilities for PDB2PQR Suite
 
@@ -13,23 +28,8 @@ __author__ = "Todd Dolinsky"
 SMALL = 1.0e-7
 DIHEDRAL = 57.2958
 
-# ##################################################################################################
-#  Disclaimer                                                                                      #
-#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
-#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
-#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
-#  There is no guarantee that it works like the original distribution,                             #
-#  but feel free to tell us if you get any difference to correct the code.                         #
-#                                                                                                  #
-#  Please use this cite the original reference.                                                    #
-#  If you think my work helps you, just keep this note intact on your program.                     #
-#                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
-#                                                                                                  #
-# ##################################################################################################
+import math
 
-import _py2k_string as string
-from math import *
 
 class Matrix:
     """
@@ -37,6 +37,7 @@ class Matrix:
 
         A class for handling matrices
     """
+
     def __init__(self, lists):
         """
             Create a new matrix object.
@@ -62,7 +63,7 @@ class Matrix:
         out = ""
         for row in self.info:
             for item in row:
-                out = "%s %s" % (out, string.rjust(str(item),6))
+                out = "%s %s" % (out, str(item).rjust(6))
             out = "%s\n" % out
         return out
 
@@ -92,8 +93,10 @@ class Matrix:
         for i in range(m):
             list = []
             for j in range(n):
-                if i == j: list.append(1.0)
-                else: list.append(0.0)
+                if i == j:
+                    list.append(1.0)
+                else:
+                    list.append(0.0)
             ident.append(list)
         L = Matrix(ident)
         U = Matrix(self.info)
@@ -101,10 +104,10 @@ class Matrix:
         # Perform LU decomp
 
         for i in range(m):
-            for j in range(i+1,m):
+            for j in range(i + 1, m):
                 if U.info[i][i] == 0.0:
                     raise ValueError("LU decomposition needs non-zero diags!")
-                val = float(U.info[j][i])/U.info[i][i]
+                val = float(U.info[j][i]) / U.info[i][i]
                 L.info[j][i] = val
                 for k in range(n):
                     U.info[j][k] -= U.info[i][k] * val
@@ -112,24 +115,25 @@ class Matrix:
         # Solve Ly = b, where y = Ux
 
         for i in range(m):
-            mult = 1/L.info[i][i]
+            mult = 1 / L.info[i][i]
             sum = b[i]
-            for j in range(0,i):
+            for j in range(0, i):
                 sum -= L.info[i][j] * y[j]
-            y.append((mult*sum))
+            y.append((mult * sum))
 
         # Solve Ux = y
 
         for i in range(m):
-            rev = (m-1) - i
-            mult = 1/U.info[rev][rev]
+            rev = (m - 1) - i
+            mult = 1 / U.info[rev][rev]
             sum = y[rev]
-            for j in range(0,i):
-                j = (m-1) - j
+            for j in range(0, i):
+                j = (m - 1) - j
                 sum -= U.info[rev][j] * x[j]
-            x[rev] = (mult*sum)
+            x[rev] = (mult * sum)
 
         return x
+
 
 def shortestPath(graph, start, end, path=[]):
     """
@@ -165,6 +169,7 @@ def shortestPath(graph, start, end, path=[]):
                 if not shortest or len(newpath) < len(shortest):
                     shortest = newpath
     return shortest
+
 
 def analyzeMap(map, value, list=[]):
     """
@@ -207,6 +212,7 @@ def analyzeMap(map, value, list=[]):
                         list.append(newitem)
     return list
 
+
 def getFile(path):
     """
         Obtain a PDB file.  First check the path given on the command
@@ -220,7 +226,7 @@ def getFile(path):
             file:  File object containing PDB file (file object)
     """
 
-    import os, urllib.request, urllib.parse, urllib.error
+    import os, urllib.request, urllib.error
 
     file = None
     if not os.path.isfile(path):
@@ -230,6 +236,7 @@ def getFile(path):
     else:
         file = open(path)
     return file
+
 
 def distance(coords1, coords2):
     """
@@ -249,9 +256,10 @@ def distance(coords1, coords2):
     p = coords2[0] - coords1[0]
     q = coords2[1] - coords1[1]
     r = coords2[2] - coords1[2]
-    dist = sqrt(p*p + q*q + r*r)
+    dist = math.sqrt(p * p + q * q + r * r)
 
     return dist
+
 
 def add(coords1, coords2):
     """
@@ -266,7 +274,8 @@ def add(coords1, coords2):
     x = coords1[0] + coords2[0]
     y = coords1[1] + coords2[1]
     z = coords1[2] + coords2[2]
-    return [x,y,z]
+    return [x, y, z]
+
 
 def subtract(coords1, coords2):
     """
@@ -281,7 +290,8 @@ def subtract(coords1, coords2):
     x = coords1[0] - coords2[0]
     y = coords1[1] - coords2[1]
     z = coords1[2] - coords2[2]
-    return [x,y,z]
+    return [x, y, z]
+
 
 def cross(coords1, coords2):
     """
@@ -294,11 +304,12 @@ def cross(coords1, coords2):
             list:  Cross product coords2 and coords1 (list)
     """
     list = []
-    x = coords1[1]*coords2[2] -  coords1[2]*coords2[1]
-    y = coords1[2]*coords2[0] -  coords1[0]*coords2[2]
-    z = coords1[0]*coords2[1] -  coords1[1]*coords2[0]
-    list = [x,y,z]
+    x = coords1[1] * coords2[2] - coords1[2] * coords2[1]
+    y = coords1[2] * coords2[0] - coords1[0] * coords2[2]
+    z = coords1[0] * coords2[1] - coords1[1] * coords2[0]
+    list = [x, y, z]
     return list
+
 
 def dot(coords1, coords2):
     """
@@ -312,8 +323,9 @@ def dot(coords1, coords2):
     """
     value = 0.0
     for i in range(3):
-        value += coords1[i]*coords2[i]
+        value += coords1[i] * coords2[i]
     return value
+
 
 def normalize(coords):
     """
@@ -325,16 +337,15 @@ def normalize(coords):
             list: normalized coordinates (list)
     """
     list = []
-    dist = sqrt(pow(coords[0],2) + pow(coords[1],2) + pow(coords[2],2))
+    dist = math.sqrt(pow(coords[0], 2) + pow(coords[1], 2) + pow(coords[2], 2))
     if dist > SMALL:
-        a = coords[0]/dist
-        b = coords[1]/dist
-        c = coords[2]/dist
-        list = [a,b,c]
+        a = coords[0] / dist
+        b = coords[1] / dist
+        c = coords[2] / dist
+        list = [a, b, c]
     else:
         list = coords
     return list
-
 
 
 def getDihedral(coords1, coords2, coords3, coords4):
@@ -366,12 +377,13 @@ def getDihedral(coords1, coords2, coords3, coords4):
     elif abs(scal - 1.0) < SMALL:
         value = 0.0
     else:
-        value = DIHEDRAL * acos(scal)
+        value = DIHEDRAL * math.acos(scal)
 
-    chiral = dot(cross(Anorm, Bnorm),list32)
+    chiral = dot(cross(Anorm, Bnorm), list32)
     if chiral < 0:
         value = value * -1.0
     return value
+
 
 def placeOxygen(CA, C, N):
     """
@@ -391,10 +403,10 @@ def placeOxygen(CA, C, N):
     # Step 1: Find the vector normal to the C-CA-N plane in order to get
     #         the equation for any point in the plane
 
-    vec1 = subtract(CA,C)
-    vec2 = subtract(N,C)
+    vec1 = subtract(CA, C)
+    vec2 = subtract(N, C)
     planeeq = cross(vec1, vec2)
-    sum = planeeq[0]*C[0] + planeeq[1]*C[1] + planeeq[2]*C[2]
+    sum = planeeq[0] * C[0] + planeeq[1] * C[1] + planeeq[2] * C[2]
 
     # Step 2: Get two more equations using the known C-O distance (1.24 A)
     #         and CA-C-O and N-C-O bond angles (120.5 and 123.5 degrees,
@@ -402,24 +414,24 @@ def placeOxygen(CA, C, N):
     #
     #         A . B = |A||B| cos(angle)
 
-    num1 = math.sqrt(pow(vec1[0],2) + pow(vec1[1],2) + pow(vec1[2],2))
-    num2 = math.sqrt(pow(vec2[0],2) + pow(vec2[1],2) + pow(vec2[2],2))
+    num1 = math.sqrt(pow(vec1[0], 2) + pow(vec1[1], 2) + pow(vec1[2], 2))
+    num2 = math.sqrt(pow(vec2[0], 2) + pow(vec2[1], 2) + pow(vec2[2], 2))
 
     # For vector 1
 
     val1 = 0
-    angle = 120.5*math.pi/180.0
-    val1 = num1*1.24*math.cos(angle)
+    angle = 120.5 * math.pi / 180.0
+    val1 = num1 * 1.24 * math.cos(angle)
     for j in range(3):
-        val1 += C[j]*vec1[j]
+        val1 += C[j] * vec1[j]
 
     # For vector 2
 
     val2 = 0
-    angle = 123.5*math.pi/180.0
-    val2 = num2*1.24*math.cos(angle)
+    angle = 123.5 * math.pi / 180.0
+    val2 = num2 * 1.24 * math.cos(angle)
     for j in range(3):
-        val2 += C[j]*vec2[j]
+        val2 += C[j] * vec2[j]
 
     # Step 3: We now use Gaussian Elimination to solve the following matrix
     #
@@ -427,24 +439,23 @@ def placeOxygen(CA, C, N):
     #         [  vec1[0]    vec1[1]  vec1[2]    ]  =  [val1]
     #         [  vec2[0]    vec2[1]  vec2[2]    ]  =  [val2]
 
+    fac1 = -1 * planeeq[0] / vec1[0]
+    new1 = [0, fac1 * vec1[1] + planeeq[1], fac1 * vec1[2] + planeeq[2]]
+    val1 = fac1 * val1 + sum
 
-    fac1 = -1 * planeeq[0]/vec1[0]
-    new1 = [0, fac1*vec1[1]+planeeq[1], fac1*vec1[2]+planeeq[2]]
-    val1 = fac1*val1+sum
+    fac2 = -1 * planeeq[0] / vec2[0]
+    new2 = [0, fac2 * vec2[1] + planeeq[1], fac2 * vec2[2] + planeeq[2]]
+    val2 = fac2 * val2 + sum
 
-    fac2 = -1 * planeeq[0]/vec2[0]
-    new2 = [0, fac2*vec2[1]+planeeq[1], fac2*vec2[2]+planeeq[2]]
-    val2 = fac2*val2+sum
-
-    fac3 = -1 * new1[1]/new2[1]
-    newest = [0,0,fac3*new2[2]+new1[2]]
-    val2 = fac3*val2+val1
+    fac3 = -1 * new1[1] / new2[1]
+    newest = [0, 0, fac3 * new2[2] + new1[2]]
+    val2 = fac3 * val2 + val1
 
     # Step 4: Backfill in to find the results
 
-    z = val2/newest[2]
-    y = (val1 - z*new1[2])/new1[1]
-    x = (sum - z*planeeq[2] - y*planeeq[1])/planeeq[0]
+    z = val2 / newest[2]
+    y = (val1 - z * new1[2]) / new1[1]
+    x = (sum - z * planeeq[2] - y * planeeq[1]) / planeeq[0]
 
-    location = [x,y,z]
+    location = [x, y, z]
     return location
