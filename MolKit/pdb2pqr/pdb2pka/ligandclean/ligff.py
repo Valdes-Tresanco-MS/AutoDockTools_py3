@@ -9,16 +9,16 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
+#  Modification date: 4/5/20 14:08                                                                 #
 #                                                                                                  #
 # ##################################################################################################
 
-from src.forcefield import *
 from .peoe_PDB2PQR import PEOE as calc_charges
-from src.pdb import *
-from src.definitions import *
-from pdb2pka import NEWligand_topology
-import _py2k_string as string
+from ..NEWligand_topology import *
+from ...src.definitions import *
+from ...src.forcefield import *
+from ...src.pdb import *
+
 
 def initialize(definition, ligdesc, pdblist, verbose=0):
     """
@@ -43,7 +43,7 @@ def initialize(definition, ligdesc, pdblist, verbose=0):
     # Create the ligand definition from the mol2 data
 
     MOL2FLAG = True
-    X=NEWligand_topology.get_ligand_topology(Lig.lAtoms,True)
+    X = get_ligand_topology(Lig.lAtoms, True)
 
     # Add it to the 'official' definition
 
@@ -70,9 +70,9 @@ def initialize(definition, ligdesc, pdblist, verbose=0):
     line = X.lines[-2]
     bonds = string.split(line)
 
-    for i in range(0,len(bonds),2):
+    for i in range(0, len(bonds), 2):
         bondA = int(bonds[i])
-        bondB = int(bonds[i+1])
+        bondB = int(bonds[i + 1])
         atomA = ligresidue.getAtom(atommap[bondA])
         atomB = ligresidue.getAtom(atommap[bondB])
 
@@ -85,19 +85,20 @@ def initialize(definition, ligdesc, pdblist, verbose=0):
 
     # Look for titratable groups in the ligand
 
-    ligand_titratable_groups=X.find_titratable_groups()
+    ligand_titratable_groups = X.find_titratable_groups()
 
     if verbose:
         print("ligand_titratable_groups", ligand_titratable_groups)
 
     # Append the ligand data to the end of the PDB data
 
-    newpdblist=[]
+    newpdblist = []
 
     # First the protein
     nummodels = 0
     for line in pdblist:
-        if isinstance(line, END) or isinstance(line,MASTER): continue
+        if isinstance(line, END) or isinstance(line, MASTER):
+            continue
         elif isinstance(line, MODEL):
             nummodels += 1
             if nummodels > 1: break
@@ -111,7 +112,7 @@ def initialize(definition, ligdesc, pdblist, verbose=0):
         newpdblist.append(e)
 
     protein = Protein(newpdblist, definition)
-    for rrres in  protein.chainmap['L'].residues:
+    for rrres in protein.chainmap['L'].residues:
         for aaat in rrres.atoms:
             for ligatoms in Lig.lAtoms:
                 if ligatoms.name == aaat.name:
@@ -121,9 +122,10 @@ def initialize(definition, ligdesc, pdblist, verbose=0):
 
                     if ligatoms.sybylType == "O.co2":
                         aaat.formalcharge = -0.5
-                    else: aaat.formalcharge = 0.0
+                    else:
+                        aaat.formalcharge = 0.0
                     xxxlll = []
-                    #for xxx in ligatoms.lBondedAtoms:
+                    # for xxx in ligatoms.lBondedAtoms:
                     for bond in ligresidue.getAtom(aaat.name).bonds:
                         xxxlll.append(bond)
 
@@ -132,7 +134,7 @@ def initialize(definition, ligdesc, pdblist, verbose=0):
                     # charge initialisation must happen somewhere else
                     aaat.charge = 0.0
 
-                    #print aaat.name, aaat.charge, aaat.formalcharge, aaat.intrabonds
+                    # print aaat.name, aaat.charge, aaat.formalcharge, aaat.intrabonds
 
     return protein, definition, Lig
 
@@ -193,13 +195,12 @@ class ligforcefield(Forcefield):
             #
         ### PC - charge assignment on ligand
         ###
-        #self.lig = MOL2MOLECULE()
-        self.lig=lig_instance #lig_shit()
-        #self.lig.read(ligfilename)
+        # self.lig = MOL2MOLECULE()
+        self.lig = lig_instance  # lig_shit()
+        # self.lig.read(ligfilename)
         return
 
-
-    def getParams(self,residue,name):
+    def getParams(self, residue, name):
         """
             Get the parameters associated with the input fields.
             The residue itself is needed instead of simply its name
@@ -219,7 +220,7 @@ class ligforcefield(Forcefield):
         atomname = ""
         #
         # PC - 230306 - we need to put the setting of formal charges in another place
-        #for at in self.lig.lAtoms:
+        # for at in self.lig.lAtoms:
         #    at.charge = 0.0
         if self.name == "amber" and residue.type != 2:
             resname, atomname = self.getAmberParams(residue, name)
@@ -230,20 +231,20 @@ class ligforcefield(Forcefield):
         defresidue = self.getResidue(resname)
         ### This is a rather quick and dirty solution
         if residue.type == 2:
-            charge,radius = self.getChargeAndRadius(residue,name)
+            charge, radius = self.getChargeAndRadius(residue, name)
         if defresidue != None:
             atom = defresidue.getAtom(atomname)
         else:
             atom = None
         if atom != None:
-            #print "XXX___LigandAtom___XXX", atom.name # PC 050506
+            # print "XXX___LigandAtom___XXX", atom.name # PC 050506
             charge = atom.get("charge")
             radius = atom.get("radius")
         return charge, radius
 
-    def getChargeAndRadius(self,residue,atomname):
+    def getChargeAndRadius(self, residue, atomname):
         self.lig.make_up2date(residue)
-        return self.lig.ligand_props[atomname]['charge'],self.lig.ligand_props[atomname]['radius']
+        return self.lig.ligand_props[atomname]['charge'], self.lig.ligand_props[atomname]['radius']
 
 
 #
@@ -255,63 +256,64 @@ BondiiRadiiDict = {"C": 1.70,
                    "O": 1.40,
                    "S": 1.85,
                    "H": 1.05,
-                   "Br":2.50,
+                   "Br": 2.50,
                    "F": 1.20,
                    "P": 1.90}
+
 
 class ligand_charge_handler(MOL2MOLECULE):
     """Make sure that we are up to date with respect to the charge calculation"""
 
-    def make_up2date(self,residue):
+    def make_up2date(self, residue):
         #
         # Check if the structure of the ligand is
         # identical to the one we have
         #
-        if not getattr(self,'ligand_props',None):
-           self.recalc_charges(residue)
-           qqqgesges = 0.0
-           for aa in residue.atoms:
-               #print "newly_calced  %s  %1.4f " %(aa.name, aa.charge)
-               qqqgesges = qqqgesges +  aa.charge
-           #print "-------------------------------"
-           #print "newly_calced - net charge %1.4f" %(qqqgesges)
-           #print
+        if not getattr(self, 'ligand_props', None):
+            self.recalc_charges(residue)
+            qqqgesges = 0.0
+            for aa in residue.atoms:
+                # print "newly_calced  %s  %1.4f " %(aa.name, aa.charge)
+                qqqgesges = qqqgesges + aa.charge
+            # print "-------------------------------"
+            # print "newly_calced - net charge %1.4f" %(qqqgesges)
+            # print
         else:
-            atoms_last_calc=list(self.ligand_props.keys())
+            atoms_last_calc = list(self.ligand_props.keys())
             #
             # Get the atoms presently in the pdb2pqr array
             #
-            atoms_now=[]
+            atoms_now = []
             for at in residue.atoms:
                 atoms_now.append(at.name)
             atoms_now.sort()
-            #print "atoms_now ",atoms_now
+            # print "atoms_now ",atoms_now
             atoms_last_calc.sort()
             #
             xxnetqxx = 0.0
             for aa in residue.atoms:
-                #print "NOT recalced  %s  %1.4f  %1.4f " %(aa.name, aa.charge, aa.formalcharge)
-                xxnetqxx = xxnetqxx+aa.charge
-            #print "NOT recalced, net_q : %1.2f" %(xxnetqxx)
-            #print "###########################"
+                # print "NOT recalced  %s  %1.4f  %1.4f " %(aa.name, aa.charge, aa.formalcharge)
+                xxnetqxx = xxnetqxx + aa.charge
+            # print "NOT recalced, net_q : %1.2f" %(xxnetqxx)
+            # print "###########################"
             #
             # Did we calculate charges for exactly this set of atoms?
             #
-            #print "atoms_last_calc        ", atoms_last_calc
-            #print "Atoms_this_time_around ", atoms_now
-            if atoms_now!=atoms_last_calc:
+            # print "atoms_last_calc        ", atoms_last_calc
+            # print "Atoms_this_time_around ", atoms_now
+            if atoms_now != atoms_last_calc:
                 #
                 # No - Recalc charges
                 #
                 for atom in atoms_now:
                     if not atom in atoms_last_calc:
-                        print('This atom was missing before',atom)
+                        print('This atom was missing before', atom)
                         print('If it is a hydrogen for the titratable, we need to create a bond entry!')
                         # We should be here only if is a titratable
                         for current_atom in atoms_now:
                             # check if it't a titratable H
                             for res_atoms in residue.atoms:
-                                if current_atom == res_atoms.name and "titratableH"  in dir(res_atoms):
+                                if current_atom == res_atoms.name and "titratableH" in dir(res_atoms):
                                     print("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
                                     print("been here")
                                     for ResAtoms in residue.atoms:
@@ -319,12 +321,12 @@ class ligand_charge_handler(MOL2MOLECULE):
                                     self.recalc_charges(residue)
                 for atom in atoms_last_calc:
                     if not atom in atoms_now:
-                        print('This atom used to be here, but is now missing',atom)
-                #self.recalc_charges(residue)
+                        print('This atom used to be here, but is now missing', atom)
+                # self.recalc_charges(residue)
                 xxxnetq = 0.0
                 for xxx in residue.atoms:
-                    print("after neutralizing %s  %1.4f" %(xxx.name, xxx.charge))
-                    xxxnetq = xxxnetq+xxx.charge
+                    print("after neutralizing %s  %1.4f" % (xxx.name, xxx.charge))
+                    xxxnetq = xxxnetq + xxx.charge
                 print('-----------------------')
                 print("net charge: %1.4f" % (xxxnetq))
                 print()
@@ -341,29 +343,29 @@ class ligand_charge_handler(MOL2MOLECULE):
     # ----
     #
 
-    def recalc_charges(self,residue):
+    def recalc_charges(self, residue):
         #
         # Recalculate the charges
         #
-        self.ligand_props={}
+        self.ligand_props = {}
         #
         # Here we have to update the atoms that are used for the charge calculation
         #
         # DO IT!!
         #
-        #print "I am calling calc_charges"
+        # print "I am calling calc_charges"
         #
         # initialising the charges
         #
         for att in residue.atoms:
-            att.charge= att.formalcharge
+            att.charge = att.formalcharge
         #
         calc_charges(residue)
         #
         # Loop over all atoms
         #
-        #print 'Atoms passed to Pauls routines'
-        for at in residue.atoms: # WAS: self.lAtoms:
+        # print 'Atoms passed to Pauls routines'
+        for at in residue.atoms:  # WAS: self.lAtoms:
             ele = at.sybylType.split('.')[0]
             charge = at.charge
             if ele in BondiiRadiiDict:
@@ -373,5 +375,5 @@ class ligand_charge_handler(MOL2MOLECULE):
             #
             # Store the radii and charges
             #
-            self.ligand_props[at.name]={'charge':charge,'radius':radius}
+            self.ligand_props[at.name] = {'charge': charge, 'radius': radius}
         return
