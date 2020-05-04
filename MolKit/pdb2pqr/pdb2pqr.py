@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 4/5/20 2:41                                                                  #
+#  Modification date: 4/5/20 3:00                                                                  #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -31,9 +31,9 @@ __date__ = "17 March 2007"
 __author__ = "Todd Dolinsky, Nathan Baker"
 __version__ = "1.2.1"
 
-import os
 import sys
-
+import getopt
+import os
 # Sargis: This is required to fix xml bug on linux with no ssl.so
 # TODO: remove this when it fixed
 try:
@@ -41,10 +41,17 @@ try:
 except ImportError:
     site = os.path.split(os.__file__)[0]
     sys.path.remove(os.path.join(site, 'site-packages'))
+import time
+from .src.pdb import *
+from .src.utilities import *
+from .src.structures import *
+from .src.definitions import *
+from .src.forcefield import *
+from .src.routines import *
+from .src.protein import *
 from .src.server import *
 from .src.hydrogens import *
-from io import *
-
+import io
 
 def usage(rc):
     """
@@ -592,12 +599,12 @@ def mainCGI():
     if "PDBID" in form:
         file = getPDBFile(form["PDBID"].value)
     elif "PDB" in form:
-        file = StringIO(form["PDB"].value)
+        file = io.StringIO(form["PDB"].value)
     if "INPUT" in form:
         input = 1
         options["apbs"] = 1
     if "USERFF" in form:
-        userff = StringIO(form["USERFF"].value)
+        userff = io.StringIO(form["USERFF"].value)
         ff = "user-defined"
         options["userff"] = userff
     if "FFOUT" in form:
@@ -606,7 +613,7 @@ def mainCGI():
     if "CHAIN" in form:
         options["chain"] = 1
     if "LIGAND" in form:
-        options["ligand"] = StringIO(form["LIGAND"].value)
+        options["ligand"] = io.StringIO(form["LIGAND"].value)
 
     pdblist, errlist = readPDB(file)
     if len(pdblist) == 0 and len(errlist) == 0:
