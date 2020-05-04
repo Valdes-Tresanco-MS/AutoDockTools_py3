@@ -1,3 +1,18 @@
+# ##################################################################################################
+#  Disclaimer                                                                                      #
+#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
+#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
+#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
+#  There is no guarantee that it works like the original distribution,                             #
+#  but feel free to tell us if you get any difference to correct the code.                         #
+#                                                                                                  #
+#  Please use this cite the original reference.                                                    #
+#  If you think my work helps you, just keep this note intact on your program.                     #
+#                                                                                                  #
+#  Modification date: 4/5/20 2:43                                                                  #
+#                                                                                                  #
+# ##################################################################################################
+
 """
     Routines for PDB2PQR
 
@@ -12,23 +27,8 @@
 __date__ = "14 November 2003"
 __author__ = "Todd Dolinsky"
 
-# ##################################################################################################
-#  Disclaimer                                                                                      #
-#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
-#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
-#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
-#  There is no guarantee that it works like the original distribution,                             #
-#  but feel free to tell us if you get any difference to correct the code.                         #
-#                                                                                                  #
-#  Please use this cite the original reference.                                                    #
-#  If you think my work helps you, just keep this note intact on your program.                     #
-#                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
-#                                                                                                  #
-# ##################################################################################################
-
-from .pdb import *
 from .structures import *
+
 
 class Protein:
     """
@@ -51,8 +51,8 @@ class Protein:
         """
 
         self.chainmap, self.chains = self.createProtein(pdblist)
-        #for chain in self.chains:
-            #chain.renumberResidues()
+        # for chain in self.chains:
+        # chain.renumberResidues()
 
     def createProtein(self, pdblist):
         """
@@ -68,7 +68,7 @@ class Protein:
 
         dict = {}
         list = []
-        
+
         previousAtom = None
         residue = []
         numModels = 0
@@ -80,15 +80,14 @@ class Protein:
                 resName = record.resName
                 iCode = record.iCode
 
-                if previousAtom == None:
+                if previousAtom is None:
                     previousAtom = record
-                
+
                 if chainID not in dict:
                     myChain = Chain(chainID)
                     dict[chainID] = myChain
-                        
-                if resSeq != previousAtom.resSeq or \
-                       iCode != previousAtom.iCode:
+
+                if resSeq != previousAtom.resSeq or iCode != previousAtom.iCode:
                     myResidue = Residue(residue, previousAtom)
                     dict[previousAtom.chainID].addResidue(myResidue)
                     residue = []
@@ -103,7 +102,8 @@ class Protein:
 
             elif isinstance(record, MODEL):
                 numModels += 1
-                if residue == []: continue
+                if not residue:
+                    continue
                 if numModels > 1:
                     myResidue = Residue(residue, previousAtom)
                     dict[previousAtom.chainID].addResidue(myResidue)
@@ -123,7 +123,7 @@ class Protein:
 
         for key in keys:
             list.append(dict[key])
-        
+
         return chainmap, list
 
     def printAtoms(self, atomlist):
@@ -148,7 +148,7 @@ class Protein:
         for atom in self.getAtoms():
             atom.set("serial", count)
             count += 1
-    
+
     def numResidues(self):
         """
             Get the number of residues for the entire protein (including
