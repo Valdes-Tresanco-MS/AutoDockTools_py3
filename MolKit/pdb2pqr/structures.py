@@ -1,3 +1,18 @@
+# ##################################################################################################
+#  Disclaimer                                                                                      #
+#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
+#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
+#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
+#  There is no guarantee that it works like the original distribution,                             #
+#  but feel free to tell us if you get any difference to correct the code.                         #
+#                                                                                                  #
+#  Please use this cite the original reference.                                                    #
+#  If you think my work helps you, just keep this note intact on your program.                     #
+#                                                                                                  #
+#  Modification date: 4/5/20 3:20                                                                  #
+#                                                                                                  #
+# ##################################################################################################
+
 """
     Structures for PDB2PQR
 
@@ -12,25 +27,10 @@
 __date__ = "22 October 2003"
 __author__ = "Todd Dolinsky"
 
-BACKBONE = ["N","CA","C","O","O2","HA","HN","H","tN"]
+BACKBONE = ["N", "CA", "C", "O", "O2", "HA", "HN", "H", "tN"]
 
-# ##################################################################################################
-#  Disclaimer                                                                                      #
-#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
-#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
-#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
-#  There is no guarantee that it works like the original distribution,                             #
-#  but feel free to tell us if you get any difference to correct the code.                         #
-#                                                                                                  #
-#  Please use this cite the original reference.                                                    #
-#  If you think my work helps you, just keep this note intact on your program.                     #
-#                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
-#                                                                                                  #
-# ##################################################################################################
-
-import _py2k_string as string
 from .pdb import *
+
 
 class Chain:
     """
@@ -64,7 +64,8 @@ class Chain:
             Returns
                 item:     The value of the member
         """
-        if name == "atoms": self.getAtoms()
+        if name == "atoms":
+            self.getAtoms()
         else:
             try:
                 item = getattr(self, name)
@@ -165,7 +166,7 @@ class Residue:
 
         atomclass = ""
         for a in atoms:
-            if isinstance(a,ATOM):
+            if isinstance(a, ATOM):
                 atomclass = "ATOM"
             elif isinstance(a, HETATM):
                 atomclass = "HETATM"
@@ -173,14 +174,14 @@ class Residue:
             atomname = atom.get("name")
             if atomname not in self.map:
                 self.addAtom(atom)
-            else: # Don't add duplicate atom
+            else:  # Don't add duplicate atom
                 oldatom = self.getAtom(atomname)
-                oldatom.set("altLoc","")
+                oldatom.set("altLoc", "")
 
         if self.name == "HOH":
             self.name = "WAT"
             for atom in self.atoms:
-                atom.set("resName","WAT")
+                atom.set("resName", "WAT")
 
     def get(self, name):
         """
@@ -235,7 +236,8 @@ class Residue:
             Returns
                 item:          The value of the member
         """
-        if name == "resSeq": self.setResSeq(value)
+        if name == "resSeq":
+            self.setResSeq(value)
         else:
             try:
                 setattr(self, name, value)
@@ -275,27 +277,48 @@ class Residue:
 
         for n in names:
             newname = n
-            if n == "HG11" and "HG13" not in names: newname = "HG12"
-            elif n == "HG12" and "HG13" not in names: newname = "HG13"
-            elif n == "HA1" and "HA2" in names: newname = "HA2"
-            elif n == "HA2" and "HA1" in names: newname = "HA3"
-            elif n == "HB1" and "HB3" not in names: newname = "HB2"
-            elif n == "HB2" and "HB3" not in names: newname = "HB3"
-            elif n == "HG1" and resname not in ["THR","SER","CYS"] and "HG3" not in names: newname = "HG2"
-            elif n == "HG2" and "HG3" not in names: newname = "HG3"
-            elif n == "HD1" and resname in ["ARG","LYS","PRO"]: newname = "HD2"
-            elif n == "HD2" and resname in ["ARG","LYS","PRO"] and "HD1" in names: newname = "HD3"
-            elif n == "HE1" and resname == "LYS": newname = "HE2"
-            elif n == "HE2" and resname == "LYS" and "HE1" in names: newname = "HE3"
-            elif n == "H1" and self.get("isNterm") and "H" not in names: newname = "H"
-            elif n == "H1" and resname == "ACE": newname = "HH31"
-            elif n == "H2" and resname == "ACE": newname = "HH32"
-            elif n == "H3" and resname == "ACE": newname = "HH33"
-            elif n == "HN": newname = "H"
-            elif n == "HD1" and resname == "ILE": newname = "HD11"
-            elif n == "HD2" and resname == "ILE": newname = "HD12"
-            elif n == "HD3" and resname == "ILE": newname = "HD13"
-            elif n == "HG1" and resname in ["SER","CYS"]: newname = "HG"
+            if n == "HG11" and "HG13" not in names:
+                newname = "HG12"
+            elif n == "HG12" and "HG13" not in names:
+                newname = "HG13"
+            elif n == "HA1" and "HA2" in names:
+                newname = "HA2"
+            elif n == "HA2" and "HA1" in names:
+                newname = "HA3"
+            elif n == "HB1" and "HB3" not in names:
+                newname = "HB2"
+            elif n == "HB2" and "HB3" not in names:
+                newname = "HB3"
+            elif n == "HG1" and resname not in ["THR", "SER", "CYS"] and "HG3" not in names:
+                newname = "HG2"
+            elif n == "HG2" and "HG3" not in names:
+                newname = "HG3"
+            elif n == "HD1" and resname in ["ARG", "LYS", "PRO"]:
+                newname = "HD2"
+            elif n == "HD2" and resname in ["ARG", "LYS", "PRO"] and "HD1" in names:
+                newname = "HD3"
+            elif n == "HE1" and resname == "LYS":
+                newname = "HE2"
+            elif n == "HE2" and resname == "LYS" and "HE1" in names:
+                newname = "HE3"
+            elif n == "H1" and self.get("isNterm") and "H" not in names:
+                newname = "H"
+            elif n == "H1" and resname == "ACE":
+                newname = "HH31"
+            elif n == "H2" and resname == "ACE":
+                newname = "HH32"
+            elif n == "H3" and resname == "ACE":
+                newname = "HH33"
+            elif n == "HN":
+                newname = "H"
+            elif n == "HD1" and resname == "ILE":
+                newname = "HD11"
+            elif n == "HD2" and resname == "ILE":
+                newname = "HD12"
+            elif n == "HD3" and resname == "ILE":
+                newname = "HD13"
+            elif n == "HG1" and resname in ["SER", "CYS"]:
+                newname = "HG"
 
             newnames[names[n]] = newname
 
@@ -308,7 +331,7 @@ class Residue:
             if atomname != newname:
                 if atomname in old:
                     atom = old[atomname]
-                    atom.set("name",newname)
+                    atom.set("name", newname)
                     self.map[newname] = atom
                     del old[atomname]
                 elif newname in self.map:
@@ -333,11 +356,11 @@ class Residue:
         for atom in self.atoms:
             atomname = atom.get("name")
             defatom = defresidue.getAtom(atomname)
-            atom.set("intrabonds",[])
-            if defatom == None:
+            atom.set("intrabonds", [])
+            if defatom is None:
                 if self.isCterm and atomname == "OXT":
                     continue
-                elif self.isNterm and atomname in ["H2","H3"]:
+                elif self.isNterm and atomname in ["H2", "H3"]:
                     continue
                 else:
                     raise ValueError("Atom %s not found in updateIntraBonds!" % atomname)
@@ -367,8 +390,8 @@ class Residue:
         self.iCode = ""
         self.resSeq = value
         for atom in self.atoms:
-            atom.set("resSeq",value)
-            atom.set("iCode","")
+            atom.set("resSeq", value)
+            atom.set("iCode", "")
 
     def addAtom(self, atom):
         """
@@ -400,7 +423,6 @@ class Residue:
                 del self.debumpAtoms[i]
                 break
 
-
     def renameAtom(self, oldname, newname):
         """
             Rename an atom to a new name
@@ -410,7 +432,7 @@ class Residue:
                 newname: The new atom name (string)
         """
         atom = self.map[oldname]
-        atom.set("name",newname)
+        atom.set("name", newname)
         self.map[newname] = atom
         del self.map[oldname]
 
@@ -427,12 +449,12 @@ class Residue:
         """
         oldatom = self.atoms[0]
         newatom = Atom(oldatom, type, self)
-        newatom.set("x",newcoords[0])
-        newatom.set("y",newcoords[1])
-        newatom.set("z",newcoords[2])
+        newatom.set("x", newcoords[0])
+        newatom.set("y", newcoords[1])
+        newatom.set("z", newcoords[2])
         newatom.set("name", name)
-        newatom.set("occupancy",1.00)
-        newatom.set("tempFactor",0.00)
+        newatom.set("occupancy", 1.00)
+        newatom.set("tempFactor", 0.00)
         self.addAtom(newatom)
 
     def addChiangle(self, value):
@@ -489,6 +511,7 @@ class Residue:
                 atom:  The atom to add to the list
         """
         self.debumpAtoms.append(atom)
+
 
 class Atom(ATOM):
     """
@@ -548,13 +571,13 @@ class Atom(ATOM):
                 out: String with ATOM/HETATM field set appropriately
         """
         orig = ATOM.__str__(self)
-        type = string.ljust(self.type, 6)[:6]
+        type = self.type.ljust(6)[:6]
         ffcharge = "%.4f" % self.ffcharge
         ffradius = "%.4f" % self.radius
-        charge = string.rjust(ffcharge, 7)[:7]
-        radius = string.ljust(ffradius, 6)[:6]
+        charge = ffcharge.rjust(7)[:7]
+        radius = ffradius.ljust(6)[:6]
         out = "%s%s %s %s" % (type, orig[6:-20], charge, radius)
-        out = "%s %s" % (out[:21], out[22:]) # Eliminate the chain ID
+        out = "%s %s" % (out[:21], out[22:])  # Eliminate the chain ID
         return out
 
     def get(self, name):
