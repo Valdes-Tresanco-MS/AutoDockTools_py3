@@ -1,16 +1,3 @@
-"""
-    APBS interface for PDB2PQR
-
-    Todd Dolinsky (todd@ccb.wustl.edu)
-    Washington University in St. Louis
-
-    Jens Erik Nielsen
-
-"""
-
-__date__  = "16 August 2005"
-__author__ = "Todd Dolinsky, Jens Erik Nielsen"
-
 # ##################################################################################################
 #  Disclaimer                                                                                      #
 #  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
@@ -22,18 +9,30 @@ __author__ = "Todd Dolinsky, Jens Erik Nielsen"
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
+#  Modification date: 4/5/20 13:45                                                                 #
 #                                                                                                  #
 # ##################################################################################################
 
+"""
+    APBS interface for PDB2PQR
+
+    Todd Dolinsky (todd@ccb.wustl.edu)
+    Washington University in St. Louis
+
+    Jens Erik Nielsen
+
+"""
+
+__date__ = "16 August 2005"
+__author__ = "Todd Dolinsky, Jens Erik Nielsen"
+
+
 import sys
 import time
-import _py2k_string as string
-from src import psize
-from src import inputgen
 
 from apbslib import *
-
+from ..src import inputgen
+from ..src import psize
 
 Python_kb = 1.3806581e-23
 Python_Na = 6.0221367e+23
@@ -63,6 +62,7 @@ class APBSError(Exception):
         """
         return repr(self.value)
 
+
 def getUnitConversion():
     """
         Get the unit conversion from kT to kJ/mol
@@ -71,14 +71,14 @@ def getUnitConversion():
             factor: The conversion factor (float)
     """
     temp = 298.15
-    factor = Python_kb/1000.0 * temp * Python_Na
+    factor = Python_kb / 1000.0 * temp * Python_Na
     return factor
+
 
 def runAPBS(PQR, INPUT):
     """
         Run APBS using PQR and INPUT strings!
     """
-
 
     # Initialize the MALOC library
     startVio()
@@ -101,11 +101,8 @@ def runAPBS(PQR, INPUT):
     chg = []
     rad = []
 
-
     # Start the main timer
     main_timer_start = time.clock()
-
-
 
     # Parse the input file
     nosh = NOsh_ctor(rank, size)
@@ -117,20 +114,20 @@ def runAPBS(PQR, INPUT):
     # Load the molecules using Valist_load routine
 
     alist = new_valist(NOSH_MAXMOL)
-    #atoms = protein.getAtoms()
-    #protsize = len(atoms)
-    atoms = string.split(PQR,"\n")
+    # atoms = protein.getAtoms()
+    # protsize = len(atoms)
+    atoms = PQR.split("\n")
     for i in range(len(atoms)):
         atom = atoms[i]
-        params = string.split(atom)
+        params = atom.split()
         x.append(float(params[5]))
         y.append(float(params[6]))
         z.append(float(params[7]))
         chg.append(float(params[8]))
         rad.append(float(params[9]))
 
-    myAlist = make_Valist(alist,0)
-    Valist_load(myAlist, len(atoms), x,y,z,chg,rad)
+    myAlist = make_Valist(alist, 0)
+    Valist_load(myAlist, len(atoms), x, y, z, chg, rad)
 
     # Initialize the energy holders
 
@@ -146,15 +143,11 @@ def runAPBS(PQR, INPUT):
     dielYMap = new_gridlist(NOSH_MAXMOL)
     dielZMap = new_gridlist(NOSH_MAXMOL)
 
-
-
     # Load the kappa maps
     kappaMap = new_gridlist(NOSH_MAXMOL)
 
-
     # Load the charge maps
     chargeMap = new_gridlist(NOSH_MAXMOL)
-
 
     # Do the calculations
 
@@ -170,21 +163,21 @@ def runAPBS(PQR, INPUT):
             raise APBSError("Only multigrid calculations supported!")
 
         for k in range(0, nosh.nelec):
-            if NOsh_elec2calc(nosh,k) >= icalc:
+            if NOsh_elec2calc(nosh, k) >= icalc:
                 break
 
-        name = NOsh_elecname(nosh, k+1)
+        name = NOsh_elecname(nosh, k + 1)
         if name == "":
-            sys.stdout.write("CALCULATION #%d:  MULTIGRID\n" % (icalc+1))
+            sys.stdout.write("CALCULATION #%d:  MULTIGRID\n" % (icalc + 1))
         else:
-            sys.stdout.write("CALCULATION #%d (%s): MULTIGRID\n" % ((icalc+1),name))
+            sys.stdout.write("CALCULATION #%d (%s): MULTIGRID\n" % ((icalc + 1), name))
         sys.stdout.write("Setting up problem...\n")
 
         # Routine initMG
 
         if initMG(icalc, nosh, mgparm, pbeparm, realCenter, pbe,
-              alist, dielXMap, dielYMap, dielZMap, kappaMap, chargeMap,
-              pmgp, pmg) != 1:
+                  alist, dielXMap, dielYMap, dielZMap, kappaMap, chargeMap,
+                  pmgp, pmg) != 1:
             sys.stderr.write("Error setting up MG calculation!\n")
             raise APBSError("Error setting up MG calculation!")
 
@@ -194,7 +187,7 @@ def runAPBS(PQR, INPUT):
         printPBEPARM(pbeparm)
         # Solve the problem : Routine solveMG
 
-        thispmg = get_Vpmg(pmg,icalc)
+        thispmg = get_Vpmg(pmg, icalc)
 
         if solveMG(nosh, thispmg, mgparm.type) != 1:
             stderr.write("Error solving PDE! \n")
@@ -241,7 +234,7 @@ def runAPBS(PQR, INPUT):
 
     # Clean up APBS structures
 
-    #killForce(mem, nosh, nforce, atomforce)
+    # killForce(mem, nosh, nforce, atomforce)
     killEnergy()
     killMG(nosh, pbe, pmgp, pmg)
     killChargeMaps(nosh, chargeMap)
@@ -252,10 +245,10 @@ def runAPBS(PQR, INPUT):
 
     # Clean up Python structures
 
-    #ptrfree(nfor)
+    # ptrfree(nfor)
     delete_double_array(realCenter)
-    #delete_int_array(nforce)
-    #delete_atomforcelist(atomforce)
+    # delete_int_array(nforce)
+    # delete_atomforcelist(atomforce)
     delete_valist(alist)
     delete_gridlist(dielXMap)
     delete_gridlist(dielYMap)
@@ -265,7 +258,6 @@ def runAPBS(PQR, INPUT):
     delete_pmglist(pmg)
     delete_pmgplist(pmgp)
     delete_pbelist(pbe)
-
 
     # Clean up MALOC structures
     delete_Com(com)
@@ -278,12 +270,12 @@ def runAPBS(PQR, INPUT):
     main_timer_stop = time.clock()
     sys.stdout.write("Total execution time:  %1.6e sec\n" % (main_timer_stop - main_timer_start))
 
-    #Return potentials
+    # Return potentials
 
     return potList
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     # This would really be something like
     #   atoms = protein.getAtoms()
     #   PQR = protein.printAtoms(atoms)
@@ -306,7 +298,7 @@ if __name__ == "__main__":
 
     # Now run APBS
 
-    potentials = runAPBS(PQR,str(input))
+    potentials = runAPBS(PQR, str(input))
 
     # And print the results!
 
