@@ -1,3 +1,18 @@
+# ##################################################################################################
+#  Disclaimer                                                                                      #
+#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
+#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
+#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
+#  There is no guarantee that it works like the original distribution,                             #
+#  but feel free to tell us if you get any difference to correct the code.                         #
+#                                                                                                  #
+#  Please use this cite the original reference.                                                    #
+#  If you think my work helps you, just keep this note intact on your program.                     #
+#                                                                                                  #
+#  Modification date: 4/5/20 13:27                                                                 #
+#                                                                                                  #
+# ##################################################################################################
+
 """
     CGI Server for PDB2PQR
 
@@ -43,25 +58,9 @@
     ----------------------------
 """
 
-__date__   = "17 March 2007"
+__date__ = "17 March 2007"
 __author__ = "Todd Dolinsky"
 
-# ##################################################################################################
-#  Disclaimer                                                                                      #
-#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
-#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
-#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
-#  There is no guarantee that it works like the original distribution,                             #
-#  but feel free to tell us if you get any difference to correct the code.                         #
-#                                                                                                  #
-#  Please use this cite the original reference.                                                    #
-#  If you think my work helps you, just keep this note intact on your program.                     #
-#                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
-#                                                                                                  #
-# ##################################################################################################
-
-import _py2k_string as string
 import os
 import sys
 import time
@@ -69,35 +68,36 @@ import time
 # GLOBAL SERVER VARIABLES
 
 """ The absolute path to root HTML directory """
-LOCALPATH   = "/export/home/www/html/pdb2pqr/"
+LOCALPATH = "/export/home/www/html/pdb2pqr/"
 
 """ The relative path to results directory from script directory.
     The web server (i.e. Apache) MUST be able to write to this directory. """
-TMPDIR      = "tmp/"
+TMPDIR = "tmp/"
 
 """ The maximum size of temp directory (in MB) before it is cleaned """
-LIMIT       = 500.0
+LIMIT = 500.0
 
 """ The path to the web site *directory* """
-WEBSITE     = "http://agave.wustl.edu/pdb2pqr/"
+WEBSITE = "http://agave.wustl.edu/pdb2pqr/"
 
 """ The name of the main server page """
-WEBNAME     = "server.html"
+WEBNAME = "server.html"
 
 """ The stylesheet to use """
-STYLESHEET  = "http://agave.wustl.edu/css/baker.css"
+STYLESHEET = "http://agave.wustl.edu/css/baker.css"
 
 """ The refresh time (in seconds) for the progress page """
 REFRESHTIME = 20
 
 """ The absolute path to the loadavg file - set to "" or None if
     not to be included """
-LOADPATH    = "/proc/loadavg"
+LOADPATH = "/proc/loadavg"
 
 """ The path to the pdb2pqr log - set to "" or None if not to be
     included.  The web server (i.e. Apache) MUST be able to write to
     this directory. """
-LOGPATH     = "%s/%s/usage.txt" % (LOCALPATH, TMPDIR)
+LOGPATH = "%s/%s/usage.txt" % (LOCALPATH, TMPDIR)
+
 
 def setID(time):
     """
@@ -110,9 +110,10 @@ def setID(time):
             id  :  The file id (string)
     """
     strID = "%s" % time
-    period = string.find(strID, ".")
-    id = "%s%s" % (strID[:period], strID[(period+1):(period+2)])
+    period = strID.find(".")
+    id = "%s%s" % (strID[:period], strID[(period + 1):(period + 2)])
     return id
+
 
 def logRun(options, nettime, size, ff, ip):
     """
@@ -127,30 +128,40 @@ def logRun(options, nettime, size, ff, ip):
             ff:      The name of the ff used
             ip:      The ip address of the user
     """
-    if LOGPATH == "" or LOGPATH == None: return
+    if LOGPATH == "" or LOGPATH is None:
+        return
     date = time.asctime(time.localtime())
-    debump  = 0
-    opt  = 0
+    debump = 0
+    opt = 0
     propka = 0
-    file = open(LOGPATH,"a")
+    file = open(LOGPATH, "a")
 
-    if "ffout" in options: ffout = options["ffout"]
-    else: ffout="internal"
+    if "ffout" in options:
+        ffout = options["ffout"]
+    else:
+        ffout = "internal"
 
     text = "%s\t%s\t%s\t%s\t" % (date, ip, ff, ffout)
 
     opts = ""
-    if "debump" in options:  opts += "debump,"
-    if "opt" in options:  opts += "optimize,"
-    if "ph" in options: opts += "propka,"
-    if "apbs" in options: opts += "apbs,"
-    if "chain" in options: opts += "chain,"
+    if "debump" in options:
+        opts += "debump,"
+    if "opt" in options:
+        opts += "optimize,"
+    if "ph" in options:
+        opts += "propka,"
+    if "apbs" in options:
+        opts += "apbs,"
+    if "chain" in options:
+        opts += "chain,"
 
-    if opts == "": opts = "none,"
+    if opts == "":
+        opts = "none,"
 
     text += "%s\t%s\t%.2f\n" % (opts[:-1], size, nettime)
     file.write(text)
     file.close()
+
 
 def cleanTmpdir():
     """
@@ -167,7 +178,7 @@ def cleanTmpdir():
     dir = os.listdir(path)
     for filename in dir:
         size = size + os.path.getsize("%s%s" % (path, filename))
-        period = string.find(filename,".")
+        period = filename.find(".")
         id = filename[:period]
         if id not in newdir:
             newdir.append(id)
@@ -179,17 +190,22 @@ def cleanTmpdir():
     newcount = 0
     if size >= LIMIT:
         for filename in newdir:
-            if newcount > count/2.0: break
+            if newcount > count / 2.0:
+                break
             try:
                 os.remove("%s%s.pqr" % (path, filename))
-            except OSError: pass
+            except OSError:
+                pass
             try:
                 os.remove("%s%s.in" % (path, filename))
-            except OSError: pass
+            except OSError:
+                pass
             try:
                 os.remove("%s%s.html" % (path, filename))
-            except OSError: pass
+            except OSError:
+                pass
             newcount += 1
+
 
 def getQuote(path):
     """
@@ -203,10 +219,11 @@ def getQuote(path):
     """
     fortune = os.popen(path)
     quote = fortune.read()
-    quote = string.replace(quote, "\n", "<BR>")
-    quote = string.replace(quote, "\t", "&nbsp;"*5)
+    quote = quote.replace("\n", "<BR>")
+    quote = quote.replace("\t", "&nbsp;" * 5)
     quote = "%s<P>" % quote
     return quote
+
 
 def printProgress(name, refreshname, reftime, starttime):
     """
@@ -218,15 +235,14 @@ def printProgress(name, refreshname, reftime, starttime):
             reftime:     The length of time to set the refresh wait to (int)
             starttime:   The time as returned by time.time() that the run started (float)
     """
-    elapsedtime = time.time() - starttime + REFRESHTIME/2.0 # Add in time offset
+    elapsedtime = time.time() - starttime + REFRESHTIME / 2.0  # Add in time offset
     filename = "%s%s%s-tmp.html" % (LOCALPATH, TMPDIR, name)
-    file = open(filename,"w")
+    file = open(filename, "w")
     file.write("<HTML>\n")
     file.write("<HEAD>\n")
     file.write("<TITLE>PDB2PQR Progress</TITLE>\n")
     file.write("<link rel=\"stylesheet\" href=\"%s\" type=\"text/css\">\n" % STYLESHEET)
-    file.write("<meta http-equiv=\"Refresh\" content=\"%s; url=%s\">\n" % \
-               (reftime, refreshname))
+    file.write("<meta http-equiv=\"Refresh\" content=\"%s; url=%s\">\n" % (reftime, refreshname))
     file.write("</HEAD>\n")
     file.write("<BODY>\n")
     file.write("<H2>PDB2PQR Progress</H2><P>\n")
@@ -240,13 +256,15 @@ def printProgress(name, refreshname, reftime, starttime):
     file.write("Server Information:<P>\n")
     file.write("<blockquote>\n")
     loads = getLoads()
-    if loads != None:
-        file.write("<font size=2>Server load:</font> <code>%s (1min)  %s (5min)  %s (15min)</code><BR>\n" % (loads[0], loads[1], loads[2]))
+    if loads is not None:
+        file.write("<font size=2>Server load:</font> <code>%s (1min)  %s (5min)  %s (15min)</code><BR>\n" % (
+            loads[0], loads[1], loads[2]))
 
     file.write("<font size=2>Server time:</font> <code>%s</code><BR>\n" % (time.asctime(time.localtime())))
     file.write("</blockquote>\n")
     file.write("</BODY></HTML>")
     file.close()
+
 
 def printAcceptance(name):
     """
@@ -256,14 +274,13 @@ def printAcceptance(name):
         Parameters
             name:    The ID of the HTML page to redirect to (string)
     """
-    waittime = int(REFRESHTIME/2.0)
+    waittime = int(REFRESHTIME / 2.0)
     print("Content-type: text/html\n")
     print("<HTML>")
     print("<HEAD>")
     print("<TITLE>PDB2PQR Progress</TITLE>")
     print("<link rel=\"stylesheet\" href=\"%s\" type=\"text/css\">" % STYLESHEET)
-    print("<meta http-equiv=\"Refresh\" content=\"%s; url=%s%s%s-tmp.html\">" % \
-          (waittime, WEBSITE, TMPDIR, name))
+    print("<meta http-equiv=\"Refresh\" content=\"%s; url=%s%s%s-tmp.html\">" % (waittime, WEBSITE, TMPDIR, name))
     print("</HEAD>")
     print("<BODY>")
     print("<H2>PDB2PQR Progress</H2><P>")
@@ -274,13 +291,15 @@ def printAcceptance(name):
     print("Server Information:<P>")
     print("<blockquote>")
     loads = getLoads()
-    if loads != None:
-        print("<font size=2>Server load:</font> <code>%s (1min)  %s (5min)  %s (15min)</code><BR>" % (loads[0], loads[1], loads[2]))
+    if loads is not None:
+        print("<font size=2>Server load:</font> <code>%s (1min)  %s (5min)  %s (15min)</code><BR>" % (
+            loads[0], loads[1], loads[2]))
 
     print("<font size=2>Server time:</font> <code>%s</code><BR>" % (time.asctime(time.localtime())))
     print("</blockquote>")
 
     print("</BODY></HTML>")
+
 
 def getLoads():
     """
@@ -291,17 +310,19 @@ def getLoads():
                     15 minute loads. If the load file is not found,
                     return None.
     """
-    if LOADPATH == "": return None
+    if LOADPATH == "":
+        return None
     try:
         file = open(LOADPATH)
     except IOError:
         return None
 
     line = file.readline()
-    words = string.split(line)
+    words = line.split()
     loads = words[:3]
 
     return loads
+
 
 def createResults(header, input, name, time, missedligands=[]):
     """
@@ -316,8 +337,8 @@ def createResults(header, input, name, time, missedligands=[]):
             missedligands: A list of ligand names whose parameters could
                      not be assigned. Optional. (list)
     """
-    newheader = string.replace(header, "\n", "<BR>")
-    newheader = string.replace(newheader," ","&nbsp;")
+    newheader = header.replace("\n", "<BR>")
+    newheader = newheader.replace(" ", "&nbsp;")
 
     filename = "%s%s%s.html" % (LOCALPATH, TMPDIR, name)
     file = open(filename, "w")
@@ -347,7 +368,7 @@ def createResults(header, input, name, time, missedligands=[]):
     file.write("<blockquote><code>\n")
     file.write("%s<P>\n" % newheader)
     file.write("</code></blockquote>\n")
-    if missedligands != []:
+    if missedligands:
         file.write("The forcefield that you have selected does not have ")
         file.write("parameters for the following ligands in your PDB file.  Please visit ")
         file.write("<a href=\"http://davapc1.bioch.dundee.ac.uk/programs/prodrg/\">PRODRG</a> ")
@@ -365,6 +386,7 @@ def createResults(header, input, name, time, missedligands=[]):
     file.write("<font size=\"-1\"><CENTER><I>Last Updated %s</I></CENTER></font>\n" % __date__)
     file.write("</body>\n")
     file.write("</html>\n")
+
 
 def createError(name, details):
     """
@@ -395,6 +417,7 @@ def createError(name, details):
     file.write("</body>\n")
     file.write("</html>\n")
 
+
 def startServer(name):
     """
         Start the PDB2PQR server.  This function is necessary so
@@ -412,12 +435,12 @@ def startServer(name):
 
     starttime = time.time()
     pid = os.fork()
-    if pid: #Parent - Create refreshed HTML pages and exit
+    if pid:  # Parent - Create refreshed HTML pages and exit
         pid2 = os.fork()
-        if pid2: # print to browser and exit
+        if pid2:  # print to browser and exit
             printAcceptance(name)
             sys.exit()
-        else: # Thread in charge of refreshing pages
+        else:  # Thread in charge of refreshing pages
             home = os.getcwd()
             os.chdir("/")
             os.setsid()
@@ -443,7 +466,7 @@ def startServer(name):
             os.remove(tmpname)
             sys.exit()
 
-    else: # Child - run PDB2PQR
+    else:  # Child - run PDB2PQR
         home = os.getcwd()
         os.chdir("/")
         os.setsid()
