@@ -26,8 +26,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dade6379-1666-4ac7-9de4-69950a5437c6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MolKit/amberPrmTop.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/amberPrmTop.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/APBSParameters.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/APBSParameters.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,7 +53,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/amberPrmTop.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/APBSParameters.py" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -64,7 +63,7 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/amberPrmTop.py" />
+    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/APBSParameters.py" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -188,7 +187,7 @@
       <option name="presentableId" value="Default" />
       <updated>1588466872659</updated>
       <workItem from="1588466873766" duration="21530000" />
-      <workItem from="1588561745843" duration="2499000" />
+      <workItem from="1588561745843" duration="3142000" />
     </task>
     <task id="LOCAL-00001" summary="add disclaimer and minor changes">
       <created>1588467466843</created>
@@ -428,7 +427,14 @@
       <option name="project" value="LOCAL" />
       <updated>1588562634042</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="updated MolKit &gt; amberPrmTop.py">
+      <created>1588564258409</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1588564258409</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -438,7 +444,6 @@
     <option name="UPDATE_COPYRIGHT" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="updated MolKit &gt; PDBresidueNames.py" />
     <MESSAGE value="updated MolKit &gt; torTree.py" />
     <MESSAGE value="updated MolKit &gt; data &gt; __init__.py" />
     <MESSAGE value="updated MolKit &gt; data &gt; all_amino94_dat.py" />
@@ -463,7 +468,8 @@
     <MESSAGE value="updated MolKit &gt; pdbWriter.py" />
     <MESSAGE value="updated MolKit &gt; PDBdict.py" />
     <MESSAGE value="updated MolKit &gt; tree.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated MolKit &gt; tree.py" />
+    <MESSAGE value="updated MolKit &gt; amberPrmTop.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated MolKit &gt; amberPrmTop.py" />
   </component>
   <component name="WindowStateProjectService">
     <state x="586" y="198" key="#Inspections" timestamp="1588494675975">
@@ -482,34 +488,34 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="707" y="384" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.1040@0.0.1920.1040" timestamp="1588477911914" />
-    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2" timestamp="1588562633084">
+    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2" timestamp="1588564257366">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1588562633084" />
-    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog" timestamp="1588563454326">
+    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1588564257366" />
+    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog" timestamp="1588564892864">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588563454326" />
-    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1588562864529">
+    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588564892864" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1588564279249">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588562864529" />
-    <state width="1877" height="161" key="GridCell.Tab.0.bottom" timestamp="1588563216439">
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588564279249" />
+    <state width="1877" height="161" key="GridCell.Tab.0.bottom" timestamp="1588564864799">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="161" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588563216439" />
-    <state width="1877" height="161" key="GridCell.Tab.0.center" timestamp="1588563216439">
+    <state width="1877" height="161" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588564864799" />
+    <state width="1877" height="161" key="GridCell.Tab.0.center" timestamp="1588564864799">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="161" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588563216439" />
-    <state width="1877" height="161" key="GridCell.Tab.0.left" timestamp="1588563216439">
+    <state width="1877" height="161" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588564864799" />
+    <state width="1877" height="161" key="GridCell.Tab.0.left" timestamp="1588564864798">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="161" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588563216439" />
-    <state width="1877" height="161" key="GridCell.Tab.0.right" timestamp="1588563216439">
+    <state width="1877" height="161" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588564864798" />
+    <state width="1877" height="161" key="GridCell.Tab.0.right" timestamp="1588564864799">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="161" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588563216439" />
+    <state width="1877" height="161" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588564864799" />
     <state x="461" y="165" width="1157" height="710" key="SettingsEditor" timestamp="1588561804387">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

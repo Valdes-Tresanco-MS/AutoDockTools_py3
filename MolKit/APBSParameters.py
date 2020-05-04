@@ -9,30 +9,29 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
+#  Modification date: 3/5/20 23:01                                                                 #
 #                                                                                                  #
 # ##################################################################################################
 
-#
-# $Header: /opt/cvs/python/packages/share1.5/MolKit/APBSParameters.py,v 1.24.6.1 2016/02/12 01:12:48 annao Exp $
-#
-# $Id: APBSParameters.py,v 1.24.6.1 2016/02/12 01:12:48 annao Exp $
-#
-import os, types
+import os
+
+import numpy as np
+
+from MolKit.molecule import Atom
+
 
 class Ion:
     """A class that represents ion"""
 
-    def __init__(self, chg = 1.0, con = 1.0, rad = 1.0):
+    def __init__(self, chg=1.0, con=1.0, rad=1.0):
         """Constructor for class Ion"""
         self.charge = chg
         self.concentration = con
         self.radius = rad
-        
+
     def toString(self):
         """Converts to string representation"""
-        return '%.3f, %.3f, %.3f' % (self.charge, self.concentration, \
-        self.radius)
+        return '%.3f, %.3f, %.3f' % (self.charge, self.concentration, self.radius)
 
 
 def checkKeywords(_name, keywords, **kw):
@@ -41,49 +40,47 @@ def checkKeywords(_name, keywords, **kw):
         if key not in keywords:
             print('WARNING: Keyword %s not recognized for %s' % (key, _name))
 
-import numpy
-from MolKit.molecule import Atom
 
 class APBSParams:
     """Class to represent APBS parameters.  
        The list of attributes that can be set is found in self.keywords."""
 
-    GAMMA = 0.105 #Apolar energy surface coefficient
-    CFAC = 1.5 #Ratio of course grid lengths to molecule bounding box lengths
-    MEGABYTES_PER_GRID_POINT = 160.0/1000000.0
+    GAMMA = 0.105  # Apolar energy surface coefficient
+    CFAC = 1.5  # Ratio of course grid lengths to molecule bounding box lengths
+    MEGABYTES_PER_GRID_POINT = 160.0 / 1000000.0
     GRID_VALUES = [9, 17, 33, 49, 65, 81, 97, 113, 129, 145, 161,
-               177, 193, 209, 225, 241, 257, 273, 289, 305, 321, 337, 353,
-            369, 385, 401, 417, 433, 449, 465, 481, 497, 513,
-               529, 545, 561, 577, 593, 609, 625, 641, 657, 673, 689]
+                   177, 193, 209, 225, 241, 257, 273, 289, 305, 321, 337, 353,
+                   369, 385, 401, 417, 433, 449, 465, 481, 497, 513,
+                   529, 545, 561, 577, 593, 609, 625, 641, 657, 673, 689]
 
     FILETYPES = ('', 'OpenDX', 'AVS UCD', 'UHBD')
     CALCULATIONTYPES = ('Solvation energy', 'Binding energy',
                         'Electrostatic potential')
     PBETYPES = ('Linearized', 'Nonlinear')
     BOUNDARYTYPES = ('Zero E', 'Single Debye-Huckel', 'Multiple Debye-Huckel')
-    CHARGEDISCRETIZATIONTYPES = ('Trilinear hat-function', 'Cubic B-spline',  'Quintic B-spline')
+    CHARGEDISCRETIZATIONTYPES = ('Trilinear hat-function', 'Cubic B-spline', 'Quintic B-spline')
     SURFACECALCULATIONTYPES = ('No smoothing', 'Harmonic Average',
-                               'Cubic B-spline',  '7th Order Polynomial')
+                               'Cubic B-spline', '7th Order Polynomial')
     ENERGYOUTPUTTYPES = ('', 'Total', 'Total and Individual')
     FORCEOUTPUTTYPES = ('', 'Total', 'Total and Individual')
 
     keywords = [
         'APBS_Path',
         'pdb2pqr_Path',
-        'pdb2pqr_ForceField', # amber, charm, or parse
+        'pdb2pqr_ForceField',  # amber, charm, or parse
         'name',
         'calculationType',
-        'pbeType',          
+        'pbeType',
         'boundaryConditions',
         'chargeDiscretization',
         'surfaceCalculation',
-        'sdens', #sphere density: see APBS Documentation
+        'sdens',  # sphere density: see APBS Documentation
         'splineWindow',
         'molecule1Path',
         'molecule2Path',
         'complexPath',
         'energyOutput',
-        'forceOutput', 
+        'forceOutput',
         'projectFolder',
         'chargeDistributionFile',
         'potentialFile',
@@ -116,13 +113,12 @@ class APBSParams:
         'fineCenterZ',
         'proteinDielectric',
         'solventDielectric',
-        'solventRadius',  
+        'solventRadius',
         'systemTemperature',
-        'ions', 
+        'ions',
         'saltConcentration',
         'log'
-        ]
-
+    ]
 
     def defaultGridSizes(self, mol1, mol2=None):
         """set default fine and corase grid sizes and centers"""
@@ -132,36 +128,34 @@ class APBSParams:
             assert mol2 is not None
             coords += mol2.findType(Atom).coords
 
-        center = (numpy.maximum.reduce(coords)+numpy.minimum.reduce(coords))*0.5
+        center = (np.maximum.reduce(coords) + np.minimum.reduce(coords)) * 0.5
         center = center.tolist()
-        self.fineCenterX = self.coarseCenterX = round(center[0],4)
-        self.fineCenterY = self.coarseCenterY = round(center[1],4)
-        self.fineCenterZ = self.coarseCenterZ = round(center[2],4)
+        self.fineCenterX = self.coarseCenterX = round(center[0], 4)
+        self.fineCenterY = self.coarseCenterY = round(center[1], 4)
+        self.fineCenterZ = self.coarseCenterZ = round(center[2], 4)
 
-        length = numpy.maximum.reduce(coords) - numpy.minimum.reduce(coords)
-        self.coarseLengthX = self.CFAC*(length.tolist())[0] + 10.
-        self.coarseLengthY = self.CFAC*(length.tolist())[1] + 10.
-        self.coarseLengthZ = self.CFAC*(length.tolist())[2] + 10.
+        length = np.maximum.reduce(coords) - np.minimum.reduce(coords)
+        self.coarseLengthX = self.CFAC * (length.tolist())[0] + 10.
+        self.coarseLengthY = self.CFAC * (length.tolist())[1] + 10.
+        self.coarseLengthZ = self.CFAC * (length.tolist())[2] + 10.
         self.fineLengthX = (length.tolist())[0] + 10.0
         self.fineLengthY = (length.tolist())[1] + 10.0
         self.fineLengthZ = (length.tolist())[2] + 10.0
 
-        
-    
     def __init__(self, name='Default', **kw):
         """Constructor for class APBSParams"""
         from mglutil.util.packageFilePath import getBinary, findFilePath, which
-        if not hasattr(self,'APBS_Path'):
+        if not hasattr(self, 'APBS_Path'):
             try:
                 self.APBS_Path = getBinary("apbs", 'binaries')
             except ImportError:
                 self.APBS_Path = None
             if not self.APBS_Path:
                 self.APBS_Path = which('apbs')
-                 
-        self.pdb2pqr_Path = findFilePath('pdb2pqr.py','MolKit.pdb2pqr')
-        self.name = name    # name of the APBS Param instance
-        
+
+        self.pdb2pqr_Path = findFilePath('pdb2pqr.py', 'MolKit.pdb2pqr')
+        self.name = name  # name of the APBS Param instance
+
         self.pdb2pqr_ForceField = 'amber'
         self.calculationType = 'Electrostatic potential'
         self.pbeType = 'Linearized'
@@ -191,7 +185,7 @@ class APBSParams:
         self.zShiftedDielectricFile = ''
         self.kappaFunctionFile = ''
 
-        #Grid parameters
+        # Grid parameters
         self.gridPointsX = 65
         self.gridPointsY = 65
         self.gridPointsZ = 65
@@ -221,8 +215,8 @@ class APBSParams:
     def Set(self, check=1, **kw):
         """Sets APBSParams member variable(s)"""
         if check:
-            checkKeywords(*('APBSParam object'+self.name,
-                                   self.keywords), **kw)
+            checkKeywords(*('APBSParam object' + self.name,
+                            self.keywords), **kw)
 
         val = kw.get('APBS_Path', None)
         if val:
@@ -236,7 +230,7 @@ class APBSParams:
         if val:
             if os.path.exists(val):
                 self.pdb2pqr_Path = val
-            
+
         val = kw.get('name', None)
         if val:
             self.name = val
@@ -245,7 +239,7 @@ class APBSParams:
         if val:
             assert val in ['amber', 'charmm', 'parse']
             self.pdb2pqr_ForceField = val
-        
+
         val = kw.get("projectFolder", None)
         if val:
             self.projectFolder = val
@@ -261,8 +255,8 @@ class APBSParams:
         val = kw.get('complexPath', None)
         if val:
             self.complexPath = val
-        
-        #Calculation parameters 
+
+        # Calculation parameters
 
         val = kw.get('calculationType', None)
         if val:
@@ -275,442 +269,430 @@ class APBSParams:
                 assert self.molecule2Path is not None
                 assert self.complexPath is not None
             self.calculationType = val
-            
-        val = kw.get('pbeType', None)            
+
+        val = kw.get('pbeType', None)
         if val:
             assert val in self.PBETYPES
             self.pbeType = val
 
-        val = kw.get('boundaryConditions', None)            
+        val = kw.get('boundaryConditions', None)
         if val:
             assert val in self.BOUNDARYTYPES
             self.boundaryConditions = val
-            
-        val = kw.get('chargeDiscretization', None)            
+
+        val = kw.get('chargeDiscretization', None)
         if val:
-            #assert val in self.CHARGEDISCRETIZATIONTYPES
+            # assert val in self.CHARGEDISCRETIZATIONTYPES
             self.chargeDiscretization = val
 
-        val = kw.get('surfaceCalculation', None)            
+        val = kw.get('surfaceCalculation', None)
         if val:
-            #assert val in self.SURFACECALCULATIONTYPES
+            # assert val in self.SURFACECALCULATIONTYPES
             self.surfaceCalculation = val
 
-        val = kw.get('sdens', None)            
+        val = kw.get('sdens', None)
         if val:
-            assert val != '' and (isinstance(val, float) or \
-                                isinstance(val, int)) and val > 0.0
+            assert val != '' and (isinstance(val, float) or isinstance(val, int)) and val > 0.0
             self.splineWindow = val
 
-        val = kw.get('splineWindow', None)            
+        val = kw.get('splineWindow', None)
         if val:
-            assert val != '' and (isinstance(val, float) or \
-                                isinstance(val, int)) and val > 0.0
+            assert val != '' and (isinstance(val, float) or isinstance(val, int)) and val > 0.0
             self.splineWindow = val
-            
-        val = kw.get('energyOutput', None)            
+
+        val = kw.get('energyOutput', None)
         if val:
             assert val in self.ENERGYOUTPUTTYPES
             self.energyOutput = val
 
-        val = kw.get('forceOutput', None)            
+        val = kw.get('forceOutput', None)
         if val:
             assert val in self.FORCEOUTPUTTYPES
             self.forceOutput = val
 
-        val = kw.get('chargeDistributionFile', None)            
-        if val:
-            assert val in self.FILETYPES
-            self.chargeDistributionFile = val
-            
-        val = kw.get('chargeDistributionFile', None)            
+        val = kw.get('chargeDistributionFile', None)
         if val:
             assert val in self.FILETYPES
             self.chargeDistributionFile = val
 
-        val = kw.get('potentialFile', None)            
+        val = kw.get('chargeDistributionFile', None)
+        if val:
+            assert val in self.FILETYPES
+            self.chargeDistributionFile = val
+
+        val = kw.get('potentialFile', None)
         if val:
             assert val in self.FILETYPES
             self.potentialFile = val
 
-        val = kw.get('solventAccessibilityFile', None)            
+        val = kw.get('solventAccessibilityFile', None)
         if val:
             assert val in self.FILETYPES
             self.solventAccessibilityFile = val
-            
-        val = kw.get('splineBasedAccessibilityFile', None)            
+
+        val = kw.get('splineBasedAccessibilityFile', None)
         if val:
             assert val in self.FILETYPES
             self.splineBasedAccessibilityFile = val
 
-        val = kw.get('VDWAccessibilityFile', None)            
+        val = kw.get('VDWAccessibilityFile', None)
         if val:
             assert val in self.FILETYPES
             self.VDWAccessibilityFile = val
 
-        val = kw.get('ionAccessibilityFile', None)            
+        val = kw.get('ionAccessibilityFile', None)
         if val:
             assert val in self.FILETYPES
             self.ionAccessibilityFile = val
 
-        val = kw.get('laplacianOfPotentialFile', None)            
+        val = kw.get('laplacianOfPotentialFile', None)
         if val:
             assert val in self.FILETYPES
             self.laplacianOfPotentialFile = val
 
-        val = kw.get('energyDensityFile', None)            
+        val = kw.get('energyDensityFile', None)
         if val:
             assert val in self.FILETYPES
             self.energyDensityFile = val
 
-        val = kw.get('ionNumberFile', None)            
+        val = kw.get('ionNumberFile', None)
         if val:
             assert val in self.FILETYPES
             self.ionNumberFile = val
 
-        val = kw.get('ionChargeDensityFile', None)            
+        val = kw.get('ionChargeDensityFile', None)
         if val:
             assert val in self.FILETYPES
             self.ionChargeDensityFile = val
 
-        val = kw.get('xShiftedDielectricFile', None)            
+        val = kw.get('xShiftedDielectricFile', None)
         if val:
             assert val in self.FILETYPES
             self.xShiftedDielectricFile = val
 
-        val = kw.get('yShiftedDielectricFile', None)            
+        val = kw.get('yShiftedDielectricFile', None)
         if val:
             assert val in self.FILETYPES
             self.yShiftedDielectricFile = val
 
-        val = kw.get('zShiftedDielectricFile', None)            
+        val = kw.get('zShiftedDielectricFile', None)
         if val:
             assert val in self.FILETYPES
             self.zShiftedDielectricFile = val
 
-        val = kw.get('kappaFunctionFile', None)            
+        val = kw.get('kappaFunctionFile', None)
         if val:
             assert val in self.FILETYPES
             self.kappaFunctionFile = val
 
-        #Grid parameters
-        val = kw.get('gridPointsX', None)            
+        # Grid parameters
+        val = kw.get('gridPointsX', None)
         if val:
             assert val in self.GRID_VALUES
             self.gridPointsX = val
 
-        val = kw.get('gridPointsY', None)            
+        val = kw.get('gridPointsY', None)
         if val:
             assert val in self.GRID_VALUES
             self.gridPointsY = val
 
-        val = kw.get('gridPointsZ', None)            
+        val = kw.get('gridPointsZ', None)
         if val:
             assert val in self.GRID_VALUES
             self.gridPointsZ = val
 
-        val = kw.get('coarseLengthX', None)            
+        val = kw.get('coarseLengthX', None)
         if val:
-            assert (isinstance(val, float) or isinstance(val, int))\
-                                                                   and val > 0.0
+            assert (isinstance(val, float) or isinstance(val, int)) and val > 0.0
             self.coarseLengthX = val
 
-        val = kw.get('coarseLengthY', None)            
+        val = kw.get('coarseLengthY', None)
         if val:
-            assert (isinstance(val, float) or isinstance(val, int))\
-                                                                   and val > 0.0
+            assert (isinstance(val, float) or isinstance(val, int)) and val > 0.0
             self.coarseLengthY = val
 
-        val = kw.get('coarseLengthZ', None)            
+        val = kw.get('coarseLengthZ', None)
         if val:
-            assert (isinstance(val, float) or isinstance(val, int))\
-                                                                   and val > 0.0
+            assert (isinstance(val, float) or isinstance(val, int)) and val > 0.0
             self.coarseLengthZ = val
 
-        val = kw.get('coarseCenterX', None)            
+        val = kw.get('coarseCenterX', None)
         if val:
             assert (isinstance(val, float) or isinstance(val, int))
             self.coarseCenterX = val
 
-        val = kw.get('coarseCenterY', None)            
+        val = kw.get('coarseCenterY', None)
         if val:
             assert (isinstance(val, float) or isinstance(val, int))
             self.coarseCenterY = val
 
-        val = kw.get('coarseCenterZ', None)            
+        val = kw.get('coarseCenterZ', None)
         if val:
             assert (isinstance(val, float) or isinstance(val, int))
             self.coarseCenterZ = val
 
-        val = kw.get('coarseCenterZ', None)            
+        val = kw.get('coarseCenterZ', None)
         if val:
             assert (isinstance(val, float) or isinstance(val, int))
             self.coarseCenterZ = val
 
-        val = kw.get('fineLengthX', None)            
+        val = kw.get('fineLengthX', None)
         if val:
-            assert (isinstance(val, float) or isinstance(val, int))\
-                                                                   and val > 0.0
+            assert (isinstance(val, float) or isinstance(val, int)) and val > 0.0
             self.fineLengthX = val
 
-        val = kw.get('fineLengthY', None)            
+        val = kw.get('fineLengthY', None)
         if val:
-            assert (isinstance(val, float) or isinstance(val, int))\
-                                                                   and val > 0.0
+            assert (isinstance(val, float) or isinstance(val, int)) and val > 0.0
             self.fineLengthY = val
 
-        val = kw.get('fineLengthZ', None)            
+        val = kw.get('fineLengthZ', None)
         if val:
-            assert (isinstance(val, float) or isinstance(val, int))\
-                                                                   and val > 0.0
+            assert (isinstance(val, float) or isinstance(val, int)) and val > 0.0
             self.fineLengthZ = val
 
-        val = kw.get('fineCenterX', None)            
+        val = kw.get('fineCenterX', None)
         if val:
             assert (isinstance(val, float) or isinstance(val, int))
             self.fineCenterX = val
 
-        val = kw.get('fineCenterY', None)            
+        val = kw.get('fineCenterY', None)
         if val:
             assert (isinstance(val, float) or isinstance(val, int))
             self.fineCenterY = val
 
-        val = kw.get('fineCenterZ', None)            
+        val = kw.get('fineCenterZ', None)
         if val:
             assert (isinstance(val, float) or isinstance(val, int))
             self.fineCenterZ = val
 
-        #Physical parameters       
-        val = kw.get('proteinDielectric', None)            
+        # Physical parameters
+        val = kw.get('proteinDielectric', None)
         if val:
             assert isinstance(val, float)
             self.proteinDielectric = val
 
-        val = kw.get('solventDielectric', None)            
+        val = kw.get('solventDielectric', None)
         if val:
             assert (isinstance(val, float) or isinstance(val, int))
             self.solventDielectric = val
 
-        val = kw.get('solventRadius', None)            
+        val = kw.get('solventRadius', None)
         if val:
-            assert (isinstance(val, float) or isinstance(val, int))\
-                                                                   and val > 0.0
+            assert (isinstance(val, float) or isinstance(val, int)) and val > 0.0
             self.solventRadius = val
 
-        val = kw.get('systemTemperature', None)            
+        val = kw.get('systemTemperature', None)
         if val:
-            assert (isinstance(val, float) or isinstance(val, int))\
-                                                                   and val > 0.0
+            assert (isinstance(val, float) or isinstance(val, int)) and val > 0.0
             self.systemTemperature = val
 
-        val = kw.get('ions', [])            
+        val = kw.get('ions', [])
         for ion in val:
             assert ion.__doc__ == Ion.__doc__
             self.ions.append(ion)
-
 
     def apbsWriteCalculationParams(self, fp, molname):
         """None <--- apbsWriteCalculationParams(fp)\n
            Writes APBS Calculation Parameters into fp\n
         """
-        if(self.pbeType=='Linearized'):
+        if self.pbeType == 'Linearized':
             fp.write('\tlpbe\n')
         else:
             fp.write('\tnpbe\n')
-            
-        if(self.boundaryConditions=='Zero E'):
-            fp.write('\tbcfl zero\n')
-        elif(self.boundaryConditions=='Single Debye-Huckel'):
-            fp.write('\tbcfl sdh\n')
-        else: fp.write('\tbcfl mdh\n')
 
-        if(self.chargeDiscretization=='Trilinear hat-function'):
+        if self.boundaryConditions == 'Zero E':
+            fp.write('\tbcfl zero\n')
+        elif self.boundaryConditions == 'Single Debye-Huckel':
+            fp.write('\tbcfl sdh\n')
+        else:
+            fp.write('\tbcfl mdh\n')
+
+        if self.chargeDiscretization == 'Trilinear hat-function':
             fp.write('\tchgm spl0\n')
         elif self.chargeDiscretization == 'Cubic B-spline':
             fp.write('\tchgm spl2\n')
         else:
             fp.write('\tchgm spl4\n')
-        
-        
-        if(self.surfaceCalculation=='No smoothing'):
+
+        if self.surfaceCalculation == 'No smoothing':
             fp.write('\tsrfm mol\n')
-            fp.write('\tsdens %.3f\n'%(self.sdens))
-        elif(self.surfaceCalculation=='Harmonic Average'):
+            fp.write('\tsdens %.3f\n' % self.sdens)
+        elif self.surfaceCalculation == 'Harmonic Average':
             fp.write('\tsrfm smol\n')
-            fp.write('\tsdens %.3f\n'%(self.sdens))
+            fp.write('\tsdens %.3f\n' % self.sdens)
         elif self.surfaceCalculation == 'Cubic B-spline':
             fp.write('\tsrfm spl2\n')
-            fp.write('\tswin %.3f\n'%(self.splineWindow))
+            fp.write('\tswin %.3f\n' % self.splineWindow)
         else:
             fp.write('\tsrfm spl4\n')
-            fp.write('\tswin %.3f\n'%(self.splineWindow))
-        
-                        
-        if(self.energyOutput==''):
-            fp.write('\tcalcenergy no\n')
-        elif(self.energyOutput=='Total'):
-            fp.write('\tcalcenergy total\n')
-        else: fp.write('\tcalcenergy comps\n')
+            fp.write('\tswin %.3f\n' % self.splineWindow)
 
-        if(self.forceOutput==''):
+        if self.energyOutput == '':
+            fp.write('\tcalcenergy no\n')
+        elif self.energyOutput == 'Total':
+            fp.write('\tcalcenergy total\n')
+        else:
+            fp.write('\tcalcenergy comps\n')
+
+        if self.forceOutput == '':
             fp.write('\tcalcforce no\n')
-        elif(self.forceOutput=='Total'):
+        elif self.forceOutput == 'Total':
             fp.write('\tcalcforce total\n')
-        else: fp.write('\tcalcforce comps\n')
+        else:
+            fp.write('\tcalcforce comps\n')
 
         tempFileString = molname + '.chargeDistribution'
-        if  (self.chargeDistributionFile=='OpenDX'):    
-            fp.write('\twrite charge dx %s\n'  % tempFileString)
-        elif(self.chargeDistributionFile=='AVS UCD'):
+        if self.chargeDistributionFile == 'OpenDX':
+            fp.write('\twrite charge dx %s\n' % tempFileString)
+        elif self.chargeDistributionFile == 'AVS UCD':
             fp.write('\twrite charge avs %s\n' % tempFileString)
-        elif(self.chargeDistributionFile=='UHBD'):
-            fp.write('\twrite charge uhbd %s\n'%tempFileString)
+        elif self.chargeDistributionFile == 'UHBD':
+            fp.write('\twrite charge uhbd %s\n' % tempFileString)
 
-        tempFileString = molname +'.potential'
-        if  (self.potentialFile=='OpenDX'):
-            fp.write('\twrite pot dx %s\n'  % tempFileString)
-        elif(self.potentialFile=='AVS UCD'):
+        tempFileString = molname + '.potential'
+        if self.potentialFile == 'OpenDX':
+            fp.write('\twrite pot dx %s\n' % tempFileString)
+        elif self.potentialFile == 'AVS UCD':
             fp.write('\twrite pot avs %s\n' % tempFileString)
-        elif(self.potentialFile=='UHBD'):
-            fp.write('\twrite pot uhbd %s\n'%tempFileString)
+        elif self.potentialFile == 'UHBD':
+            fp.write('\twrite pot uhbd %s\n' % tempFileString)
 
         tempFileString = molname + '.solventAccessibility'
-        if  (self.solventAccessibilityFile=='OpenDX'):
-            fp.write('\twrite smol dx %s\n'  % tempFileString)
-        elif(self.solventAccessibilityFile=='AVS UCD'):
+        if self.solventAccessibilityFile == 'OpenDX':
+            fp.write('\twrite smol dx %s\n' % tempFileString)
+        elif self.solventAccessibilityFile == 'AVS UCD':
             fp.write('\twrite smol avs %s\n' % tempFileString)
-        elif(self.solventAccessibilityFile=='UHBD'):
-            fp.write('\twrite smol uhbd %s\n'%tempFileString)
+        elif self.solventAccessibilityFile == 'UHBD':
+            fp.write('\twrite smol uhbd %s\n' % tempFileString)
 
         tempFileString = molname + '.splineBasedAccessibility'
-        if (self.splineBasedAccessibilityFile=='OpenDX'):
-            fp.write('\twrite sspl dx %s\n'  % tempFileString)
-        elif(self.splineBasedAccessibilityFile=='AVS UCD'):
+        if self.splineBasedAccessibilityFile == 'OpenDX':
+            fp.write('\twrite sspl dx %s\n' % tempFileString)
+        elif self.splineBasedAccessibilityFile == 'AVS UCD':
             fp.write('\twrite sspl avs %s\n' % tempFileString)
-        elif(self.splineBasedAccessibilityFile=='UHBD'):
-            fp.write('\twrite sspl uhbd %s\n'% tempFileString)
+        elif self.splineBasedAccessibilityFile == 'UHBD':
+            fp.write('\twrite sspl uhbd %s\n' % tempFileString)
 
         tempFileString = molname + '.VDWAccessibility'
-        if  (self.VDWAccessibilityFile=='OpenDX'): 
-            fp.write('\twrite vdw dx %s\n'  % tempFileString)
-        elif(self.VDWAccessibilityFile=='AVS UCD'):
+        if self.VDWAccessibilityFile == 'OpenDX':
+            fp.write('\twrite vdw dx %s\n' % tempFileString)
+        elif self.VDWAccessibilityFile == 'AVS UCD':
             fp.write('\twrite vdw avs %s\n' % tempFileString)
-        elif(self.VDWAccessibilityFile=='UHBD'):
-            fp.write('\twrite vdw uhbd %s\n'% tempFileString)
+        elif self.VDWAccessibilityFile == 'UHBD':
+            fp.write('\twrite vdw uhbd %s\n' % tempFileString)
 
         tempFileString = molname + '.ionAccessibility'
-        if  (self.ionAccessibilityFile=='OpenDX'):
-            fp.write('\twrite ivdw dx %s\n'  % tempFileString)
-        elif(self.ionAccessibilityFile=='AVS UCD'):
+        if self.ionAccessibilityFile == 'OpenDX':
+            fp.write('\twrite ivdw dx %s\n' % tempFileString)
+        elif self.ionAccessibilityFile == 'AVS UCD':
             fp.write('\twrite ivdw avs %s\n' % tempFileString)
-        elif(self.ionAccessibilityFile=='UHBD'):
-            fp.write('\twrite ivdw uhbd %s\n'% tempFileString)
+        elif self.ionAccessibilityFile == 'UHBD':
+            fp.write('\twrite ivdw uhbd %s\n' % tempFileString)
 
         tempFileString = molname + '.laplacianOfPotential'
-        if  (self.laplacianOfPotentialFile=='OpenDX'):
-            fp.write('\twrite lap dx %s\n'  % tempFileString)
-        elif(self.laplacianOfPotentialFile=='AVS UCD'):
+        if self.laplacianOfPotentialFile == 'OpenDX':
+            fp.write('\twrite lap dx %s\n' % tempFileString)
+        elif self.laplacianOfPotentialFile == 'AVS UCD':
             fp.write('\twrite lap avs %s\n' % tempFileString)
-        elif(self.laplacianOfPotentialFile=='UHBD'):
-            fp.write('\twrite lap uhbd %s\n'% tempFileString)
+        elif self.laplacianOfPotentialFile == 'UHBD':
+            fp.write('\twrite lap uhbd %s\n' % tempFileString)
 
         tempFileString = molname + '.energyDensity'
-        if  (self.energyDensityFile=='OpenDX'): 
-            fp.write('\twrite edens dx %s\n'  % tempFileString)
-        elif(self.energyDensityFile=='AVS UCD'): 
+        if self.energyDensityFile == 'OpenDX':
+            fp.write('\twrite edens dx %s\n' % tempFileString)
+        elif self.energyDensityFile == 'AVS UCD':
             fp.write('\twrite edens avs %s\n' % tempFileString)
-        elif(self.energyDensityFile=='UHBD'):
-            fp.write('\twrite edens uhbd %s\n'% tempFileString)
+        elif self.energyDensityFile == 'UHBD':
+            fp.write('\twrite edens uhbd %s\n' % tempFileString)
 
-        tempFileString = molname +'.ionNumber'
-        if  (self.ionNumberFile=='OpenDX'):
-            fp.write('\twrite ndens dx %s\n'  % tempFileString)
-        elif(self.ionNumberFile=='AVS UCD'): 
+        tempFileString = molname + '.ionNumber'
+        if self.ionNumberFile == 'OpenDX':
+            fp.write('\twrite ndens dx %s\n' % tempFileString)
+        elif self.ionNumberFile == 'AVS UCD':
             fp.write('\twrite ndens avs %s\n' % tempFileString)
-        elif(self.ionNumberFile=='UHBD'): 
-            fp.write('\twrite ndens uhbd %s\n'% tempFileString)
+        elif self.ionNumberFile == 'UHBD':
+            fp.write('\twrite ndens uhbd %s\n' % tempFileString)
 
         tempFileString = molname + '.ionChargeDensity'
-        if  (self.ionChargeDensityFile=='OpenDX'):
-            fp.write('\twrite qdens dx %s\n'  % tempFileString)
-        elif(self.ionChargeDensityFile=='AVS UCD'):
+        if self.ionChargeDensityFile == 'OpenDX':
+            fp.write('\twrite qdens dx %s\n' % tempFileString)
+        elif self.ionChargeDensityFile == 'AVS UCD':
             fp.write('\twrite qdens avs %s\n' % tempFileString)
-        elif(self.ionChargeDensityFile=='UHBD'):
-            fp.write('\twrite qdens uhbd %s\n'% tempFileString)
+        elif self.ionChargeDensityFile == 'UHBD':
+            fp.write('\twrite qdens uhbd %s\n' % tempFileString)
 
         tempFileString = molname + '.xShiftedDielectric'
-        if  (self.xShiftedDielectricFile=='OpenDX'):
-            fp.write('\twrite dielx dx %s\n'  % tempFileString)
-        elif(self.xShiftedDielectricFile=='AVS UCD'):
+        if self.xShiftedDielectricFile == 'OpenDX':
+            fp.write('\twrite dielx dx %s\n' % tempFileString)
+        elif self.xShiftedDielectricFile == 'AVS UCD':
             fp.write('\twrite dielx avs %s\n' % tempFileString)
-        elif(self.xShiftedDielectricFile=='UHBD'):
-            fp.write('\twrite dielx uhbd %s\n'% tempFileString)
+        elif self.xShiftedDielectricFile == 'UHBD':
+            fp.write('\twrite dielx uhbd %s\n' % tempFileString)
 
         tempFileString = molname + '.yShiftedDielectric'
-        if  (self.yShiftedDielectricFile=='OpenDX'):
-            fp.write('\twrite diely dx %s\n'  % tempFileString)
-        elif(self.yShiftedDielectricFile=='AVS UCD'):
+        if self.yShiftedDielectricFile == 'OpenDX':
+            fp.write('\twrite diely dx %s\n' % tempFileString)
+        elif self.yShiftedDielectricFile == 'AVS UCD':
             fp.write('\twrite diely avs %s\n' % tempFileString)
-        elif(self.yShiftedDielectricFile=='UHBD'):
-            fp.write('\twrite diely uhbd %s\n'%tempFileString)
+        elif self.yShiftedDielectricFile == 'UHBD':
+            fp.write('\twrite diely uhbd %s\n' % tempFileString)
 
         tempFileString = molname + '.zShiftedDielectric'
-        if  (self.zShiftedDielectricFile=='OpenDX'): 
-            fp.write('\twrite dielz dx %s\n'  % tempFileString)
-        elif(self.zShiftedDielectricFile=='AVS UCD'):
+        if self.zShiftedDielectricFile == 'OpenDX':
+            fp.write('\twrite dielz dx %s\n' % tempFileString)
+        elif self.zShiftedDielectricFile == 'AVS UCD':
             fp.write('\twrite dielz avs %s\n' % tempFileString)
-        elif(self.zShiftedDielectricFile=='UHBD'):
-            fp.write('\twrite dielz uhbd %s\n'%tempFileString)
+        elif self.zShiftedDielectricFile == 'UHBD':
+            fp.write('\twrite dielz uhbd %s\n' % tempFileString)
 
         tempFileString = molname + '.kappaFunction'
-        if  (self.kappaFunctionFile=='OpenDX'):
-            fp.write('\twrite kappa dx %s\n'  % tempFileString)
-        elif(self.kappaFunctionFile=='AVS UCD'):
+        if self.kappaFunctionFile == 'OpenDX':
+            fp.write('\twrite kappa dx %s\n' % tempFileString)
+        elif self.kappaFunctionFile == 'AVS UCD':
             fp.write('\twrite kappa avs %s\n' % tempFileString)
-        elif(self.kappaFunctionFile=='UHBD'):
-            fp.write('\twrite kappa uhbd %s\n'%tempFileString)
+        elif self.kappaFunctionFile == 'UHBD':
+            fp.write('\twrite kappa uhbd %s\n' % tempFileString)
         fp.write('\n')
 
     def apbsWriteGridParams(self, fp):
         """None <--- apbsWriteGridParams(fp)\n
            Writes APBS Grid Parameters into fp\n
         """
-        fp.write('\tdime %d %d %d\n\n'%(
-            self.gridPointsX,self.gridPointsY, self.gridPointsZ))
-        fp.write('\tcglen %.3f %.3f %.3f\n'%(
-            self.coarseLengthX,self.coarseLengthY, self.coarseLengthZ))
-        fp.write('\tcgcent %.3f %.3f %.3f\n'%(
-            self.coarseCenterX,self.coarseCenterY, self.coarseCenterZ))
-        fp.write('\tfglen %.3f %.3f %.3f\n'%(
-            self.fineLengthX,self.fineLengthY, self.fineLengthZ))
-        fp.write('\tfgcent %.3f %.3f %.3f\n'%(
-            self.fineCenterX,self.fineCenterY, self.fineCenterZ))
+        fp.write('\tdime %d %d %d\n\n' % (
+            self.gridPointsX, self.gridPointsY, self.gridPointsZ))
+        fp.write('\tcglen %.3f %.3f %.3f\n' % (
+            self.coarseLengthX, self.coarseLengthY, self.coarseLengthZ))
+        fp.write('\tcgcent %.3f %.3f %.3f\n' % (
+            self.coarseCenterX, self.coarseCenterY, self.coarseCenterZ))
+        fp.write('\tfglen %.3f %.3f %.3f\n' % (
+            self.fineLengthX, self.fineLengthY, self.fineLengthZ))
+        fp.write('\tfgcent %.3f %.3f %.3f\n' % (
+            self.fineCenterX, self.fineCenterY, self.fineCenterZ))
         fp.write('\n')
-
 
     def apbsWritePhysicsParams(self, fp):
         """None <--- apbsWritePhysicsParams(fp)\n
            Writes APBS Physics Parameters into fp\n
         """
-        #fp.write('\tgamma %.3f\n'%(self.GAMMA)) # NOTE: CONSTANT
-        fp.write('\ttemp %.3f\n'%(self.systemTemperature))
-        fp.write('\tsrad %.3f\n'%(self.solventRadius))
-        fp.write('\tsdie %.3f\n'%(self.solventDielectric))
-        fp.write('\tpdie %.3f\n'%(self.proteinDielectric))
+        # fp.write('\tgamma %.3f\n'%(self.GAMMA)) # NOTE: CONSTANT
+        fp.write('\ttemp %.3f\n' % self.systemTemperature)
+        fp.write('\tsrad %.3f\n' % self.solventRadius)
+        fp.write('\tsdie %.3f\n' % self.solventDielectric)
+        fp.write('\tpdie %.3f\n' % self.proteinDielectric)
         for i in range(0, len(self.ions)):
-            fp.write('\tion %s\n'%(self.ions[i].toString()))
+            fp.write('\tion %s\n' % (self.ions[i].toString()))
         if self.saltConcentration:
-            fp.write('\tion 1.000, %.3f, 2.000\n'%(self.saltConcentration))
-            fp.write('\tion -1.000, %.3f, 2.000\n'%(self.saltConcentration))
+            fp.write('\tion 1.000, %.3f, 2.000\n' % self.saltConcentration)
+            fp.write('\tion -1.000, %.3f, 2.000\n' % self.saltConcentration)
         fp.write('\n')
-
 
     def apbsWriteSolvationEnergy(self, fp):
         """None <--- apbsWriteSolvationEnergy(fp)\n
            Writes APBS Solvation Energy Parameters into fp\n
         """
         fp.write('READ\n')
-        fp.write('\tmol pqr %s\n'%(self.molecule1Path))
+        fp.write('\tmol pqr %s\n' % self.molecule1Path)
         fp.write('END\n\n')
         fp.write('ELEC\n')
         fp.write('\tmg-auto\n')
@@ -747,15 +729,15 @@ class APBSParams:
            Writes APBS Binding Energy Parameters into fp\n
         """
         fp.write('READ\n')
-        fp.write('\tmol pqr %s\n'%(self.molecule1Path))
-        fp.write('\tmol pqr %s\n'%(self.molecule2Path))
-        fp.write('\tmol pqr %s\n'%(self.complexPath))
+        fp.write('\tmol pqr %s\n' % self.molecule1Path)
+        fp.write('\tmol pqr %s\n' % self.molecule2Path)
+        fp.write('\tmol pqr %s\n' % self.complexPath)
         fp.write('END\n\n')
         fp.write('ELEC\n')
         fp.write('\tmg-auto\n')
         fp.write('\tmol 1\n')
         file_name, ext = os.path.splitext(self.molecule1Path)
-        mol_name = os.path.split(file_name)[-1]        
+        mol_name = os.path.split(file_name)[-1]
         self.apbsWriteCalculationParams(fp, mol_name)
         self.apbsWriteGridParams(fp)
         self.apbsWritePhysicsParams(fp)
@@ -788,13 +770,13 @@ class APBSParams:
            Writes APBS Electrostatic Potential Parameters into fp\n
         """
         fp.write('READ\n')
-        fp.write('\tmol pqr %s\n'%(self.molecule1Path))
+        fp.write('\tmol pqr %s\n' % self.molecule1Path)
         fp.write('END\n\n')
         fp.write('ELEC\n')
         fp.write('\tmg-auto\n')
         fp.write('\tmol 1\n')
         file_name, ext = os.path.splitext(self.molecule1Path)
-        mol_name = os.path.split(file_name)[-1]        
+        mol_name = os.path.split(file_name)[-1]
         self.apbsWriteCalculationParams(fp, mol_name)
         self.apbsWriteGridParams(fp)
         self.apbsWritePhysicsParams(fp)
@@ -809,9 +791,10 @@ class APBSParams:
            Saves APBS Input Parameters in a file named filename \n
         """
         fp = open(filename, 'wb+')
-        if(self.calculationType=='Solvation energy'):
+        if self.calculationType == 'Solvation energy':
             self.apbsWriteSolvationEnergy(fp)
-        elif(self.calculationType=='Binding energy'):
+        elif self.calculationType == 'Binding energy':
             self.apbsWriteBindingEnergy(fp)
-        else: self.apbsWriteElectrostaticPotential(fp)
+        else:
+            self.apbsWriteElectrostaticPotential(fp)
         fp.close()
