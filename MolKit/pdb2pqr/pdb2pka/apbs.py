@@ -1,16 +1,3 @@
-"""
-    APBS interface for PDB2PQR
-
-    Todd Dolinsky (todd@ccb.wustl.edu)
-    Washington University in St. Louis
-
-    Jens Erik Nielsen
-
-"""
-
-__date__  = "16 August 2005"
-__author__ = "Todd Dolinsky, Jens Erik Nielsen"
-
 # ##################################################################################################
 #  Disclaimer                                                                                      #
 #  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
@@ -22,12 +9,27 @@ __author__ = "Todd Dolinsky, Jens Erik Nielsen"
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
+#  Modification date: 4/5/20 13:42                                                                 #
 #                                                                                                  #
 # ##################################################################################################
 
+"""
+    APBS interface for PDB2PQR
+
+    Todd Dolinsky (todd@ccb.wustl.edu)
+    Washington University in St. Louis
+
+    Jens Erik Nielsen
+
+"""
+
+__date__ = "16 August 2005"
+__author__ = "Todd Dolinsky, Jens Erik Nielsen"
+
+
 import sys
 import time
+
 try:
     from apbslib import *
 except:
@@ -37,7 +39,8 @@ except:
     print()
     print('Missing libraries for interfacing with APBS')
     print()
-    print('You need to find apbslib.so, _apbslib.so and apbslib.py and symlink into the pdb2pqr/pKa source code directory')
+    print(
+        'You need to find apbslib.so, _apbslib.so and apbslib.py and symlink into the pdb2pqr/pKa source code directory')
     print('The files can be found in the tools/python dir of your apbs installation')
     print()
     sys.exit(0)
@@ -47,13 +50,14 @@ Python_Na = 6.0221367e+23
 NOSH_MAXMOL = 20
 NOSH_MAXCALC = 20
 
+
 class APBSError(Exception):
     """ APBSError class
 
         The APBSError class inherits off the Exception module and returns
         a string defining the nature of the error. 
     """
-    
+
     def __init__(self, value):
         """
             Initialize with error message
@@ -62,12 +66,13 @@ class APBSError(Exception):
                 value:  Error Message (string)
         """
         self.value = value
-        
+
     def __str__(self):
         """
             Return the error message
         """
         return repr(self.value)
+
 
 def getUnitConversion():
     """
@@ -77,8 +82,9 @@ def getUnitConversion():
             factor: The conversion factor (float)
     """
     temp = 298.15
-    factor = Python_kb/1000.0 * temp * Python_Na
+    factor = Python_kb / 1000.0 * temp * Python_Na
     return factor
+
 
 def runAPBS(protein, inputpath):
     """
@@ -92,8 +98,8 @@ def runAPBS(protein, inputpath):
                         locations - one list for each APBS
                         calculation
     """
-    #print protein
-    #print inputpath
+    # print protein
+    # print inputpath
 
     # Initialize the MALOC library
     startVio()
@@ -115,20 +121,20 @@ def runAPBS(protein, inputpath):
     z = []
     chg = []
     rad = []
-    #nforce = int_array(NOSH_MAXCALC)
-    #atomforce = new_atomforcelist(NOSH_MAXCALC)
-    #nfor = ptrcreate("int",0)
-    
+    # nforce = int_array(NOSH_MAXCALC)
+    # atomforce = new_atomforcelist(NOSH_MAXCALC)
+    # nfor = ptrcreate("int",0)
+
     # Start the main timer
     main_timer_start = time.clock()
 
     # Check invocation
-    #stdout.write(getHeader())
+    # stdout.write(getHeader())
 
     # Parse the input file
     nosh = NOsh_ctor(rank, size)
-    #nosh = NOsh()
-    #NOsh_ctor2(nosh, rank, size)
+    # nosh = NOsh()
+    # NOsh_ctor2(nosh, rank, size)
     sys.stdout.write("Parsing input file %s...\n" % inputpath)
     if NOsh_parseFile(nosh, inputpath) != 1:
         sys.stderr.write("main:  Error while parsing input file.\n")
@@ -146,28 +152,28 @@ def runAPBS(protein, inputpath):
         z.append(atom.get("z"))
         chg.append(atom.get("ffcharge"))
         rad.append(atom.get("radius"))
-  
-    myAlist = make_Valist(alist,0)
-    Valist_load(myAlist, protsize, x,y,z,chg,rad) 
+
+    myAlist = make_Valist(alist, 0)
+    Valist_load(myAlist, protsize, x, y, z, chg, rad)
 
     # Initialize the energy holders
 
     for i in range(nosh.ncalc): totEnergy.append(0.0)
     potList = []
-    
+
     # Initialize the force holders
     forceList = []
-  
+
     # Load the dieletric maps
 
     dielXMap = new_gridlist(NOSH_MAXMOL)
     dielYMap = new_gridlist(NOSH_MAXMOL)
     dielZMap = new_gridlist(NOSH_MAXMOL)
-  
+
     if loadDielMaps(nosh, dielXMap, dielYMap, dielZMap) != 1:
         sys.stderr.write("Error reading dielectric maps!\n")
         raise APBSError("Error reading dielectric maps!")
- 
+
     # Load the kappa maps
     kappaMap = new_gridlist(NOSH_MAXMOL)
     if loadKappaMaps(nosh, kappaMap) != 1:
@@ -179,11 +185,11 @@ def runAPBS(protein, inputpath):
     if loadChargeMaps(nosh, chargeMap) != 1:
         sys.stderr.write("Error reading charge maps!\n")
         raise APBSError("Error reading charge maps!")
-    
+
     # Do the calculations
- 
+
     sys.stdout.write("Preparing to run %d PBE calculations. \n" % nosh.ncalc)
-   
+
     for icalc in range(nosh.ncalc):
         sys.stdout.write("---------------------------------------------\n")
         calc = NOsh_getCalc(nosh, icalc)
@@ -194,32 +200,32 @@ def runAPBS(protein, inputpath):
             raise APBSError("Only multigrid calculations supported!")
 
         for k in range(0, nosh.nelec):
-            if NOsh_elec2calc(nosh,k) >= icalc:
+            if NOsh_elec2calc(nosh, k) >= icalc:
                 break
 
-        name = NOsh_elecname(nosh, k+1)
+        name = NOsh_elecname(nosh, k + 1)
         if name == "":
-            sys.stdout.write("CALCULATION #%d:  MULTIGRID\n" % (icalc+1))
+            sys.stdout.write("CALCULATION #%d:  MULTIGRID\n" % (icalc + 1))
         else:
-            sys.stdout.write("CALCULATION #%d (%s): MULTIGRID\n" % ((icalc+1),name))
+            sys.stdout.write("CALCULATION #%d (%s): MULTIGRID\n" % ((icalc + 1), name))
         sys.stdout.write("Setting up problem...\n")
-	
+
         # Routine initMG
-	
-        if initMG(icalc, nosh, mgparm, pbeparm, realCenter, pbe, 
-              alist, dielXMap, dielYMap, dielZMap, kappaMap, chargeMap, 
-              pmgp, pmg) != 1:
+
+        if initMG(icalc, nosh, mgparm, pbeparm, realCenter, pbe,
+                  alist, dielXMap, dielYMap, dielZMap, kappaMap, chargeMap,
+                  pmgp, pmg) != 1:
             sys.stderr.write("Error setting up MG calculation!\n")
             raise APBSError("Error setting up MG calculation!")
-	
+
         # Print problem parameters 
-	
+
         printMGPARM(mgparm, realCenter)
         printPBEPARM(pbeparm)
-	
+
         # Solve the problem : Routine solveMG
-	
-        thispmg = get_Vpmg(pmg,icalc)
+
+        thispmg = get_Vpmg(pmg, icalc)
 
         if solveMG(nosh, thispmg, mgparm.type) != 1:
             stderr.write("Error solving PDE! \n")
@@ -230,28 +236,28 @@ def runAPBS(protein, inputpath):
         if setPartMG(nosh, mgparm, thispmg) != 1:
             sys.stderr.write("Error setting partition info!\n")
             raise APBSError("Error setting partition info!")
-	
+
         ret, totEnergy[icalc] = energyMG(nosh, icalc, thispmg, 0,
                                          totEnergy[icalc], 0.0, 0.0, 0.0)
-	
+
         # Set partition information
 
-        #aforce = get_AtomForce(atomforce, icalc)
-        #forceMG(mem, nosh, pbeparm, mgparm, thispmg, nfor, aforce, alist)
-        #ptrset(nforce,ptrvalue(nfor), icalc)
-	
+        # aforce = get_AtomForce(atomforce, icalc)
+        # forceMG(mem, nosh, pbeparm, mgparm, thispmg, nfor, aforce, alist)
+        # ptrset(nforce,ptrvalue(nfor), icalc)
+
         # Write out data from MG calculations : Routine writedataMG	
         writedataMG(rank, nosh, pbeparm, thispmg)
-	
+
         # Write out matrix from MG calculations	
         writematMG(rank, nosh, pbeparm, thispmg)
 
         # GET THE POTENTIALS
-              
+
         potentials = getPotentials(nosh, pbeparm, thispmg, myAlist)
-        #print potentials
+        # print potentials
         potList.append(potentials)
-        
+
     # Handle print statements
 
     if nosh.nprint > 0:
@@ -270,8 +276,8 @@ def runAPBS(protein, inputpath):
     sys.stdout.write("CLEANING UP AND SHUTTING DOWN...\n")
 
     # Clean up APBS structures
-    
-    #killForce(mem, nosh, nforce, atomforce)
+
+    # killForce(mem, nosh, nforce, atomforce)
     killEnergy()
     killMG(nosh, pbe, pmgp, pmg)
     killChargeMaps(nosh, chargeMap)
@@ -282,10 +288,10 @@ def runAPBS(protein, inputpath):
 
     # Clean up Python structures
 
-    #ptrfree(nfor)
+    # ptrfree(nfor)
     delete_double_array(realCenter)
-    #delete_int_array(nforce)
-    #delete_atomforcelist(atomforce)
+    # delete_int_array(nforce)
+    # delete_atomforcelist(atomforce)
     delete_valist(alist)
     delete_gridlist(dielXMap)
     delete_gridlist(dielYMap)
@@ -295,12 +301,11 @@ def runAPBS(protein, inputpath):
     delete_pmglist(pmg)
     delete_pmgplist(pmgp)
     delete_pbelist(pbe)
-    
-    
+
     # Clean up MALOC structures
     del com
     del mem
-    
+
     sys.stdout.write("\n")
     sys.stdout.write("Thanks for using APBS!\n\n")
 
@@ -308,7 +313,7 @@ def runAPBS(protein, inputpath):
     main_timer_stop = time.clock()
     sys.stdout.write("Total execution time:  %1.6e sec\n" % (main_timer_stop - main_timer_start))
 
-    #Return potentials
-    #print potList
+    # Return potentials
+    # print potList
 
     return potList
