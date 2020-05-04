@@ -22,17 +22,18 @@ __author__ = "Mike Bradley, Todd Dolinsky"
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
+#  Modification date: 4/5/20 3:28                                                                  #
 #                                                                                                  #
 # ##################################################################################################
 
-from src.utilities import *
-from src.routines import *
+from ..src.utilities import *
+
 
 def usage():
-    str  = "        --psi         :  Print the per-residue backbone psi\n"
-    str += "                         angle to {output-path}.psi\n"
-    return str
+    text = "        --psi         :  Print the per-residue backbone psi\n"
+    text += "                         angle to {output-path}.psi\n"
+    return text
+
 
 def psi(routines, outroot):
     """
@@ -49,28 +50,35 @@ def psi(routines, outroot):
     routines.write("\nPrinting psi angles for each residue...\n")
     routines.write("Residue     Psi\n")
     routines.write("----------------\n")
-    
+
     # Initialize some variables
 
     protein = routines.protein
 
     for residue in protein.getResidues():
-        if residue.hasAtom("N"): ncoords = residue.getAtom("N").getCoords()
-        else: continue
+        if residue.hasAtom("N"):
+            ncoords = residue.getAtom("N").getCoords()
+        else:
+            continue
 
-        if residue.hasAtom("CA"): cacoords = residue.getAtom("CA").getCoords()
-        else: continue
+        if residue.hasAtom("CA"):
+            cacoords = residue.getAtom("CA").getCoords()
+        else:
+            continue
 
-        if residue.hasAtom("C"): ccoords = residue.getAtom("C").getCoords()
-        else: continue
+        if residue.hasAtom("C"):
+            ccoords = residue.getAtom("C").getCoords()
+        else:
+            continue
 
         try:
-            if residue.peptideN != None:
+            if residue.peptideN is not None:
                 pepcoords = residue.peptideN.getCoords()
-            else: continue
-        except AttributeError: # Non amino acids
+            else:
+                continue
+        except AttributeError:  # Non amino acids
             continue
-        
+
         psi = getDihedral(ncoords, cacoords, ccoords, pepcoords)
         routines.write("%s\t%.4f\n" % (residue, psi))
         file.write("%s\t%.4f\n" % (residue, psi))
