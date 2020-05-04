@@ -26,7 +26,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dade6379-1666-4ac7-9de4-69950a5437c6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/MolKit/sdfParser.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/sdfParser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/stringSelector.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/stringSelector.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,7 +53,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/PROSS.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/stringSelector.py" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -63,7 +63,7 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/PROSS.py" />
+    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/stringSelector.py" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -211,28 +211,7 @@
       <option name="presentableId" value="Default" />
       <updated>1588466872659</updated>
       <workItem from="1588466873766" duration="21530000" />
-      <workItem from="1588561745843" duration="11253000" />
-    </task>
-    <task id="LOCAL-00014" summary="updated MolKit &gt; data &gt; all_aminoct94_dat.py">
-      <created>1588492023549</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1588492023549</updated>
-    </task>
-    <task id="LOCAL-00015" summary="updated MolKit &gt; data &gt; all_aminont94_dat.py">
-      <created>1588492056258</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1588492056258</updated>
-    </task>
-    <task id="LOCAL-00016" summary="updated MolKit &gt; data &gt; all_dat.py">
-      <created>1588492118464</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1588492118464</updated>
+      <workItem from="1588561745843" duration="11921000" />
     </task>
     <task id="LOCAL-00017" summary="updated MolKit &gt; data &gt; all_nuc94_dat.py">
       <created>1588492350112</created>
@@ -556,7 +535,28 @@
       <option name="project" value="LOCAL" />
       <updated>1588572890586</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="updated MolKit &gt; sdfParser.py">
+      <created>1588573021115</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1588573021115</updated>
+    </task>
+    <task id="LOCAL-00064" summary="updated MolKit &gt; sequence.py">
+      <created>1588573104890</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1588573104890</updated>
+    </task>
+    <task id="LOCAL-00065" summary="updated MolKit &gt; sets.py">
+      <created>1588573142079</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1588573142079</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -566,9 +566,6 @@
     <option name="UPDATE_COPYRIGHT" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="updated MolKit &gt; bondSelector.py" />
-    <MESSAGE value="updated MolKit &gt; chargeCalculator.py" />
-    <MESSAGE value="updated MolKit &gt; chargeMass.py" />
     <MESSAGE value="updated MolKit &gt; distanceSelector.py" />
     <MESSAGE value="updated MolKit &gt; GapFinder.py" />
     <MESSAGE value="updated MolKit &gt; genPdbParser.py" />
@@ -591,7 +588,10 @@
     <MESSAGE value="updated MolKit &gt; protein.py" />
     <MESSAGE value="updated MolKit &gt; radii_patterns.py" />
     <MESSAGE value="updated MolKit &gt; rotamerLib.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated MolKit &gt; rotamerLib.py" />
+    <MESSAGE value="updated MolKit &gt; sdfParser.py" />
+    <MESSAGE value="updated MolKit &gt; sequence.py" />
+    <MESSAGE value="updated MolKit &gt; sets.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated MolKit &gt; sets.py" />
   </component>
   <component name="WindowStateProjectService">
     <state x="586" y="198" key="#Inspections" timestamp="1588494675975">
@@ -610,18 +610,18 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="707" y="384" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.1040@0.0.1920.1040" timestamp="1588477911914" />
-    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2" timestamp="1588572889863">
+    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2" timestamp="1588573141427">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1588572889863" />
-    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog" timestamp="1588570487832">
+    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1588573141427" />
+    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog" timestamp="1588573679996">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588570487832" />
-    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1588570451737">
+    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588573679996" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1588573332498">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588570451737" />
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588573332498" />
     <state width="1877" height="161" key="GridCell.Tab.0.bottom" timestamp="1588572929368">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -646,10 +646,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1588568368447" />
-    <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1588566465074">
+    <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1588573679996">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588566465074" />
+    <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588573679996" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/AutoDockTools_py3$rotamerLib.coverage" NAME="rotamerLib Coverage Results" MODIFIED="1588572929364" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/MolKit" />
