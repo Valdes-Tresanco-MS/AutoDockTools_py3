@@ -1,3 +1,18 @@
+# ##################################################################################################
+#  Disclaimer                                                                                      #
+#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
+#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
+#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
+#  There is no guarantee that it works like the original distribution,                             #
+#  but feel free to tell us if you get any difference to correct the code.                         #
+#                                                                                                  #
+#  Please use this cite the original reference.                                                    #
+#  If you think my work helps you, just keep this note intact on your program.                     #
+#                                                                                                  #
+#  Modification date: 4/5/20 12:00                                                                 #
+#                                                                                                  #
+# ##################################################################################################
+
 """
     Forcefield.py
 
@@ -49,29 +64,11 @@
 __date__ = "28 February 2006"
 __author__ = "Todd Dolinsky"
 
-# ##################################################################################################
-#  Disclaimer                                                                                      #
-#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
-#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
-#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
-#  There is no guarantee that it works like the original distribution,                             #
-#  but feel free to tell us if you get any difference to correct the code.                         #
-#                                                                                                  #
-#  Please use this cite the original reference.                                                    #
-#  If you think my work helps you, just keep this note intact on your program.                     #
-#                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
-#                                                                                                  #
-# ##################################################################################################
-
-import _py2k_string as string
-import sys
-import getopt
-import os
 import re
-
 from xml import sax
+
 from .utilities import *
+
 
 class ForcefieldHandler(sax.ContentHandler):
 
@@ -105,7 +102,6 @@ class ForcefieldHandler(sax.ContentHandler):
         elif isinstance(fromobj, ForcefieldAtom):
             map[toname] = fromobj
 
-
     def findMatchingNames(self, regname, map):
         """
             Find a list of strings that match the given regular
@@ -136,7 +132,8 @@ class ForcefieldHandler(sax.ContentHandler):
             Override the startElement function to keep track of the current
             element.
         """
-        if name != "name": self.curelement = name
+        if name != "name":
+            self.curelement = name
 
     def endElement(self, name):
         """
@@ -157,7 +154,7 @@ class ForcefieldHandler(sax.ContentHandler):
                         if fromname in self.map:
                             self.updateMap(resname, fromname, self.map)
 
-                else: # Work with a single new residue name
+                else:  # Work with a single new residue name
                     oldreslist = self.findMatchingNames(self.oldresname, self.map)
                     for resitem in newreslist:
                         resname = resitem.string
@@ -177,7 +174,8 @@ class ForcefieldHandler(sax.ContentHandler):
                 residue = self.map[resitem.string]
                 for newname in self.atommap:
                     oldname = self.atommap[newname]
-                    if oldname not in residue.atoms: continue
+                    if oldname not in residue.atoms:
+                        continue
                     self.updateMap(newname, oldname, residue.atoms)
 
             # Clean up
@@ -192,7 +190,7 @@ class ForcefieldHandler(sax.ContentHandler):
             self.oldatomname = None
             self.newatomname = None
 
-        else: # Just free the current element namespace
+        else:  # Just free the current element namespace
             self.curelement = ""
 
         return self.map
@@ -204,7 +202,8 @@ class ForcefieldHandler(sax.ContentHandler):
             Parameters
                 text:  The text value between the XML tags
         """
-        if text.isspace(): return
+        if text.isspace():
+            return
         text = str(text)
         if self.curelement == "residue":
             self.newresname = text
@@ -214,6 +213,7 @@ class ForcefieldHandler(sax.ContentHandler):
             self.oldatomname = text
         elif self.curelement == "useresname":
             self.oldresname = text
+
 
 class Forcefield:
     """
@@ -242,20 +242,22 @@ class Forcefield:
         self.name = ff
         defpath = ""
 
-        if userff == None:
+        if userff is None:
             defpath = getFFfile(ff)
             if defpath == "":
-                raise ValueError("Unable to find forcefield parameter file %s!" % path)
+                raise ValueError("Unable to find forcefield parameter file %s!" % defpath)
 
             file = open(defpath)
 
-        else: file = userff
+        else:
+            file = userff
 
         lines = file.readlines()
         for line in lines:
             if not line.startswith("#"):
-                fields = string.split(line)
-                if fields == []: continue
+                fields = line.split()
+                if not fields:
+                    continue
                 try:
                     resname = fields[0]
                     atomname = fields[1]
@@ -263,8 +265,10 @@ class Forcefield:
                     radius = float(fields[3])
                 except ValueError:
                     txt = "Unable to recognize user-defined forcefield file"
-                    if defpath != "": txt += " %s!" % defpath
-                    else: txt += "!"
+                    if defpath != "":
+                        txt += " %s!" % defpath
+                    else:
+                        txt += "!"
                     txt += " Please use a valid parameter file."
                     raise ValueError(txt)
 
@@ -275,7 +279,7 @@ class Forcefield:
                     atom = ForcefieldAtom(atomname, charge, radius, resname)
 
                 myResidue = self.getResidue(resname)
-                if myResidue == None:
+                if myResidue is None:
                     myResidue = ForcefieldResidue(resname)
                     self.map[resname] = myResidue
                 myResidue.addAtom(atom)
@@ -287,7 +291,6 @@ class Forcefield:
 
         defpath = getNamesFile(ff)
         if defpath != "":
-
             handler = ForcefieldHandler(self.map, definition.map)
             sax.make_parser()
 
@@ -305,8 +308,10 @@ class Forcefield:
             Returns
                 1 if the resname is in the map, 0 otherwise.
         """
-        if resname in self.map: return 1
-        else: return 0
+        if resname in self.map:
+            return 1
+        else:
+            return 0
 
     def getResidue(self, resname):
         """
@@ -317,9 +322,10 @@ class Forcefield:
             Returns
                 residue: The residue object (ForcefieldResidue)
         """
-        if self.hasResidue(resname): return self.map[resname]
-        else: return None
-
+        if self.hasResidue(resname):
+            return self.map[resname]
+        else:
+            return None
 
     def getNames(self, resname, atomname):
         """
@@ -379,7 +385,7 @@ class Forcefield:
         charge = None
         radius = None
 
-        #print self.map.keys()
+        # print self.map.keys()
 
         if resname in self.map:
             resid = self.map[resname]
@@ -390,6 +396,7 @@ class Forcefield:
 
         return charge, radius
 
+
 class ForcefieldResidue:
     """
         ForcefieldResidue class
@@ -397,6 +404,7 @@ class ForcefieldResidue:
         The ForceFieldResidue class contains a mapping of all atoms within
         the residue for easy searching.
     """
+
     def __init__(self, name):
         """
             Initialize the ForceFieldResidue object
@@ -406,7 +414,6 @@ class ForcefieldResidue:
         """
         self.name = name
         self.atoms = {}
-
 
     def addAtom(self, atom):
         """
@@ -433,8 +440,10 @@ class ForcefieldResidue:
             Returns
                 1 if the atom is present in the residue, 0 otherwise
         """
-        if atomname in self.atoms: return 1
-        else: return 0
+        if atomname in self.atoms:
+            return 1
+        else:
+            return 0
 
     def getAtom(self, atomname):
         """
@@ -445,8 +454,11 @@ class ForcefieldResidue:
             Returns
                 residue: The atom object (ForcefieldAtom)
         """
-        if self.hasAtom(atomname): return self.atoms[atomname]
-        else: return None
+        if self.hasAtom(atomname):
+            return self.atoms[atomname]
+        else:
+            return None
+
 
 class ForcefieldAtom:
     """
@@ -498,7 +510,7 @@ class ForcefieldAtom:
         """
             String representation of the forcefield atom.
         """
-        txt = "%s:\n"% self.name
+        txt = "%s:\n" % self.name
         txt += "  Charge: %.4f\n" % self.charge
         txt += "  Radius: %.4f" % self.radius
         return txt

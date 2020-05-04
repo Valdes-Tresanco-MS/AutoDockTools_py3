@@ -26,8 +26,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dade6379-1666-4ac7-9de4-69950a5437c6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/MolKit/pdb2pqr/src/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/pdb2pqr/src/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MolKit/pdb2pqr/src/aa.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/pdb2pqr/src/aa.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/pdb2pqr/src/forcefield.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/pdb2pqr/src/forcefield.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,7 +53,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/pdb2pqr/propka/propkalib.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/pdb2pqr/src/forcefield.py" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -64,7 +63,7 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/pdb2pqr/propka/propkalib.py" />
+    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/pdb2pqr/src/forcefield.py" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -213,21 +212,7 @@
       <updated>1588466872659</updated>
       <workItem from="1588466873766" duration="21530000" />
       <workItem from="1588561745843" duration="19278000" />
-      <workItem from="1588610683067" duration="581000" />
-    </task>
-    <task id="LOCAL-00039" summary="updated MolKit &gt; chargeCalculator.py">
-      <created>1588565540043</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1588565540043</updated>
-    </task>
-    <task id="LOCAL-00040" summary="updated MolKit &gt; chargeMass.py">
-      <created>1588565581380</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1588565581380</updated>
+      <workItem from="1588610683067" duration="973000" />
     </task>
     <task id="LOCAL-00041" summary="updated MolKit &gt; distanceSelector.py">
       <created>1588565780481</created>
@@ -558,7 +543,21 @@
       <option name="project" value="LOCAL" />
       <updated>1588611095240</updated>
     </task>
-    <option name="localTasksCounter" value="88" />
+    <task id="LOCAL-00088" summary="updated MolKit &gt; pdb2pqr &gt; src &gt; aa.py">
+      <created>1588611279181</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1588611279181</updated>
+    </task>
+    <task id="LOCAL-00089" summary="updated MolKit &gt; pdb2pqr &gt; src &gt; definitions.py">
+      <created>1588611445262</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1588611445262</updated>
+    </task>
+    <option name="localTasksCounter" value="90" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -568,8 +567,6 @@
     <option name="UPDATE_COPYRIGHT" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="updated MolKit &gt; rotamerLib.py" />
-    <MESSAGE value="updated MolKit &gt; sdfParser.py" />
     <MESSAGE value="updated MolKit &gt; sequence.py" />
     <MESSAGE value="updated MolKit &gt; sets.py" />
     <MESSAGE value="updated MolKit &gt; stringSelector.py" />
@@ -593,7 +590,9 @@
     <MESSAGE value="updated MolKit &gt; pdb2pqr &gt; extensions &gt; psi.py" />
     <MESSAGE value="updated MolKit &gt; pdb2pqr &gt; extensions &gt; rama.py" />
     <MESSAGE value="updated MolKit &gt; pdb2pqr &gt; propka &gt; propkalib.py.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated MolKit &gt; pdb2pqr &gt; propka &gt; propkalib.py.py" />
+    <MESSAGE value="updated MolKit &gt; pdb2pqr &gt; src &gt; aa.py" />
+    <MESSAGE value="updated MolKit &gt; pdb2pqr &gt; src &gt; definitions.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated MolKit &gt; pdb2pqr &gt; src &gt; definitions.py" />
   </component>
   <component name="WindowStateProjectService">
     <state x="586" y="198" key="#Inspections" timestamp="1588494675975">
@@ -612,18 +611,18 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="707" y="384" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.1040@0.0.1920.1040" timestamp="1588477911914" />
-    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2" timestamp="1588611094251">
+    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2" timestamp="1588611444400">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1588611094251" />
-    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog" timestamp="1588611264258">
+    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1588611444400" />
+    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog" timestamp="1588611656928">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588611264258" />
-    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1588611008290">
+    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588611656928" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1588611582033">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588611008290" />
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588611582033" />
     <state width="1877" height="57" key="GridCell.Tab.0.bottom" timestamp="1588610918214">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
