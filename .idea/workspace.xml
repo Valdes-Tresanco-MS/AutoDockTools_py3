@@ -26,7 +26,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dade6379-1666-4ac7-9de4-69950a5437c6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/MolKit/interactionDescriptor.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/interactionDescriptor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/listSet.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/listSet.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,7 +53,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/interactionDescriptor.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/listSet.py" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -63,7 +63,7 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/interactionDescriptor.py" />
+    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/listSet.py" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -187,7 +187,7 @@
       <option name="presentableId" value="Default" />
       <updated>1588466872659</updated>
       <workItem from="1588466873766" duration="21530000" />
-      <workItem from="1588561745843" duration="7107000" />
+      <workItem from="1588561745843" duration="7598000" />
     </task>
     <task id="LOCAL-00001" summary="add disclaimer and minor changes">
       <created>1588467466843</created>
@@ -518,7 +518,21 @@
       <option name="project" value="LOCAL" />
       <updated>1588568549667</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="updated MolKit &gt; interactionDescriptor.py">
+      <created>1588568871096</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1588568871096</updated>
+    </task>
+    <task id="LOCAL-00049" summary="updated MolKit &gt; introduction.py">
+      <created>1588568904988</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1588568904988</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -528,8 +542,6 @@
     <option name="UPDATE_COPYRIGHT" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="updated MolKit &gt; data &gt; opls_unict_dat.py" />
-    <MESSAGE value="updated MolKit &gt; data &gt; opls_unint_dat.py" />
     <MESSAGE value="updated MolKit &gt; data &gt; uni_dat.py" />
     <MESSAGE value="updated MolKit &gt; data &gt; unict_dat.py" />
     <MESSAGE value="updated MolKit &gt; data &gt; unint_dat.py" />
@@ -553,7 +565,9 @@
     <MESSAGE value="updated MolKit &gt; groParser.py" />
     <MESSAGE value="updated MolKit &gt; hydrogenBondBuilder.py" />
     <MESSAGE value="updated MolKit &gt; hydrogenBuilder.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated MolKit &gt; hydrogenBuilder.py" />
+    <MESSAGE value="updated MolKit &gt; interactionDescriptor.py" />
+    <MESSAGE value="updated MolKit &gt; introduction.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated MolKit &gt; introduction.py" />
   </component>
   <component name="WindowStateProjectService">
     <state x="586" y="198" key="#Inspections" timestamp="1588494675975">
@@ -572,18 +586,18 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="707" y="384" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.1040@0.0.1920.1040" timestamp="1588477911914" />
-    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2" timestamp="1588568549000">
+    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2" timestamp="1588568904353">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1588568549000" />
-    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog" timestamp="1588568861851">
+    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1588568904353" />
+    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog" timestamp="1588569352449">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588568861851" />
-    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1588568559961">
+    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588569352449" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1588568925943">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588568559961" />
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588568925943" />
     <state width="1877" height="161" key="GridCell.Tab.0.bottom" timestamp="1588568410683">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
