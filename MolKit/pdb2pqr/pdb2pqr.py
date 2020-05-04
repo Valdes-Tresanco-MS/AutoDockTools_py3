@@ -1,4 +1,19 @@
-#!/usr/bin/python
+# ##################################################################################################
+#  Disclaimer                                                                                      #
+#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
+#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
+#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
+#  There is no guarantee that it works like the original distribution,                             #
+#  but feel free to tell us if you get any difference to correct the code.                         #
+#                                                                                                  #
+#  Please use this cite the original reference.                                                    #
+#  If you think my work helps you, just keep this note intact on your program.                     #
+#                                                                                                  #
+#  Modification date: 4/5/20 2:41                                                                  #
+#                                                                                                  #
+# ##################################################################################################
+
+# !/usr/bin/python
 """
     Driver for PDB2PQR
 
@@ -12,53 +27,24 @@
     Washington University in St. Louis
 """
 
-__date__  = "17 March 2007"
+__date__ = "17 March 2007"
 __author__ = "Todd Dolinsky, Nathan Baker"
 __version__ = "1.2.1"
 
-# ##################################################################################################
-#  Disclaimer                                                                                      #
-#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
-#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
-#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
-#  There is no guarantee that it works like the original distribution,                             #
-#  but feel free to tell us if you get any difference to correct the code.                         #
-#                                                                                                  #
-#  Please use this cite the original reference.                                                    #
-#  If you think my work helps you, just keep this note intact on your program.                     #
-#                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
-#                                                                                                  #
-# ##################################################################################################
-
-import _py2k_string as string
-import sys
-import getopt
 import os
-#Sargis: This is required to fix xml bug on linux with no ssl.so
-#TODO: remove this when it fixed
+import sys
+
+# Sargis: This is required to fix xml bug on linux with no ssl.so
+# TODO: remove this when it fixed
 try:
     import _hashlib
 except ImportError:
     site = os.path.split(os.__file__)[0]
-    sys.path.remove(os.path.join(site,'site-packages'))
-import time
-from .src import pdb
-from .src import utilities
-from .src import structures
-from .src import routines
-from .src import protein
-from .src import server
-from .src.pdb import *
-from .src.utilities import *
-from .src.structures import *
-from .src.definitions import *
-from .src.forcefield import *
-from .src.routines import *
-from .src.protein import *
+    sys.path.remove(os.path.join(site, 'site-packages'))
 from .src.server import *
 from .src.hydrogens import *
 from io import *
+
 
 def usage(rc):
     """
@@ -68,57 +54,58 @@ def usage(rc):
             rc:  Exit status (int)
     """
 
-    str = "\n"
-    str = str + "pdb2pqr  (Version %s)\n" % __version__
-    str = str + "\n"
-    str = str + "This module takes a PDB file as input and performs\n"
-    str = str + "optimizations before yielding a new PDB-style file as\n"
-    str = str + "output\n"
-    str = str + "\n"
-    str = str + "Usage: pdb2pqr.py [options] --ff=<forcefield> <path> <output-path>\n"
-    str = str + "    Required Arguments:\n"
-    str = str + "        <forcefield>  :  The forcefield to use - currently amber\n"
-    str = str + "                         charmm, parse, and tyl06  are supported.\n"
-    str = str + "        <path>        :  The path to the PDB file or an ID\n"
-    str = str + "                         to obtain from the PDB archive\n"
-    str = str + "        <output-path> :  The desired output name of the PQR file\n"
-    str = str + "                         to be generated\n"
-    str = str + "    Optional Arguments:\n"
-    str = str + "        --nodebump    :  Do not perform the debumping operation\n"
-    str = str + "        --noopt       :  Do not perform hydrogen optimization\n"
-    str = str + "        --chain       :  Keep the chain ID in the output PQR file\n"
-    str = str + "        --assign-only :  Only assign charges and radii - do not add\n"
-    str = str + "                         atoms, debump, or optimize.\n"
-    str = str + "        --clean       :  Do no optimization, atom addition, or\n"
-    str = str + "                         parameter assignment, just return the\n"
-    str = str + "                         original PDB file in aligned format.\n"
-    str = str + "        --ffout=<name>:  Instead of using the standard canonical\n"
-    str = str + "                         naming scheme for residue and atom names,\n"
-    str = str + "                         use the names from the given forcefield.\n"
-    str = str + "        --with-ph=<ph>:  Use propka to calculate pKas and apply them\n"
-    str = str + "                         to the molecule given the pH value. Actual\n"
-    str = str + "                         PropKa results will be output to \n"
-    str = str + "                         <output-path>.propka.\n"
-    str = str + "        --apbs-input  :  Create a template APBS input file based on\n"
-    str = str + "                         the generated PQR file.\n"
-    str = str + "        --ligand=<path>: Calculate the parameters for the ligand in\n"
-    str = str + "                         mol2 format at the given path. Pdb2pka must\n"
-    str = str + "                         be compiled\n"
-    str = str + "        --verbose (-v):  Print information to stdout\n"
-    str = str + "        --help    (-h):  Display the usage information\n"
+    text = "\n"
+    text = text + "pdb2pqr  (Version %s)\n" % __version__
+    text = text + "\n"
+    text = text + "This module takes a PDB file as input and performs\n"
+    text = text + "optimizations before yielding a new PDB-style file as\n"
+    text = text + "output\n"
+    text = text + "\n"
+    text = text + "Usage: pdb2pqr.py [options] --ff=<forcefield> <path> <output-path>\n"
+    text = text + "    Required Arguments:\n"
+    text = text + "        <forcefield>  :  The forcefield to use - currently amber\n"
+    text = text + "                         charmm, parse, and tyl06  are supported.\n"
+    text = text + "        <path>        :  The path to the PDB file or an ID\n"
+    text = text + "                         to obtain from the PDB archive\n"
+    text = text + "        <output-path> :  The desired output name of the PQR file\n"
+    text = text + "                         to be generated\n"
+    text = text + "    Optional Arguments:\n"
+    text = text + "        --nodebump    :  Do not perform the debumping operation\n"
+    text = text + "        --noopt       :  Do not perform hydrogen optimization\n"
+    text = text + "        --chain       :  Keep the chain ID in the output PQR file\n"
+    text = text + "        --assign-only :  Only assign charges and radii - do not add\n"
+    text = text + "                         atoms, debump, or optimize.\n"
+    text = text + "        --clean       :  Do no optimization, atom addition, or\n"
+    text = text + "                         parameter assignment, just return the\n"
+    text = text + "                         original PDB file in aligned format.\n"
+    text = text + "        --ffout=<name>:  Instead of using the standard canonical\n"
+    text = text + "                         naming scheme for residue and atom names,\n"
+    text = text + "                         use the names from the given forcefield.\n"
+    text = text + "        --with-ph=<ph>:  Use propka to calculate pKas and apply them\n"
+    text = text + "                         to the molecule given the pH value. Actual\n"
+    text = text + "                         PropKa results will be output to \n"
+    text = text + "                         <output-path>.propka.\n"
+    text = text + "        --apbs-input  :  Create a template APBS input file based on\n"
+    text = text + "                         the generated PQR file.\n"
+    text = text + "        --ligand=<path>: Calculate the parameters for the ligand in\n"
+    text = text + "                         mol2 format at the given path. Pdb2pka must\n"
+    text = text + "                         be compiled\n"
+    text = text + "        --verbose (-v):  Print information to stdout\n"
+    text = text + "        --help    (-h):  Display the usage information\n"
 
     # Check to see if there are usage statements from the
     # extensions directory
 
     extensions = getAvailableExtensions()
     if len(extensions) > 0:
-        str = str + "\n    Optional Arguments from Extensions Directory:\n"
+        text = text + "\n    Optional Arguments from Extensions Directory:\n"
         for ext in extensions:
-            str += extensions[ext].usage()
+            text += extensions[ext].usage()
 
-    str = str + "\n"
-    sys.stderr.write(str)
+    text = text + "\n"
+    sys.stderr.write(text)
     sys.exit(rc)
+
 
 def printHeader(atomlist, reslist, charge, ff, warnings, options):
     """
@@ -156,8 +143,7 @@ def printHeader(atomlist, reslist, charge, ff, warnings, options):
         header += "REMARK   5          to the following atoms (omitted below):\n"
         for atom in atomlist:
             header += "REMARK   5              %i %s in %s %i\n" % \
-                      (atom.get("serial"), atom.get("name"), \
-                       atom.get("residue").get("name"), \
+                      (atom.get("serial"), atom.get("name"), atom.get("residue").get("name"),
                        atom.get("residue").get("resSeq"))
         header += "REMARK   5\n"
     if len(reslist) != 0:
@@ -171,6 +157,7 @@ def printHeader(atomlist, reslist, charge, ff, warnings, options):
     header += "REMARK   6\n"
 
     return header
+
 
 def runPDB2PQR(pdblist, ff, options):
     """
@@ -202,33 +189,44 @@ def runPDB2PQR(pdblist, ff, options):
 
     # userff is CGI-based User Forcefield file object
 
-    if "userff" in options: userff = options["userff"]
-    else: userff = None
+    if "userff" in options:
+        userff = options["userff"]
+    else:
+        userff = None
 
-    if "verbose" in options: verbose = 1
-    else: verbose = 0
+    if "verbose" in options:
+        verbose = 1
+    else:
+        verbose = 0
 
-    if "opt" in options: optflag = 1
-    else: optflag = 0
+    if "opt" in options:
+        optflag = 1
+    else:
+        optflag = 0
 
-    if "chain" in options: chainflag = 1
-    else: chainflag = 0
+    if "chain" in options:
+        chainflag = 1
+    else:
+        chainflag = 0
 
     if "outname" not in options or options["outname"] == None:
         text = "Error: Output name not set!"
         raise ValueError(text)
     else:
         outname = options["outname"]
-        period = string.find(outname,".")
-        if period > 0: outroot = outname[0:period]
-        else: outroot = outname
+        period = outname.find( ".")
+        if period > 0:
+            outroot = outname[0:period]
+        else:
+            outroot = outname
 
     if "ph" in options:
         pka = 1
         ph = options["ph"]
         pkaname = outroot + ".propka"
         if os.path.isfile(pkaname): os.remove(pkaname)
-    else: pka = 0
+    else:
+        pka = 0
 
     typemapname = "%s-typemap.html" % outroot
 
@@ -364,9 +362,11 @@ def runPDB2PQR(pdblist, ff, options):
 
     if "ffout" in options:
         scheme = options["ffout"]
-        userff = None # Currently not supported
-        if scheme != ff: myNameScheme = Forcefield(scheme, myDefinition, userff)
-        else: myNameScheme = myForcefield
+        userff = None  # Currently not supported
+        if scheme != ff:
+            myNameScheme = Forcefield(scheme, myDefinition, userff)
+        else:
+            myNameScheme = myForcefield
         myRoutines.applyNameScheme(myNameScheme)
 
     header = printHeader(misslist, reslist, charge, ff, myRoutines.getWarnings(), options)
@@ -391,6 +391,7 @@ def runPDB2PQR(pdblist, ff, options):
 
     return header, lines, missedligandresidues
 
+
 def getAvailableExtensions(displayflag=0):
     """
         Grab available extensions from the extensions directory
@@ -403,8 +404,10 @@ def getAvailableExtensions(displayflag=0):
     """
     extensions = {}
     dir = "%s" % os.path.dirname(sys.argv[0])
-    if dir == "": extdir = "extensions"
-    else: extdir = "%s/extensions" % dir
+    if dir == "":
+        extdir = "extensions"
+    else:
+        extdir = "%s/extensions" % dir
     for filename in os.listdir(extdir):
         if filename.endswith(".py"):
             if filename == "__init__.py": continue
@@ -415,10 +418,10 @@ def getAvailableExtensions(displayflag=0):
             try:
                 e = __import__("extensions.%s" % name, globals(), locals(), name)
                 if callable(eval("e.%s" % name)) and \
-                   callable(eval("e.usage")):
+                        callable(eval("e.usage")):
                     extensions[name] = e
             except (AttributeError, ImportError):
-                txt = "\nWarning: Missing either \"%s\" or \"usage\" functions in %s!" %\
+                txt = "\nWarning: Missing either \"%s\" or \"usage\" functions in %s!" % \
                       (name, filename)
                 txt += "\nThis extension will not be included.\n\n"
                 if displayflag:
@@ -426,17 +429,20 @@ def getAvailableExtensions(displayflag=0):
 
     return extensions
 
+
 def mainCommand():
     """
         Main driver for running program from the command line.
     """
     shortOptlist = "h,v"
-    longOptlist = ["help","verbose","ff=","ffout=","nodebump","noopt","with-ph=","apbs-input","chain","clean","assign-only", "ligand="]
+    longOptlist = ["help", "verbose", "ff=", "ffout=", "nodebump", "noopt", "with-ph=", "apbs-input", "chain", "clean",
+                   "assign-only", "ligand="]
 
     extensions = getAvailableExtensions(1)
     longOptlist += list(extensions.keys())
 
-    try: opts, args = getopt.getopt(sys.argv[1:], shortOptlist, longOptlist)
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], shortOptlist, longOptlist)
     except getopt.GetoptError as details:
         sys.stderr.write("GetoptError:  %s\n" % details)
         usage(2)
@@ -445,20 +451,23 @@ def mainCommand():
         sys.stderr.write("Incorrect number (%d) of arguments!\n" % len(args))
         usage(2)
 
-    options = {"debump":1,"opt":1,"extensions":{}}
+    options = {"debump": 1, "opt": 1, "extensions": {}}
 
     outpath = None
     ff = None
-    for o,a in opts:
+    for o, a in opts:
         undashed = o[2:]
-        if o in ("-v","--verbose"):
+        if o in ("-v", "--verbose"):
             options["verbose"] = 1
-        elif o in ("-h","--help"):
+        elif o in ("-h", "--help"):
             usage(2)
             sys.exit()
-        elif o == "--nodebump":  del options["debump"]
-        elif o == "--noopt":    del options["opt"]
-        elif o == "--apbs-input": options["input"] = 1
+        elif o == "--nodebump":
+            del options["debump"]
+        elif o == "--noopt":
+            del options["opt"]
+        elif o == "--apbs-input":
+            options["input"] = 1
         elif o == "--with-ph":
             try:
                 ph = float(a)
@@ -485,9 +494,10 @@ def mainCommand():
             if defpath == "":
                 raise ValueError("Unable to find parameter files for forcefield %s!" % ff)
 
-        elif o == "--chain": options["chain"] = 1
+        elif o == "--chain":
+            options["chain"] = 1
         elif o == "--ffout":
-            if a in ["amber","AMBER","charmm","CHARMM","parse","PARSE","tyl06","TYL06"]:
+            if a in ["amber", "AMBER", "charmm", "CHARMM", "parse", "PARSE", "tyl06", "TYL06"]:
                 options["ffout"] = a
             else:
                 raise ValueError("Invalid forcefield naming scheme %s!" % a)
@@ -499,10 +509,10 @@ def mainCommand():
         elif undashed in list(extensions.keys()):
             options["extensions"][undashed] = extensions[undashed]
 
-    if ff == None and "clean" not in options:
+    if ff is None and "clean" not in options:
         raise ValueError("Forcefield not specified!")
 
-    text =  "\n--------------------------\n"
+    text = "\n--------------------------\n"
     text += "PDB2PQR - a Python-based structural conversion utility\n"
     text += "--------------------------\n"
     text += "Please cite your use of PDB2PQR as:\n"
@@ -517,8 +527,10 @@ def mainCommand():
     pdblist, errlist = readPDB(file)
 
     if len(pdblist) == 0 and len(errlist) == 0:
-        try: os.remove(path)
-        except OSError: pass
+        try:
+            os.remove(path)
+        except OSError:
+            pass
         raise ValueError("Unable to find file %s!\n" % path)
 
     if len(errlist) != 0 and "verbose" in options:
@@ -531,7 +543,7 @@ def mainCommand():
     header, lines, missedligands = runPDB2PQR(pdblist, ff, options)
 
     # Print the PQR file
-    outfile = open(outpath,"w")
+    outfile = open(outpath, "w")
     outfile.write(header)
     for line in lines:
         outfile.write(line)
@@ -544,9 +556,10 @@ def mainCommand():
         size = psize.Psize()
         size.parseInput(outpath)
         size.runPsize(outpath)
-        async = 0 # No async files here!
+        async = 0  # No async files here!
         input = inputgen.Input(outpath, size, method, async)
         input.printInputFiles()
+
 
 def mainCGI():
     """
@@ -558,7 +571,7 @@ def mainCGI():
     cgitb.enable()
     form = cgi.FieldStorage()
 
-    options = {"extensions":{}}
+    options = {"extensions": {}}
 
     ff = form["FF"].value
     input = 0
@@ -571,11 +584,11 @@ def mainCGI():
             if ph < 0.0 or ph > 14.0: raise ValueError
             options["ph"] = ph
         except ValueError:
-             text = "The entered pH of %.2f is invalid!  " % form["PH"].value
-             text += "Please choose a pH between 0.0 and 14.0."
-             print("Content-type: text/html\n")
-             print(text)
-             sys.exit(2)
+            text = "The entered pH of %.2f is invalid!  " % form["PH"].value
+            text += "Please choose a pH between 0.0 and 14.0."
+            print("Content-type: text/html\n")
+            print(text)
+            sys.exit(2)
     if "PDBID" in form:
         file = getPDBFile(form["PDBID"].value)
     elif "PDB" in form:
@@ -628,7 +641,7 @@ def mainCGI():
         file = open(pqrpath, "w")
         file.write(header)
         for line in lines:
-            file.write("%s\n" % string.strip(line))
+            file.write("%s\n" % line.strip())
         file.close()
 
         if input:
@@ -638,7 +651,7 @@ def mainCGI():
             size = psize.Psize()
             size.parseInput(pqrpath)
             size.runPsize(pqrpath)
-            async = 0 # No async files here!
+            async = 0  # No async files here!
             myinput = inputgen.Input(pqrpath, size, method, async)
             myinput.printInputFiles()
 
@@ -650,6 +663,7 @@ def mainCGI():
         print("Content-type: text/html\n")
         print(details)
         createError(name, details)
+
 
 if __name__ == "__main__":
     """ Determine if called from command line or CGI """
