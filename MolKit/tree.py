@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 2/5/20 1:49                                                                  #
+#  Modification date: 3/5/20 22:23                                                                 #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -20,12 +20,6 @@
 # Copyright: M. Sanner TSRI 2000
 #
 #############################################################################
-
-#
-# $Header: /opt/cvs/python/packages/share1.5/MolKit/tree.py,v 1.72.2.1 2015/08/29 01:26:36 sanner Exp $
-#
-# $Id: tree.py,v 1.72.2.1 2015/08/29 01:26:36 sanner Exp $
-#
 
 """
 This module implements the classes TreeNode and TreeNodeSet.
@@ -59,14 +53,14 @@ from MolKit.listSet import ListSet
 verbose = False
 
 
-def evalString(str):
-    if len(str) == 0:
+def evalString(string):
+    if len(string) == 0:
         return
     try:
-        function = eval("%s" % str)
+        function = eval("%s" % string)
     except:
         # try:
-        obj = compile(str, '<string>', 'exec')
+        obj = compile(string, '<string>', 'exec')
         exec(obj)
         function = eval(obj.co_names[0])
     # except:
@@ -348,7 +342,7 @@ sets
 
     def processStringcS(self, someString):
         # in all cases do these things:
-        if type(someString) == bytes:
+        if type(someString) == str:
             # protect [A-Z]
             if someString.find(']') == -1:
                 someString = someString.replace('-', ':')
@@ -504,9 +498,8 @@ are built.
                     if l == 0: break
             res.stringRepr = stringRepr
 
-        elif member == 'children' or \
-                (member in self.data[0].__dict__ and \
-                 self.data[0].children is self.data[0].__dict__[member]):
+        elif (member == 'children' or (member in self.data[0].__dict__ and
+                                       self.data[0].children is self.data[0].__dict__[member])):
             ## if we take all children of all elements in the set we want to
             ## optimize the stringRepr
             ## this happens if the member asked for is 'children' or
@@ -756,16 +749,12 @@ By default, no message is returned.
                 exec("result=self" + ".children" * levelBelow)
                 if uniq:
                     result = result.uniq()
-                if len(self) == 1:
-                    result = result[:]
                 return result
 
             elif levelBelow == 1:
                 result = self.children
                 if uniq:
                     result = result.uniq()
-                if len(self) == 1:
-                    result = result[:]
                 return result
             else:
                 levelAbove = self[0].isBelow(what)
@@ -773,21 +762,17 @@ By default, no message is returned.
                     exec("result=self" + ".parent" * levelAbove)
                     if uniq:
                         result = result.uniq()
-                    if len(self) == 1:
-                        result = result[:]
                     return result
 
                 elif levelAbove == 1:
                     result = self.parent
                     if uniq:
                         result = result.uniq()
-                    if len(self) == 1:
-                        result = result[:]
                     return result
 
                 else:
-                    # raise RuntimeError ("could not find level of type %s"%what)
-                    return []
+                    raise RuntimeError ("could not find level of type %s"%what)
+
 
     def findChildrenOfType(self, what):
         """for a set of nodes, go down the tree until we find Nodes of the
@@ -1000,7 +985,7 @@ class TreeNode:
         #    also, this creates an additional reference to the object whcihc
         # should be handled at deletion time
         self.childByName = {}  # {'name': childnode}
-        self.alias = None  # can be overwritten with a string
+
 
     def deleteSubTree(self):
         """ Function to actually delete all the reference to a TreeNode to
@@ -1088,22 +1073,18 @@ class TreeNode:
     def remove(self, child, assignUniqIndex=1, cleanup=0):
         """remove a child"""
 
-        # assert child in self.children
-        try:
-            self.children.remove(child)
+        assert child in self.children
+        self.children.remove(child)
             # also correct self.childrenName if it exists:
-            # MS oct 10 2013 .. do we need this ?
-            if self.children != getattr(self, self.childrenName):
-                print('DEBUG MESSAGE: self.children != self.childrenName')
-                setattr(self, self.childrenName, self.children)
+        if self.childrenName!=None:
+            setattr(self, self.childrenName, self.children)
             #            exec('self.'+self.childrenName+'=self.children')
             # commented in next three lines 5/9
             if not len(self.children) and cleanup and self.parent:
                 self.parent.remove(self, cleanup=cleanup)
-                # return
-            if assignUniqIndex: self.assignUniqIndex()
-        except ValueError:
             return
+        if assignUniqIndex:
+            self.assignUniqIndex()
 
     # FIXME added for testing under 2.2.1
     # should disappear in the future when we use Properties
