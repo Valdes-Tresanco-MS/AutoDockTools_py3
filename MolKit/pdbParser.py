@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 3/5/20 0:48                                                                  #
+#  Modification date: 4/5/20 0:24                                                                  #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -55,11 +55,12 @@ Atom parsing conventions:
 """
 
 from os.path import splitext, basename
+from warnings import warn
 
 from MolKit.molecule import Atom, Bond, HydrogenBond, AtomSet
 from MolKit.moleculeParser import MoleculeParser
 from MolKit.protein import Protein, Chain, Residue, ProteinSet
-from warnings import warn
+
 
 class PdbParser(MoleculeParser):
     PDBtags = [
@@ -433,7 +434,7 @@ NOTE: The list currently registered parsers is in
                 if at is not None:
                     ats.append(at)
             except Exception as inst:
-                raise RuntimeError("Error parsing the following line in pdb:\n"+atRec)
+                raise RuntimeError("Error parsing the following line in pdb:\n" + atRec)
 
         mol.allAtoms = mol.allAtoms + AtomSet(ats)
 
@@ -502,7 +503,7 @@ NOTE: The list currently registered parsers is in
             # Set the flag hasCA to 1 if the atom name is CA
             mol.curRes.hasCA = 1
 
-        if name == 'O' or name == 'OXT' or (len(name)>3 and name[:3]=='OCT'):
+        if name == 'O' or name == 'OXT' or (len(name) > 3 and name[:3] == 'OCT'):
             # Set the hasO flag to 2 if atom name is O or OXT
             mol.curRes.hasO = 2
 
@@ -572,7 +573,7 @@ NOTE: The list currently registered parsers is in
 
             element = name[0:2].strip()
             if not element:
-                warn("Chemical element type is missing for %s!, Please correct the pdb file"%name)
+                warn("Chemical element type is missing for %s!, Please correct the pdb file" % name)
 
         if element and element[0].isdigit():
             if orig_element:
@@ -637,7 +638,7 @@ NOTE: The list currently registered parsers is in
         totalAtomNumber = len(self.getAtomsLines(-2, 0))
         # configure the progress bar, initialize it, set mode to 'increment'
         self.configureProgressBar(init=1, mode='increment',
-                                 labeltext='parse atoms', max=totalAtomNumber)
+                                  labeltext='parse atoms', max=totalAtomNumber)
 
         if 'ATOM' in self.pdbRecordParser:
             # deal with ATOM first to make sure self.mol,
@@ -728,8 +729,8 @@ NOTE: The list currently registered parsers is in
                     mnum = 1
                 else:
                     mnum = int(mNum.strip())
-                self.configureProgressBar(labeltext='parse atoms Model '+\
-                                        mNum.strip()+'/%d'%len(modelEnd))
+                self.configureProgressBar(labeltext='parse atoms Model ' + \
+                                                    mNum.strip() + '/%d' % len(modelEnd))
                 self.mol = objClass()
                 self.mol.parser = self
                 if self.mol.name == 'NoName':
@@ -750,7 +751,7 @@ NOTE: The list currently registered parsers is in
                     for mBeg, mEnd, mNum in modelEnd[1:]:
                         if mNum == "": mNum = str(mnum)
                         labeltext = 'parse atoms Model%d  of %d' % (mnum, len(modelEnd))
-                        self.configureProgressBar(labeltext='parse atoms Model%d  of %d'%(mnum, len(modelEnd)))
+                        self.configureProgressBar(labeltext='parse atoms Model%d  of %d' % (mnum, len(modelEnd)))
                         # mNum.strip()+'/%d'%len(modelEnd))
 
                         newmol = objClass()
@@ -771,7 +772,7 @@ NOTE: The list currently registered parsers is in
                 elif self.modelsAs == 'conformations':  # add a conformation to molecule
                     atms = self.mol.allAtoms
                     for mBeg, mEnd, mNum in modelEnd[1:]:
-                        self.configureProgressBar(labeltext='parse atoms Model ' + mNum.strip()+'/%d'%len(modelEnd))
+                        self.configureProgressBar(labeltext='parse atoms Model ' + mNum.strip() + '/%d' % len(modelEnd))
 
                         mol = objClass()
                         self.pdbRecordParser[record](self.allLines[mBeg + 1:mEnd], mol)
@@ -1280,7 +1281,6 @@ was not found in chain %s" % (endData, chain.id))
             return newLines
 
 
-
 class PQRParser(PdbParser):
     """Parser object for the MEAD file format"""
 
@@ -1636,8 +1636,8 @@ class PdbqParser(PdbParser):
                 #     mol.curRes = res[0]
                 # else:
                 #     mol.curRes = Residue(resName, resSeq, icode,
-                                               #mol.curChain,
-                                               #top=mol)
+                # mol.curChain,
+                # top=mol)
                 # Add a hasCA and hasO flags to the residue and set it to 0
                 mol.curRes.hasCA = 0
                 mol.curRes.hasO = 0
@@ -2226,7 +2226,6 @@ class PdbqtParser(PdbqParser):
                 mol.curRes.hasCA = 0
                 mol.curRes.hasO = 0
 
-
         if rec[26] != ' ': mol.curRes.icode = rec[26]
 
         # parse atom info
@@ -2427,7 +2426,6 @@ class PdbqsParser(PdbParser):
                 # Add a hasCA and hasO flags to the residue and set it to 0
                 mol.curRes.hasCA = 0
                 mol.curRes.hasO = 0
-
 
         if rec[26] != ' ': mol.curRes.icode = rec[26]
 
