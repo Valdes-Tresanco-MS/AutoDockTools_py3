@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 3/5/20 2:16                                                                  #
+#  Modification date: 4/5/20 0:20                                                                  #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -315,7 +315,7 @@ class Atom(TreeNode):
         self.chargeSet = None
 
     def isBelow(self, Klass):
-        from protein import Protein
+        from .protein import Protein
         if Klass in (Molecule, Protein):  # try both Molecule and Protein
             l = TreeNode.isBelow(self, Molecule)
             if l > 0:  # not below
