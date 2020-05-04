@@ -9,21 +9,15 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
+#  Modification date: 4/5/20 14:03                                                                 #
 #                                                                                                  #
 # ##################################################################################################
 
-#
-# $Id: pKa_base.py,v 1.1 2007/08/03 20:59:24 sargis Exp $
-#
-# Helper classes for all the pKa stuff. I need to reorganise these into something
-# more logic at some point
-# 
-#
 class pKa:
     """
         The main pKa object
     """
+
     def __init__(self, residue, group, amb):
         """
             Initialize the pKa object
@@ -46,13 +40,14 @@ class pKa:
         #
         # Unique identifier
         #
-        self.uniqueid='%s_%s_%d_TITTYPE:%s' %(residue.name,residue.chainID,residue.resSeq,group.name)
+        self.uniqueid = '%s_%s_%d_TITTYPE:%s' % (residue.name, residue.chainID, residue.resSeq, group.name)
         return
+
 
 #
 # -------------------------------------------
 #
-        
+
 class pKaGroup:
     #
     # pKaGroup holds the defintion on a single titratable entity. In most cases we will
@@ -63,7 +58,6 @@ class pKaGroup:
     # them here to get something working before we do complicated things...
     #
 
-    
     def __init__(self, name, resname, type, DefTitrations):
         #
         #    Initialize the pKaGroup object
@@ -71,7 +65,7 @@ class pKaGroup:
         #    Parameters
         #        name:    The name of the group (string)
         #        resname: The residue name (string)
-        #        type:    The type of group, acid or base (string)
+        #        type:    # The type of group, acid or base (string)
         #        DefTitrations: A list of DefTitration objects (list)
         #
         #
@@ -84,7 +78,7 @@ class pKaGroup:
     #
     # ------------------------
     #
-       
+
     def __str__(self):
         """
             Print the pKa group object for debugging purposes
@@ -92,7 +86,7 @@ class pKaGroup:
             Returns
                 text:  The pKaGroup information (string)
         """
-        text  = "Group name:   %s\n" % self.name
+        text = "Group name:   %s\n" % self.name
         text += "Residue name: %s\n" % self.resname
         text += "Group type:   %s\n" % self.type
         text += "Transitions:\n"
@@ -114,7 +108,7 @@ class DefTitration:
     # A single group can have several transitions depending on the
     # number of startstates and endstates
     #
-    
+
     def __init__(self, startstates, endstates, modelpKa):
         #
         #    Initialize the pKaTransition object
@@ -133,18 +127,18 @@ class DefTitration:
         self.residue = None
         self.startstates = startstates
         self.endstates = endstates
-        self.allstates=startstates+endstates
+        self.allstates = startstates + endstates
         self.modelpKa = modelpKa
-        #self.intrinsic_pKa=[] # We will have more than one intrinsic pKa per group
+        # self.intrinsic_pKa=[] # We will have more than one intrinsic pKa per group
         #
         # Set transitions
         #
-        self.transitions={}
-        count=0
+        self.transitions = {}
+        count = 0
         for start_s in self.startstates:
             for end_s in self.endstates:
-                count=count+1
-                self.transitions[count]={'start':start_s,'end':end_s}
+                count = count + 1
+                self.transitions[count] = {'start': start_s, 'end': end_s}
         #
         # Interactions has to be set at a higher level
         #
@@ -161,8 +155,7 @@ class DefTitration:
             Returns
                 text:  The pKaTransition information (string)
         """
-        text  = "\tStartstates: %s\n" % self.startstates
+        text = "\tStartstates: %s\n" % self.startstates
         text += "\tEndstates:   %s\n" % self.endstates
         text += "\tmodelpKa:    %.1f\n" % self.modelpKa
         return text
-
