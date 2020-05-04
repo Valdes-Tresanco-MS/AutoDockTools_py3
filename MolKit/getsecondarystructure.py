@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
+#  Modification date: 3/5/20 23:47                                                                 #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -21,12 +21,6 @@
 #
 #############################################################################
 
-#
-# $Header: /opt/cvs/python/packages/share1.5/MolKit/getsecondarystructure.py,v 1.29.2.1 2015/08/29 01:26:36 sanner Exp $
-#
-# $Id: getsecondarystructure.py,v 1.29.2.1 2015/08/29 01:26:36 sanner Exp $
-#
-
 """
 This module implements the classes GetSecondaryStructure,
 GetSecondaryStructureFromFile, GetSecondaryStructureWeb,
@@ -35,11 +29,7 @@ the secondary Structure of a protein and create a secondarystructureset for a
 chain
 """
 
-from MolKit.protein import Helix, Strand, Turn, Coil,\
-     SecondaryStructureSet, Residue, ResidueSet
-from MolKit.molecule import Atom
-import _py2k_string as string
-import types
+from MolKit.protein import Helix, Strand, Turn, Coil, SecondaryStructureSet, ResidueSet
 
 
 class GetSecondaryStructure:
@@ -50,49 +40,38 @@ class GetSecondaryStructure:
     strandStartEndForChain, turnStartEndForChain, None]
 """
 
-
     def Compare(self, struct1, struct2):
         """ compares 2 structures looking at the start residues index."""
-        assert(struct1.chain.id == struct2.chain.id)
+        assert (struct1.chain.id == struct2.chain.id)
         res = struct1.chain.residues
-        x = cmp(res.index(struct1.start), res.index(struct2.start))
-        return x
+        if res.index(struct1.start) < res.index(struct2.start):
+            return -1
+        elif res.index(struct1.start) == res.index(struct2.start):
+            return 0
+        else:
+            return 1
 
-
-    def createSSstructures(self, chain, heldatas, strdatas, turndatas,
-                           coildatas):
+    def createSSstructures(self, chain, heldatas, strdatas, turndatas, coildatas):
         # create a secondary structure set
-        #chainStructureSet = SecondaryStructureSet()
+        # chainStructureSet = SecondaryStructureSet()
         chain.secondarystructureset = SecondaryStructureSet()
         # helices objects
-        self.buildSecondaryStructureObjects(heldatas,chain)
+        self.buildSecondaryStructureObjects(heldatas, chain)
         # sheets objects
-        self.buildSecondaryStructureObjects(strdatas,chain)
+        self.buildSecondaryStructureObjects(strdatas, chain)
         # turns objects
-        if turndatas :
-            self.buildSecondaryStructureObjects(turndatas,chain)
+        if turndatas:
+            self.buildSecondaryStructureObjects(turndatas, chain)
 
         # coils
         self.getCoils(chain)
-        if hasattr(chain,'residueInSS'):
+        if hasattr(chain, 'residueInSS'):
             chain.residuesInSS = chain.residues.get(lambda x: hasattr(x, 'secondarystructure'))
-##         # coils
-##         if coildatas:
-##             self.buildSecondaryStructureObjects(coildatas,chain)
-##             chain.secondarystructureset.sort(self.Compare)
-
-##         else:
-##             self.getCoils(chain)
-##             # When FromFile the set of residues belonging to a ss is:
-##             chain.residuesInSS = chain.residues.get(lambda x: hasattr(x, 'secondarystructure'))
-
-
-
 
     def buildSecondaryStructureObjects(self, datas, chain):
         ssClass = datas[0]
         chainStructureSet = chain.secondarystructureset
-        for i in range(1,len(datas)):
+        for i in range(1, len(datas)):
             if type(datas[i]) is dict:
                 start = datas[i]['start']
                 end = datas[i]['end']
@@ -100,48 +79,44 @@ class GetSecondaryStructure:
             elif isinstance(datas[i], ResidueSet):
                 start = datas[i][0]
                 end = datas[i][1]
-                kw = {}
-                kw['start']=start
-                kw['end']=end
+                kw = {'start': start, 'end': end}
             elif isinstance(datas[i], list):
                 start = datas[i][0]
                 end = datas[i][1]
-                kw = {}
-                kw['start']=start
-                kw['end']=end
+                kw = {'start': start, 'end': end}
             # check that the parser has found the correct start and end
             if not start or not end:
-                return None   # error: no secondary structure set created
+                return None  # error: no secondary structure set created
 
             if chainStructureSet:
                 # Check if the structure has not been already built
-                if start in chainStructureSet.start\
-                   and end in chainStructureSet.end:
+                if start in chainStructureSet.start \
+                        and end in chainStructureSet.end:
                     continue
                 # Check if the entire new structure doesn't belong to a
                 # previous one..
                 # Check if the structure has already beein built.
                 # This is for strands belonging to two different sheets.
 
-                if start in chainStructureSet.residues\
-                   and end in chainStructureSet.residues:
-                    print("In %s, %s and %s already belongs to %s"\
-                          %(start.parent.id, start.name, end.name,
-                            start.secondarystructure.name))
+                if start in chainStructureSet.residues \
+                        and end in chainStructureSet.residues:
+                    print("In %s, %s and %s already belongs to %s" \
+                          % (start.parent.id, start.name, end.name,
+                             start.secondarystructure.name))
 
                     continue
 
                 if start in chainStructureSet.residues:
-                    print("In %s, %s is  already the end of %s"\
-                          %(start.parent.id, start.name,
-                            start.secondarystructure.name))
-                    #continue
+                    print("In %s, %s is  already the end of %s" \
+                          % (start.parent.id, start.name,
+                             start.secondarystructure.name))
+                    # continue
                 if end in chainStructureSet.residues:
-                    print("In %s, %s is  already the start of %s"\
-                          %(end.parent.id, end.name,
-                            end.secondarystructure.name))
+                    print("In %s, %s is  already the start of %s" \
+                          % (end.parent.id, end.name,
+                             end.secondarystructure.name))
                     continue
-            #kw = datas[i]
+            # kw = datas[i]
             kw['index'] = i
             kw['chain'] = chain
             secondarystructure = ssClass(*(), **kw)
@@ -149,12 +124,11 @@ class GetSecondaryStructure:
             secondarystructure.parent = chain
 
     def close(self, ca1, ca2):
-        x1,y1,z1 = ca1.coords
-        x2,y2,z2 = ca2.coords
-        d2 = (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1) + (z2-z1)*(z2-z1)
-        #print d2
-        return d2 < 16. # 4 Angs **2 cutoff
-
+        x1, y1, z1 = ca1.coords
+        x2, y2, z2 = ca2.coords
+        d2 = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) + (z2 - z1) * (z2 - z1)
+        # print d2
+        return d2 < 16.  # 4 Angs **2 cutoff
 
     def getCoils(self, chain):
         """
@@ -162,7 +136,7 @@ class GetSecondaryStructure:
         in a secondary structure element
         """
         chain.ribbonType()
-        if chain.ribbonType()=='NA':
+        if chain.ribbonType() == 'NA':
             coil = Coil(chain=chain, index='Nucleic',
                         start=chain.DNARes[0], end=chain.DNARes[-1])
             chain.secondarystructureset.append(coil)
@@ -173,21 +147,21 @@ class GetSecondaryStructure:
             res = chain.AARes
             chainStructureSet = chain.secondarystructureset
 
-            j = 1 # coil counter
+            j = 1  # coil counter
 
             # loop over residues and build coils for continuous segments of
             # unassigned residues
             endedWithGap = False
-            #print 'FOR CHAIN ', chain.id
+            # print 'FOR CHAIN ', chain.id
 
-            residuesCoil = [] # list of residues in current Coil
+            residuesCoil = []  # list of residues in current Coil
             # look over all residues to build list of residues in current Coil
 
             for r in res:
-                #print r
+                # print r
                 # if we hit a residue
-                #cCAatom = None
-                if r.CAatom == None: # we hit residue that breaks coil
+                # cCAatom = None
+                if not r.hasCA:  # we hit residue that breaks coil
                     if len(residuesCoil):
                         coil = self.buildCoil(residuesCoil, j, chain)
                         coil.gapAfter = True
@@ -197,10 +171,10 @@ class GetSecondaryStructure:
                         coil.parent = chain
                         r1 = residuesCoil[0]
                         r2 = residuesCoil[-1]
-                        #print '0', coil, r1, r2,coil.gapBefore, coil.gapAfter
+                        # print '0', coil, r1, r2,coil.gapBefore, coil.gapAfter
                         endedWithGap = True
                         residuesCoil = [r]
-                        j = j+1
+                        j = j + 1
 
                 else:
                     anames = r.atoms.name
@@ -208,8 +182,8 @@ class GetSecondaryStructure:
                     # using get('CA*')[0] handle alternate location as in
                     # THR 4 in 1KZK.pdb
                     cCAatom = r.atoms.get('CA*')[0]
-                    #cNatom = r.atoms[anames.index('N')] # N atom of current res
-                    #cCatom = r.atoms[anames.index('C')] # C atom of current res
+                    # cNatom = r.atoms[anames.index('N')] # N atom of current res
+                    # cCatom = r.atoms[anames.index('C')] # C atom of current res
 
                     if hasattr(r, 'secondarystructure'):
                         if len(residuesCoil):
@@ -220,26 +194,26 @@ class GetSecondaryStructure:
                             coil.parent = chain
                             r1 = residuesCoil[0]
                             r2 = residuesCoil[-1]
-                            #print '1', coil, r1, r2, coil.gapBefore, coil.gapAfter
+                            # print '1', coil, r1, r2, coil.gapBefore, coil.gapAfter
                             endedWithGap = False
                             residuesCoil = []
-                            j = j+1
+                            j = j + 1
 
                     else:
-                        if len(residuesCoil)==0:
+                        if len(residuesCoil) == 0:
                             residuesCoil = [r]
 
                         else:
                             if self.close(pCAatom, cCAatom):
                                 residuesCoil.append(r)
-                                if r==res[-1]: #last seg is coil
+                                if r == res[-1]:  # last seg is coil
                                     coil = self.buildCoil(residuesCoil, j, chain)
                                     chainStructureSet.append(coil)
                                     if endedWithGap:
                                         coil.gapBefore = True
                                     coil.parent = chain
 
-                            elif len(residuesCoil): # distance gap
+                            elif len(residuesCoil):  # distance gap
                                 coil = self.buildCoil(residuesCoil, j, chain)
                                 chainStructureSet.append(coil)
                                 coil.gapAfter = True
@@ -248,72 +222,16 @@ class GetSecondaryStructure:
                                 coil.parent = chain
                                 r1 = residuesCoil[0]
                                 r2 = residuesCoil[-1]
-                                #print '2', coil, r1, r2,coil.gapBefore, coil.gapAfter
+                                # print '2', coil, r1, r2,coil.gapBefore, coil.gapAfter
                                 endedWithGap = True
                                 residuesCoil = [r]
-                                j = j+1
+                                j = j + 1
 
                     pCAatom = cCAatom
-                #pNatom = cNatom
-                #pCatom = cCatom
-
-            ## res = chain.AARes
-
-            ## chainStructureSet = chain.secondarystructureset
-            ## resNum = None
-            ## try:
-            ##     resNum = int(res[0].number)
-            ## except:
-            ##     pass
-
-            ## j = 1 # coil counter
-
-            ## for rn, r in enumerate(res):
-            ##     print 'AAA1', r, resNum, r.number
-            ##     if resNum:
-            ##         if resNum != int(r.number):
-            ##             if residuesCoil:
-            ##                 print 'AAA2', j, len(residuesCoil)
-            ##                 coil = self.buildCoil(residuesCoil, j, chain)
-            ##                 chainStructureSet.append(coil)
-            ##                 coil.parent = chain
-            ##                 coil.gap =int(r.number) - resNum #used in secondaryStructureCommands to fix Bug 1120
-            ##                 residuesCoil = [r]
-            ##                 r.gap = True
-            ##                 j = j+1
-            ##         try:
-            ##             if res[rn+1].number != r.number: #icode is not '':
-            ##                 resNum = int(r.number) +1
-            ##         except IndexError:
-            ##             pass
-
-            ##     if not hasattr(r, 'secondarystructure') and r.hasCA and r.hasO:
-            ##         print 'AAA3', r, len(residuesCoil), r == res[-1]
-            ##         residuesCoil.append(r)
-            ##         #test if this residue is the last one if yes it build the
-            ##         #information on the COIL, if not i is incremented.
-
-            ##         if r == res[-1] and residuesCoil != []:
-            ##             coil = self.buildCoil(residuesCoil, j, chain)
-            ##             chainStructureSet.append(coil)
-            ##             coil.parent = chain
-            ##             if hasattr(residuesCoil[0],'gap'):
-            ##                 coil.gap = True
-            ##             residuesCoil = []
-            ##             j = j+1
-            ##     else:
-            ##         print 'AAA4', len(residuesCoil)
-            ##         if residuesCoil != []:
-            ##             coil = self.buildCoil(residuesCoil, j, chain)
-            ##             chainStructureSet.append(coil)
-            ##             coil.parent = chain
-            ##             if hasattr(residuesCoil[0],'gap'):
-            ##                 coil.gap = True
-            ##             residuesCoil = []
-            ##             j = j+1
+                # pNatom = cNatom
+                # pCatom = cCatom
 
         chain.secondarystructureset.sort(self.Compare)
-
 
     def buildCoil(self, residuesCoil, j, chain):
         start = residuesCoil[0]
@@ -322,33 +240,31 @@ class GetSecondaryStructure:
         coil.isNA = False
         return coil
 
-
     def createSSNodesForChain(self, chain):
         """Create the secondarystructureset of a chain. It gets the proper
         informations in processing the datas returned by the functions
         parseSSData. ."""
         # Add a test to check if all the residues of the chain only have a CA.
-##         if chain.findType(Atom).name == len(chain.residues)*['CA']:
-##             print " Can't get the Secondary Structure because only the CA of the residues of %s in %s are described in the pdb File."%(chain.id,chain.parent.name)
-##             return None
-        #import traceback
-        #traceback.print_stack()
-        if chain.id not in self.ssDataForMol: return
-        helData, strandData, turnData, coilData= self.ssDataForMol[chain.id]
-        self.createSSstructures(chain, helData, strandData,
-                                turnData, coilData)
-
+        ##         if chain.findType(Atom).name == len(chain.residues)*['CA']:
+        ##             print " Can't get the Secondary Structure because only the CA of the residues of %s in %s are described in the pdb File."%(chain.id,chain.parent.name)
+        ##             return None
+        # import traceback
+        # traceback.print_stack()
+        if chain.id not in self.ssDataForMol:
+            return
+        helData, strandData, turnData, coilData = self.ssDataForMol[chain.id]
+        self.createSSstructures(chain, helData, strandData, turnData, coilData)
 
 
 class GetSecondaryStructureFromFile(GetSecondaryStructure):
     """class to extend GetSecondaryStructure with specific methods to
     get informations on the secondary structure from files (PDB file,
     MOL2) and build the equivalent nodes for the molecule.. """
+
     def __init__(self, mol):
         """ Get the information describing the secondary structure for
         the molecule from the molecule."""
         self.ssDataForMol = mol.parser.parseSSData(mol)
-
 
 
 class GetSecondaryStructureFromPross(GetSecondaryStructure):
@@ -367,28 +283,29 @@ class GetSecondaryStructureFromPross(GetSecondaryStructure):
     Date: September 2004
     Author: Pat Fleming, pat.fleming@jhu.edu
 	http://www.roselab.jhu.edu/utils/pross.html"""
+
     def __init__(self, mol, default='fgmeso'):
         """ # Setup Fine Grain Mesostate Bins (ala Pat Fleming)"""
         """ see PROSS.py """
         from .PROSS import MSDEFS
-        self.mode=default
-        self.MSDEFS=MSDEFS[default]
+        self.mode = default
+        self.MSDEFS = MSDEFS[default]
         self.mol = mol
-        #self.updatePhiPsi() # this called by rc_ss
+        # self.updatePhiPsi() # this called by rc_ss
         self.ssDataForMol = {}
-        self.sst={}
+        self.sst = {}
         for chain in self.mol.chains:
-        #    self.ssDataForMol[chain.id] = []
+            #    self.ssDataForMol[chain.id] = []
             self.ssDataForMol[chain.id] = self.rc_ss(chain)
-	#print 'SSABC', self.ssDataForMol
+
+    # print 'SSABC', self.ssDataForMol
 
     def updatePhiPsi(self, chain):
-        aa = [res for res in chain.residues if res.CAatom is not None]
+        aa = [res for res in chain.residues if res.hasCA]
         list(map(lambda x: x.getPhi(), aa))
         list(map(lambda x: x.getPsi(), aa))
 
-
-    def res_rc(self,r1, r2, r3=180):
+    def res_rc(self, r1, r2, r3=180):
         """res_rc(r1, r2, r3) - get mesostate code for a residue
 
         Given a phi (r1), psi (r2), and omega (r3) torsion angle, calculate
@@ -402,29 +319,30 @@ class GetSecondaryStructureFromPross(GetSecondaryStructure):
         """
 
         ms = self.MSDEFS
-        OMEGA   = ms['OMEGA']
+        OMEGA = ms['OMEGA']
         INVALID = ms['INVALID']
         PHI_OFF = ms['PHI_OFF']
         PSI_OFF = ms['PSI_OFF']
-        DELTA   = ms['DELTA']
+        DELTA = ms['DELTA']
         RC_DICT = ms['RC_DICT']
-        if r1 == None or r2 == None : return INVALID
+        if r1 == None or r2 == None:
+            return INVALID
         if (abs(r3) <= 90.0):
             return OMEGA
-        elif r1>180.0 or r2>180.0 or r3>180.0:
+        elif r1 > 180.0 or r2 > 180.0 or r3 > 180.0:
             return INVALID
 
-        ir1 = -int(PHI_OFF) + int(round((r1+PHI_OFF)/DELTA )) * int(DELTA)
-        ir2 = -int(PSI_OFF) + int(round((r2+PSI_OFF)/DELTA )) * int(DELTA)
+        ir1 = -int(PHI_OFF) + int(round((r1 + PHI_OFF) / DELTA)) * int(DELTA)
+        ir2 = -int(PSI_OFF) + int(round((r2 + PSI_OFF) / DELTA)) * int(DELTA)
 
         while ir1 <= -180: ir1 = ir1 + 360
-        while ir1 >   180: ir1 = ir1 - 360
+        while ir1 > 180: ir1 = ir1 - 360
         while ir2 <= -180: ir2 = ir2 + 360
-        while ir2 >   180: ir2 = ir2 - 360
+        while ir2 > 180: ir2 = ir2 - 360
 
-        return RC_DICT[(ir1,ir2)]
+        return RC_DICT[(ir1, ir2)]
 
-    def rc_codes(self,chain, phi=None, psi=None, ome=None):
+    def rc_codes(self, chain, phi=None, psi=None, ome=None):
         """rc_codes(chain, phi, psi, ome) - return rotamer codes
 
         Given a protein chain (and optionally phi, psi, omega), this
@@ -434,9 +352,8 @@ class GetSecondaryStructureFromPross(GetSecondaryStructure):
         n = list(range(len(chain.residues)))
         if phi is None: phi = chain.residues.phi
         if psi is None: psi = chain.residues.psi
-        #if ome is None: ome = map(chain.omega, n)
+        # if ome is None: ome = map(chain.omega, n)
         return list(map(lambda x, y: self.res_rc(x, y), phi, psi))
-
 
     def rc_ss(self, chain, phi=None, psi=None, ome=None):
         """rc_ss(chain, phi, psi, ome) - calculate secondary structure
@@ -450,24 +367,25 @@ class GetSecondaryStructureFromPross(GetSecondaryStructure):
         """
 
         ms = self.MSDEFS
-        PII    = ms['PII']
-        TURNS  = ms['TURNS']
-        HELIX  = ms['HELIX']
+        PII = ms['PII']
+        TURNS = ms['TURNS']
+        HELIX = ms['HELIX']
         STRAND = ms['STRAND']
 
         nres = len(chain.residues)
         self.updatePhiPsi(chain)
         if phi is None:
-            #chain.gaps()
+            # chain.gaps()
             phi = chain.residues.phi
         if psi is None: psi = chain.residues.psi
-        #if ome is None: ome = None #map(chain.residues.omega, xrange(nres))
-        #print psi
+        # if ome is None:
+        #   ome = None #map(chain.residues.omega, xrange(nres))
+        # print psi
         codes = self.rc_codes(chain, phi, psi)
 
-        #chain.gaps()
+        # chain.gaps()
 
-        sst = ['C']*nres
+        sst = ['C'] * nres
         hData = [Helix]
         sData = [Strand]
         tData = [Turn]
@@ -475,104 +393,103 @@ class GetSecondaryStructureFromPross(GetSecondaryStructure):
 
         is_PII = PII.has_key
 
-        for i in range(nres-1):
+        for i in range(nres - 1):
             code = codes[i]
             if is_PII(code):
                 sst[i] = 'P'
 
         is_turn = TURNS.has_key
 
-        for i in range(nres-1):
-            code = codes[i] + codes[i+1]
+        for i in range(nres - 1):
+            code = codes[i] + codes[i + 1]
             if is_turn(code):
-                sst[i] = sst[i+1] = 'T'
+                sst[i] = sst[i + 1] = 'T'
 
         helices = self._rc_find(codes, HELIX)
         strands = self._rc_find(codes, STRAND)
-        #turn = self._rc_find(codes, TURNS)
-        #coil = self._rc_find(codes, STRAND)
+        # turn = self._rc_find(codes, TURNS)
+        # coil = self._rc_find(codes, STRAND)
 
         for helix in helices:
             i, j = helix
-            #hData.append([chain.residues[i],chain.residues[j]])
+            # hData.append([chain.residues[i],chain.residues[j]])
             for k in range(i, j):
-				sst[k] = 'H'
+                sst[k] = 'H'
 
         for strand in strands:
             i, j = strand
-            #sData.append([chain.residues[i],chain.residues[j]])
+            # sData.append([chain.residues[i],chain.residues[j]])
             for k in range(i, j):
-                if sst[k] in ('C', 'P'): sst[k] = 'E'
-        #self.sst = sst
+                if sst[k] in ('C', 'P'):
+                    sst[k] = 'E'
+        # self.sst = sst
 
-        turns = self.findSS(sst,('T'))
-        #print 'FOGO TURNS', turns
+        turns = self.findSS(sst, ('T'))
+        # print 'FOGO TURNS', turns
         for turn in turns:
             i, j = turn
-            tData.append([chain.residues[i],chain.residues[j]])
-        strands = self.findSS(sst,('E'))
+            tData.append([chain.residues[i], chain.residues[j]])
+        strands = self.findSS(sst, ('E'))
         for strand in strands:
             i, j = strand
-            sData.append([chain.residues[i],chain.residues[j]])
-        helices = self.findSS(sst,('H'))
+            sData.append([chain.residues[i], chain.residues[j]])
+        helices = self.findSS(sst, ('H'))
         for helix in helices:
             i, j = helix
-            hData.append([chain.residues[i],chain.residues[j]])
-        cData = None#self.findSS(self.sst,('C','P'))
-        self.sst[chain.id]=sst
+            hData.append([chain.residues[i], chain.residues[j]])
+        cData = None  # self.findSS(self.sst,('C','P'))
+        self.sst[chain.id] = sst
         return (hData, sData, tData, cData)
 
-
-    def findSS(self,sst,ssType):
-        start=0
-        end=0
-        prev=None
-        next=None
-        res=[]
-        for i,ss in enumerate(sst):
-            if ss == ssType :
-                if ss != prev :
-                    start=i
-                else :
-                    if i == len(sst)-1 or ss != sst[i+1] :
+    def findSS(self, sst, ssType):
+        start = 0
+        end = 0
+        prev = None
+        next = None
+        res = []
+        for i, ss in enumerate(sst):
+            if ss == ssType:
+                if ss != prev:
+                    start = i
+                else:
+                    if i == len(sst) - 1 or ss != sst[i + 1]:
                         end = i
-                        res.append([start,end])
+                        res.append([start, end])
             prev = ss
         return res
 
+    def _rc_find(self, codes, pattern):
+        """_rc_find(codes, pat_obj) - find a endpoints of a regexp
 
-    def _rc_find(self,codes, pattern):
-		"""_rc_find(codes, pat_obj) - find a endpoints of a regexp
+        Given a list of mesostate codes, this function identifies a endpoints
+        of a match  <pattern>.  <pat_obj> is a compiled regular expression
+        pattern whose matches will be returned as pairs indicated start,
+        end in <codes>
+        """
 
-		Given a list of mesostate codes, this function identifies a endpoints
-		of a match  <pattern>.  <pat_obj> is a compiled regular expression
-		pattern whose matches will be returned as pairs indicated start,
-		end in <codes>
-		"""
+        CODE_LENGTH = self.MSDEFS['CODE_LENGTH']
 
-		CODE_LENGTH = self.MSDEFS['CODE_LENGTH']
+        if not type(codes) == type(''):
+            codes = codes.join('')
 
-		if not type(codes) == type(''):
-			codes = string.join(codes, '')
+        matches = []
+        it = pattern.finditer(codes)
 
-		matches = []
-		it = pattern.finditer(codes)
+        try:
+            while 1:
+                mat = next(it)
+                matches.append((mat.start() / CODE_LENGTH, mat.end() / CODE_LENGTH))
+        except StopIteration:
+            pass
 
-		try:
-			while 1:
-				mat = next(it)
-				matches.append((mat.start()/CODE_LENGTH, mat.end()/CODE_LENGTH))
-		except StopIteration:
-			pass
-
-		return matches
-
+        return matches
 
 
 class GetSecondaryStructureFromStride(GetSecondaryStructure):
     """class to extend GetSecondaryStructure with specific methods to
     get informations on the secondary structure from the output of STRIDE
     """
+
     def __init__(self, mol):
         import traceback
         traceback.print_stack()
@@ -581,22 +498,22 @@ class GetSecondaryStructureFromStride(GetSecondaryStructure):
         from MolKit.pdbParser import PdbParser
         s = stride.STRIDE()
         if not isinstance(mol.parser, PdbParser):
-            print("cannot use stride to get the secondary structure for the %s"%mol.name)
+            print("cannot use stride to get the secondary structure for the %s" % mol.name)
             return None
 
         if not 'ATOM' in mol.parser.keys:
-            print("cannot use stride to get the secondary structure for the %s, the file doens't have any ATOM record"%mol.name)
+            print(
+                "cannot use stride to get the secondary structure for the %s, the file doens't have any ATOM record" % mol.name)
             return None
 
-        if not s.getPDBRecords( mol.parser.allLines, len(mol.parser.allLines)):
+        if not s.getPDBRecords(mol.parser.allLines, len(mol.parser.allLines)):
             print("STRIDE has failed to parse ", mol)
             self.ssDataForMol = {}
             return
-        #s.run( report = 0 )
-        s.run( )
+        # s.run( report = 0 )
+        s.run()
 
-        self.ssDataForMol = self.parseSSData( s, mol )
-
+        self.ssDataForMol = self.parseSSData(s, mol)
 
     def getAsn(self, chain):
         asn = []
@@ -606,7 +523,7 @@ class GetSecondaryStructureFromStride(GetSecondaryStructure):
         for j in range(chain.NRes):
             res = chain.getResidue(j)
             chain.residuesInSS.append(res)
-            asn.append( (res.ResType+res.PDB_ResNumb, res.Prop.Asn) )
+            asn.append((res.ResType + res.PDB_ResNumb, res.Prop.Asn))
         return asn
 
     def parseSSData(self, s, mol):
@@ -624,11 +541,11 @@ class GetSecondaryStructureFromStride(GetSecondaryStructure):
                 cId = chain.Id
             else:
                 cId = chain.__getmethods__['Id'](chain)
-            if mol.chains.id == ['UNK']: #this is needed for pqr files
+            if mol.chains.id == ['UNK']:  # this is needed for pqr files
                 c = mol.chains[0]
             else:
                 c = mol.chains.get(lambda x: x.id == cId)[0]
-            #c = mol.chains[j]
+            # c = mol.chains[j]
             hData = [Helix]
             sData = [Strand]
             tData = [Turn]
@@ -637,59 +554,61 @@ class GetSecondaryStructureFromStride(GetSecondaryStructure):
             lenResidues = len(c.residues)
             for i in range(len(asnForChain)):
                 l = asnForChain[i]
-                if l[1] == 'B': continue # Don't know what B stands for...
-                elif (i+k) >=lenResidues: continue # Bugfix for  #1033
-                elif l[0] != c.residues[i+k].name:
+                if l[1] == 'B':
+                    continue  # Don't know what B stands for...
+                elif (i + k) >= lenResidues:
+                    continue  # Bugfix for  #1033
+                elif l[0] != c.residues[i + k].name:
                     # check if there is a residue in the chain but not in the
                     # stride output file.
-                    k = k+1
+                    k = k + 1
                     discontinue = 1
                 else:
                     discontinue = 0
 
-                if ssType != l[1] or (ssType == l[1] and discontinue==1):
+                if ssType != l[1] or (ssType == l[1] and discontinue == 1):
                     if ssType is None:
                         start = c.get(l[0])
                         if start is None:
                             raise
                         ssType = l[1]
                     else:
-                        end = c.get(asnForChain[i-1][0])
+                        end = c.get(asnForChain[i - 1][0])
                         if end is None:
                             raise
-                        startend = start+end
-                        hData, sData, tData, cData  = \
-                               self.buildSSData(ssType,startend,hData, sData,
-                                                tData, cData)
+                        startend = start + end
+                        hData, sData, tData, cData = \
+                            self.buildSSData(ssType, startend, hData, sData,
+                                             tData, cData)
                         start = c.get(l[0])
 
                         if start is None:
                             raise
                         ssType = l[1]
 
-                        if i == len(asnForChain)-1:
+                        if i == len(asnForChain) - 1:
                             end = c.get(l[0])
-                            if end is None :
+                            if end is None:
                                 raise
-                            startend = start+end
-                            hData, sData, tData, cData  = \
-                                   self.buildSSData(ssType,startend,
-                                                    hData, sData,
-                                                    tData, cData)
+                            startend = start + end
+                            hData, sData, tData, cData = \
+                                self.buildSSData(ssType, startend,
+                                                 hData, sData,
+                                                 tData, cData)
             ssDataForMol[c.id] = [hData, sData, tData, cData]
         return ssDataForMol
 
-    def buildSSData(self, ssType,startend, hData, sData, tData, cData):
+    def buildSSData(self, ssType, startend, hData, sData, tData, cData):
         if ssType in ['C']:
-            cData.append({'start':startend[0], 'end':startend[1]})
-            #cData.append( startend )
+            cData.append({'start': startend[0], 'end': startend[1]})
+            # cData.append( startend )
         elif ssType in ['H', 'G']:
-            hData.append({'start':startend[0], 'end':startend[1], 'helClass':ssType})
-            #hData.append( startend )
+            hData.append({'start': startend[0], 'end': startend[1], 'helClass': ssType})
+            # hData.append( startend )
         elif ssType in ['T']:
-            tData.append({'start':startend[0], 'end':startend[1]})
-            #tData.append( startend )
+            tData.append({'start': startend[0], 'end': startend[1]})
+            # tData.append( startend )
         elif ssType in ['E']:
-            sData.append({'start':startend[0], 'end':startend[1]})
-            #sData.append( startend )
+            sData.append({'start': startend[0], 'end': startend[1]})
+            # sData.append( startend )
         return hData, sData, tData, cData
