@@ -26,7 +26,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dade6379-1666-4ac7-9de4-69950a5437c6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/MolKit/molecule.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/molecule.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MolKit/pqrWriter.py" beforeDir="false" afterPath="$PROJECT_DIR$/MolKit/pqrWriter.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -187,42 +187,7 @@
       <option name="presentableId" value="Default" />
       <updated>1588466872659</updated>
       <workItem from="1588466873766" duration="21530000" />
-      <workItem from="1588561745843" duration="7925000" />
-    </task>
-    <task id="LOCAL-00004" summary="added PyBabel">
-      <created>1588478383121</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1588478383121</updated>
-    </task>
-    <task id="LOCAL-00005" summary="updated pdbParser">
-      <created>1588484695766</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1588484695766</updated>
-    </task>
-    <task id="LOCAL-00006" summary="updated pdbParser">
-      <created>1588484936780</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1588484936780</updated>
-    </task>
-    <task id="LOCAL-00007" summary="updated molecule">
-      <created>1588489325234</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1588489325234</updated>
-    </task>
-    <task id="LOCAL-00008" summary="updated moleculeParser">
-      <created>1588490382029</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1588490382029</updated>
+      <workItem from="1588561745843" duration="8243000" />
     </task>
     <task id="LOCAL-00009" summary="updated MolKit &gt; protein">
       <created>1588491334118</created>
@@ -532,7 +497,42 @@
       <option name="project" value="LOCAL" />
       <updated>1588569569963</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="updated MolKit &gt; molecule.py">
+      <created>1588569691602</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1588569691602</updated>
+    </task>
+    <task id="LOCAL-00054" summary="updated MolKit &gt; moleculeWriter.py">
+      <created>1588569724886</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1588569724887</updated>
+    </task>
+    <task id="LOCAL-00055" summary="updated MolKit &gt; oxtBuilder.py">
+      <created>1588569790098</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1588569790098</updated>
+    </task>
+    <task id="LOCAL-00056" summary="updated MolKit &gt; parm94_dat.py">
+      <created>1588569832265</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1588569832265</updated>
+    </task>
+    <task id="LOCAL-00057" summary="updated MolKit &gt; pdbParser.py">
+      <created>1588569887698</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1588569887698</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -542,11 +542,6 @@
     <option name="UPDATE_COPYRIGHT" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="updated MolKit &gt; data &gt; build_all_in.py" />
-    <MESSAGE value="updated MolKit &gt; data &gt; qkollua.py" />
-    <MESSAGE value="updated MolKit &gt; mmcifParser.py" />
-    <MESSAGE value="updated MolKit &gt; mol2Parser.py" />
-    <MESSAGE value="updated MolKit &gt; pdbWriter.py" />
     <MESSAGE value="updated MolKit &gt; PDBdict.py" />
     <MESSAGE value="updated MolKit &gt; tree.py" />
     <MESSAGE value="updated MolKit &gt; amberPrmTop.py" />
@@ -567,7 +562,12 @@
     <MESSAGE value="updated MolKit &gt; listSet.py" />
     <MESSAGE value="updated MolKit &gt; mmcifWriter.py" />
     <MESSAGE value="updated MolKit &gt; MolecularDescriptor.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated MolKit &gt; MolecularDescriptor.py" />
+    <MESSAGE value="updated MolKit &gt; molecule.py" />
+    <MESSAGE value="updated MolKit &gt; moleculeWriter.py" />
+    <MESSAGE value="updated MolKit &gt; oxtBuilder.py" />
+    <MESSAGE value="updated MolKit &gt; parm94_dat.py" />
+    <MESSAGE value="updated MolKit &gt; pdbParser.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated MolKit &gt; pdbParser.py" />
   </component>
   <component name="WindowStateProjectService">
     <state x="586" y="198" key="#Inspections" timestamp="1588494675975">
@@ -586,18 +586,18 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="707" y="384" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.1040@0.0.1920.1040" timestamp="1588477911914" />
-    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2" timestamp="1588569569383">
+    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2" timestamp="1588569887081">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1588569569383" />
+    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1588569887081" />
     <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog" timestamp="1588569679768">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588569679768" />
-    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1588569515864">
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1588569795929">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588569515864" />
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588569795929" />
     <state width="1877" height="161" key="GridCell.Tab.0.bottom" timestamp="1588569365447">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
