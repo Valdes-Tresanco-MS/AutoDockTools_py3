@@ -1,3 +1,18 @@
+# ##################################################################################################
+#  Disclaimer                                                                                      #
+#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
+#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
+#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
+#  There is no guarantee that it works like the original distribution,                             #
+#  but feel free to tell us if you get any difference to correct the code.                         #
+#                                                                                                  #
+#  Please use this cite the original reference.                                                    #
+#  If you think my work helps you, just keep this note intact on your program.                     #
+#                                                                                                  #
+#  Modification date: 4/5/20 12:37                                                                 #
+#                                                                                                  #
+# ##################################################################################################
+
 """
     Nucleic Acid Structures for PDB2PQR
 
@@ -47,23 +62,8 @@
 __date__ = "28 February 2006"
 __author__ = "Todd Dolinsky"
 
-# ##################################################################################################
-#  Disclaimer                                                                                      #
-#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
-#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
-#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
-#  There is no guarantee that it works like the original distribution,                             #
-#  but feel free to tell us if you get any difference to correct the code.                         #
-#                                                                                                  #
-#  Please use this cite the original reference.                                                    #
-#  If you think my work helps you, just keep this note intact on your program.                     #
-#                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
-#                                                                                                  #
-# ##################################################################################################
-
-import _py2k_string as string
 from .structures import *
+
 
 class Nucleic(Residue):
     """
@@ -79,6 +79,7 @@ class Nucleic(Residue):
                     convert from the alternate naming scheme to the
                     main naming scheme.
     """
+
     def __init__(self, atoms, ref):
         sampleAtom = atoms[-1]
 
@@ -102,7 +103,7 @@ class Nucleic(Residue):
         # Create each atom
 
         for a in atoms:
-            if a.name in ref.altnames: # Rename atoms
+            if a.name in ref.altnames:  # Rename atoms
                 a.name = ref.altnames[a.name]
 
             if a.name not in self.map:
@@ -119,12 +120,12 @@ class Nucleic(Residue):
         """
         oldatom = self.atoms[0]
         newatom = Atom(oldatom, "ATOM", self)
-        newatom.set("x",newcoords[0])
-        newatom.set("y",newcoords[1])
-        newatom.set("z",newcoords[2])
+        newatom.set("x", newcoords[0])
+        newatom.set("y", newcoords[1])
+        newatom.set("z", newcoords[2])
         newatom.set("name", atomname)
-        newatom.set("occupancy",1.00)
-        newatom.set("tempFactor",0.00)
+        newatom.set("occupancy", 1.00)
+        newatom.set("tempFactor", 0.00)
         newatom.added = 1
         self.addAtom(newatom)
 
@@ -141,8 +142,10 @@ class Nucleic(Residue):
             for bond in atom.reference.bonds:
                 if self.hasAtom(bond):
                     bondatom = self.map[bond]
-                    if bondatom not in atom.bonds: atom.bonds.append(bondatom)
-                    if atom not in bondatom.bonds: bondatom.bonds.append(atom)
+                    if bondatom not in atom.bonds:
+                        atom.bonds.append(bondatom)
+                    if atom not in bondatom.bonds:
+                        bondatom.bonds.append(atom)
         except KeyError:
             atom.reference = None
 
@@ -159,8 +162,11 @@ class Nucleic(Residue):
         """
            Adds the termini for all inherited objects
         """
-        if self.is5term: self.ffname = self.ffname + "5"
-        if self.is3term: self.ffname = self.ffname + "3"
+        if self.is5term:
+            self.ffname = self.ffname + "5"
+        if self.is3term:
+            self.ffname = self.ffname + "3"
+
 
 class A(Nucleic):
     """
@@ -185,9 +191,12 @@ class A(Nucleic):
         """
             Set the state to distinguish RNA from DNA.
         """
-        if self.hasAtom("O2'"): self.ffname = "RA"
-        else: self.ffname = "DA"
+        if self.hasAtom("O2'"):
+            self.ffname = "RA"
+        else:
+            self.ffname = "DA"
         Nucleic.setState(self)
+
 
 class C(Nucleic):
     """
@@ -212,9 +221,12 @@ class C(Nucleic):
         """
             Set the state to distinguish RNA from DNA.
         """
-        if self.hasAtom("O2'"): self.ffname = "RC"
-        else: self.ffname = "DC"
+        if self.hasAtom("O2'"):
+            self.ffname = "RC"
+        else:
+            self.ffname = "DC"
         Nucleic.setState(self)
+
 
 class G(Nucleic):
     """
@@ -239,9 +251,12 @@ class G(Nucleic):
         """
             Set the state to distinguish RNA from DNA.
         """
-        if self.hasAtom("O2'"): self.ffname = "RG"
-        else: self.ffname = "DG"
+        if self.hasAtom("O2'"):
+            self.ffname = "RG"
+        else:
+            self.ffname = "DG"
         Nucleic.setState(self)
+
 
 class T(Nucleic):
     """
@@ -269,6 +284,7 @@ class T(Nucleic):
         """
         self.ffname = "DT"
         Nucleic.setState(self)
+
 
 class U(Nucleic):
     """
