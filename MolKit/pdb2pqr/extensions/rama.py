@@ -1,15 +1,3 @@
-"""
-    Ramachandran extension
-
-    Print both the phi and psi angles to standard out.  See the individual
-    functions for more info.
-
-    Author:  Mike Bradley and Todd Dolinsky
-"""
-
-__date__ = "17 February 2006"
-__author__ = "Mike Bradley, Todd Dolinsky"
-  
 # ##################################################################################################
 #  Disclaimer                                                                                      #
 #  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
@@ -21,18 +9,31 @@ __author__ = "Mike Bradley, Todd Dolinsky"
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
+#  Modification date: 4/5/20 3:29                                                                  #
 #                                                                                                  #
 # ##################################################################################################
 
-from src.utilities import *
-from src.routines import *
+"""
+    Ramachandran extension
+
+    Print both the phi and psi angles to standard out.  See the individual
+    functions for more info.
+
+    Author:  Mike Bradley and Todd Dolinsky
+"""
+
+__date__ = "17 February 2006"
+__author__ = "Mike Bradley, Todd Dolinsky"
+
+from ..src.utilities import *
+
 
 def usage():
-    str =  "        --rama        :  Print the per-residue phi and psi\n"
-    str += "                         angles to {output-path}.rama for\n"
-    str += "                         Ramachandran plots\n"
-    return str
+    text = "        --rama        :  Print the per-residue phi and psi\n"
+    text += "                         angles to {output-path}.rama for\n"
+    text += "                         Ramachandran plots\n"
+    return text
+
 
 def rama(routines, outroot):
     """
@@ -55,24 +56,32 @@ def rama(routines, outroot):
     protein = routines.protein
 
     for residue in protein.getResidues():
-        if residue.hasAtom("N"): ncoords = residue.getAtom("N").getCoords()
-        else: continue
+        if residue.hasAtom("N"):
+            ncoords = residue.getAtom("N").getCoords()
+        else:
+            continue
 
-        if residue.hasAtom("CA"): cacoords = residue.getAtom("CA").getCoords()
-        else: continue
+        if residue.hasAtom("CA"):
+            cacoords = residue.getAtom("CA").getCoords()
+        else:
+            continue
 
-        if residue.hasAtom("C"): ccoords = residue.getAtom("C").getCoords()
-        else: continue
+        if residue.hasAtom("C"):
+            ccoords = residue.getAtom("C").getCoords()
+        else:
+            continue
 
         try:
-            if residue.peptideN != None:
+            if residue.peptideN is not None:
                 pepncoords = residue.peptideN.getCoords()
-            else: continue
+            else:
+                continue
 
-            if residue.peptideC != None:
+            if residue.peptideC is not None:
                 pepccoords = residue.peptideC.getCoords()
-            else: continue
-        except AttributeError: # Non amino acids
+            else:
+                continue
+        except AttributeError:  # Non amino acids
             continue
 
         phi = getDihedral(pepccoords, ncoords, cacoords, ccoords)
