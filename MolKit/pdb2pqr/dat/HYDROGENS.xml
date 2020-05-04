@@ -1,0 +1,115 @@
+<?xml version='1.0'?>
+<!--
+  ~ # Disclaimer
+  ~ # This file is a python3 translation of AutoDockTools (v.1.5.7)
+  ~ # Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)
+  ~ # Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME
+  ~ # There is no guarantee that it works like the original distribution,
+  ~ # but feel free to tell us if you get any difference to correct the code.
+  ~ #
+  ~ # Please use this cite the original reference.
+  ~ # If you think my work helps you, just keep this note intact on your program.
+  ~ #
+  ~ # Modification date: 3/8/07 15:59
+  ~
+  -->
+
+<hydrogens>
+    <class>
+        <name>HIS</name>
+        <opttype>Flip</opttype>
+        <optangle>CA CB CG ND1</optangle>
+        <atom>
+           <name>HD1</name>
+        </atom>
+        <atom>
+           <name>HD2</name>
+        </atom>
+        <atom>
+           <name>HE1</name>
+        </atom>
+        <atom>
+           <name>HE2</name>
+        </atom>
+    </class>
+    <class>
+        <name>ASN</name>
+        <opttype>Flip</opttype>
+        <optangle>CA CB CG OD1</optangle>
+        <atom>
+           <name>HD21</name>
+        </atom>
+        <atom>
+           <name>HD22</name>
+        </atom>
+    </class>
+    <class>
+        <name>GLN</name>
+        <opttype>Flip</opttype>
+        <optangle>CB CG CD OE1</optangle>
+        <atom>
+           <name>HE21</name>
+        </atom>
+        <atom>
+           <name>HE22</name>
+        </atom>
+    </class>
+    <class>
+        <name>ASH</name>
+        <opttype>Carboxylic</opttype>
+        <optangle>CA CB CG OD1</optangle>
+        <atom>
+           <name>HD2</name>
+           <bond>OD2</bond>
+        </atom>
+        <atom>
+           <name>HD1</name>
+           <bond>OD1</bond>
+        </atom>
+    </class>
+    <class>
+        <name>GLH</name>
+        <opttype>Carboxylic</opttype>
+        <optangle>CB CG CD OE1</optangle>
+        <atom>
+           <name>HE2</name>
+           <bond>OE2</bond>
+        </atom>
+        <atom>
+           <name>HE1</name>
+           <bond>OE1</bond>
+        </atom>
+    </class>
+    <class>
+        <name>CYS</name>
+        <opttype>Alcoholic</opttype>
+        <atom>
+           <name>HG</name>
+        </atom>
+    </class>
+    <class>
+        <name>SER</name>
+        <opttype>Alcoholic</opttype>
+        <atom>
+           <name>HG</name>
+        </atom>
+    </class>
+    <class>
+        <name>THR</name>
+        <opttype>Alcoholic</opttype>
+        <atom>
+           <name>HG1</name>
+        </atom>
+    </class>
+    <class>
+        <name>TYR</name>
+        <opttype>Alcoholic</opttype>
+        <atom>
+           <name>HH</name>
+        </atom>
+    </class>
+    <class>
+        <name>WAT</name>
+        <opttype>Water</opttype>
+    </class>
+</hydrogens>
