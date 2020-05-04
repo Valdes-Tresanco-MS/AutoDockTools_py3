@@ -1,5 +1,3 @@
-#!/bin/env python
-
 # ##################################################################################################
 #  Disclaimer                                                                                      #
 #  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
@@ -11,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
+#  Modification date: 4/5/20 13:46                                                                 #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -36,42 +34,42 @@ class inputGen:
         #
         # Defs by Jens
         #
-        defaults={'sdie':78.54,'pdie':8.0,
-                  'finegridpoints':[65,65,65],
-                  'coarsedim':[],
-                  'method':'mg-auto'}
+        defaults = {'sdie': 78.54, 'pdie': 8.0,
+                    'finegridpoints': [65, 65, 65],
+                    'coarsedim': [],
+                    'method': 'mg-auto'}
 
         #
         # PQR file
         #
-        self.pqrfile=pqrpath
-        self.pqrname=pqrpath
-        self.fullpath=pqrpath
-        self.type='not set'
+        self.pqrfile = pqrpath
+        self.pqrname = pqrpath
+        self.fullpath = pqrpath
+        self.type = 'not set'
         #
-        center,extent=self.getCenter()
+        center, extent = self.getCenter()
         #
         # Make the coarse grid twice as big as the protein
         #
         for axis in extent:
-            defaults['coarsedim'].append(axis*2.0)
+            defaults['coarsedim'].append(axis * 2.0)
         #
         # Center coarse grid on the center of the molecule
         #
-        defaults['coarsecent']=center
+        defaults['coarsecent'] = center
         #
         # fine grid is 16.25 (res = 0.25 A/grid point)
         #
-        defaults['finedim']=[16.25,16.25,16.25]
+        defaults['finedim'] = [16.25, 16.25, 16.25]
         #
         # Center the fine grid on the center of the protein to start with
         #
-        defaults['finecent']=center
+        defaults['finecent'] = center
         #
         # Set all the attributes
         #
         for prop in list(defaults.keys()):
-            setattr(self,prop,defaults[prop])
+            setattr(self, prop, defaults[prop])
         return
 
     #
@@ -82,40 +80,40 @@ class inputGen:
         #
         # Reads the PQR file and get the dimensions and the center of the molecule
         #
-        coords=[]
-        fd=open(self.pqrfile)
-        line=fd.readline()
+        coords = []
+        fd = open(self.pqrfile)
+        line = fd.readline()
         while line:
-            split=string.split(line)
-            if split[0] in ['ATOM','HETATM']:
-                #print split
-                #print '0123456789012345678901234567890123456789012345678901234567890123456789'
-                #print line
-                x=float(line[30:38])
-                y=float(line[39:46])
-                z=float(line[47:55])
-                coords.append([x,y,z])
-            line=fd.readline()
+            split = line.split()
+            if split[0] in ['ATOM', 'HETATM']:
+                # print split
+                # print '0123456789012345678901234567890123456789012345678901234567890123456789'
+                # print line
+                x = float(line[30:38])
+                y = float(line[39:46])
+                z = float(line[47:55])
+                coords.append([x, y, z])
+            line = fd.readline()
         fd.close()
         #
         # Find extent
         #
-        minmax=[[999.9,-999.9],[999.9,-999.9],[999.9,-999.9]]
+        minmax = [[999.9, -999.9], [999.9, -999.9], [999.9, -999.9]]
         for coord in coords:
             for axis in range(3):
-                if coord[axis]<minmax[axis][0]:
-                    minmax[axis][0]=coord[axis]
-                if coord[axis]>minmax[axis][1]:
-                    minmax[axis][1]=coord[axis]
+                if coord[axis] < minmax[axis][0]:
+                    minmax[axis][0] = coord[axis]
+                if coord[axis] > minmax[axis][1]:
+                    minmax[axis][1] = coord[axis]
         #
         # Calc the geometric center and extent
         #
-        center=[0,0,0]
-        extent=[0,0,0]
+        center = [0, 0, 0]
+        extent = [0, 0, 0]
         for axis in range(3):
-            extent[axis]=minmax[axis][1]-minmax[axis][0]
-            center[axis]=extent[axis]/2.0+minmax[axis][0]
-        return center,extent
+            extent[axis] = minmax[axis][1] - minmax[axis][0]
+            center[axis] = extent[axis] / 2.0 + minmax[axis][0]
+        return center, extent
 
     def setfineCenter(self, center):
         #
@@ -124,29 +122,29 @@ class inputGen:
         self.finecent = center
         return
 
-    def set_method(self,method):
+    def set_method(self, method):
         #
         # Set the method
         #
-        self.method=method
+        self.method = method
         return
 
-    def set_type(self,type):
+    def set_type(self, type):
         #
         # Set the type of calculation
         #
-        self.type=type
-        if type=='desolv':
+        self.type = type
+        if type == 'desolv':
             self.set_method('mg-manual')
-        elif type=='background':
+        elif type == 'background':
             self.set_method('mg-auto')
-        elif type=='intene':
+        elif type == 'intene':
             self.set_method('mg-auto')
             self.setfineCenter(self.coarsecent)
             #
             # Set the grid to be a little bigger than the protein
             #
-            self.finedim=[self.coarsedim[0]/1.5,self.coarsedim[1]/1.5,self.coarsedim[2]/1.5]
+            self.finedim = [self.coarsedim[0] / 1.5, self.coarsedim[1] / 1.5, self.coarsedim[2] / 1.5]
         else:
             #
             # Not a known type
@@ -162,21 +160,21 @@ class inputGen:
                 text:  The input file (string)
         """
 
-        text  = "read\n"
+        text = "read\n"
         text += "    mol pqr %s\n" % self.pqrname
         text += "end\n"
         text += "elec\n"
         text += "    %s\n" % self.method
         text += "    dime %i %i %i\n" % (self.finegridpoints[0], self.finegridpoints[1], self.finegridpoints[2])
-        if self.method=='mg-auto':
+        if self.method == 'mg-auto':
             text += "    cglen %.4f %.4f %.4f\n" % (self.coarsedim[0], self.coarsedim[1], self.coarsedim[2])
-            text += "    cgcent %.3f %.3f %.3f\n" %(self.coarsecent[0],self.coarsecent[1],self.coarsecent[2])
+            text += "    cgcent %.3f %.3f %.3f\n" % (self.coarsecent[0], self.coarsecent[1], self.coarsecent[2])
 
             text += "    fglen %.4f %.4f %.4f\n" % (self.finedim[0], self.finedim[1], self.finedim[2])
-            text += "    fgcent %.3f %.3f %.3f\n" %(self.finecent[0],self.finecent[1],self.finecent[2])
-        elif self.method=='mg-manual':
+            text += "    fgcent %.3f %.3f %.3f\n" % (self.finecent[0], self.finecent[1], self.finecent[2])
+        elif self.method == 'mg-manual':
             text += "    glen %.4f %.4f %.4f\n" % (self.coarsedim[0], self.coarsedim[1], self.coarsedim[2])
-            text += "    gcent %.3f %.3f %.3f\n" %(self.coarsecent[0],self.coarsecent[1],self.coarsecent[2])
+            text += "    gcent %.3f %.3f %.3f\n" % (self.coarsecent[0], self.coarsecent[1], self.coarsecent[2])
             text += "    nlev 4\n"
 
         else:
@@ -187,8 +185,8 @@ class inputGen:
         text += "    bcfl sdh\n"
         text += "    ion 1 0.150 2.0\n"
         text += "    ion -1 0.150 2.0\n"
-        text += "    pdie %5.2f\n"  %self.pdie
-        text += "    sdie %5.2f\n" %self.sdie
+        text += "    pdie %5.2f\n" % self.pdie
+        text += "    sdie %5.2f\n" % self.sdie
         text += "    srfm smol\n"
         text += "    chgm spl2\n"
         text += "    srad 1.4\n"
@@ -210,20 +208,20 @@ class inputGen:
         #
         # Energy statements
         #
-        text=self.getText_sub()
-        if self.type=='background' or self.type=='intene':
+        text = self.getText_sub()
+        if self.type == 'background' or self.type == 'intene':
             text += "\nprint energy 1 end\n"
             text += "\nquit\n"
             return text
-        elif self.type=='desolv':
+        elif self.type == 'desolv':
             #
             # For desolvation calcs, we calculate again with pdie=sdie
             #
-            #oldpdie=self.pdie
-            #self.pdie=self.sdie
-            #text=text+self.getText_sub()
-            #self.pdie=oldpdie
-            #text += "\nprint energy 1 - 2 end\n"
+            # oldpdie=self.pdie
+            # self.pdie=self.sdie
+            # text=text+self.getText_sub()
+            # self.pdie=oldpdie
+            # text += "\nprint energy 1 - 2 end\n"
             text += "\nquit\n"
             return text
         #
@@ -246,9 +244,10 @@ class inputGen:
         file.close()
         return outname
 
+
 def main():
     import sys
-    X=inputGen(sys.argv[1],13)
+    X = inputGen(sys.argv[1], 13)
 
 
 if __name__ == "__main__":
