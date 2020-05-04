@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
+#  Modification date: 4/5/20 1:18                                                                  #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -20,16 +20,9 @@
 # Copyright: M. Sanner TSRI 2005
 #
 #############################################################################
-#
-# $Header: /opt/cvs/python/packages/share1.5/MolKit/sets.py,v 1.2 2006/06/12 18:28:35 sargis Exp $
-#
-# 
-#
-#  
-#
 
 from .tree import TreeNodeSet
-import types
+
 
 class Sets(dict):
     """
@@ -39,11 +32,10 @@ Object used to manage a collection of explicit sets of TreeNodes
     def add(self, name, set, overwrite=True):
         assert isinstance(set, TreeNodeSet)
         assert type(name) in (str,)
-               
+
         if not overwrite:
             assert name not in list(self.keys())
         self[name] = set
-
 
     def remove(self, name):
         # remove a set by name. Silently ignore non existing sets but returns
@@ -53,17 +45,15 @@ Object used to manage a collection of explicit sets of TreeNodes
             return True
         return False
 
-
     def removeByInstance(self, set):
         # remove a set that is specified by a TreeNodeSet.
         # Silently ignore non existing sets but returns
         # true when a set gets deleted, else returns False
-        for n,s in list(self.items()):
-            if s==set:
+        for n, s in list(self.items()):
+            if s == set:
                 del self[n]
                 return True
         return False
-
 
     def get(self, stype=None):
         # return a dict of sets optionally restricted to a user specified type
@@ -73,8 +63,7 @@ Object used to manage a collection of explicit sets of TreeNodes
         else:  # select the sets of a given type
             assert issubclass(stype, TreeNodeSet)
             result = {}
-            for name,set in list(self.items()):
+            for name, set in list(self.items()):
                 if isinstance(set, stype):
                     result[name] = set
             return result
-        
