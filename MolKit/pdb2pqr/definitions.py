@@ -1,3 +1,18 @@
+# ##################################################################################################
+#  Disclaimer                                                                                      #
+#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
+#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
+#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
+#  There is no guarantee that it works like the original distribution,                             #
+#  but feel free to tell us if you get any difference to correct the code.                         #
+#                                                                                                  #
+#  Please use this cite the original reference.                                                    #
+#  If you think my work helps you, just keep this note intact on your program.                     #
+#                                                                                                  #
+#  Modification date: 4/5/20 1:48                                                                  #
+#                                                                                                  #
+# ##################################################################################################
+
 """
     Definitions for PDB2PQR
 
@@ -10,7 +25,7 @@
     Ported to Python by Todd Dolinsky (todd@ccb.wustl.edu)
     Washington University in St. Louis
 """
-    
+
 __date__ = "8 September 2004"
 __author__ = "Jens Erik Nielsen, Todd Dolinsky"
 
@@ -18,26 +33,8 @@ AAFILE = "AA.DAT"
 NAFILE = "NA.DAT"
 ROTAMERFILE = "ROTAMER.DAT"
 
-# ##################################################################################################
-#  Disclaimer                                                                                      #
-#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
-#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
-#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
-#  There is no guarantee that it works like the original distribution,                             #
-#  but feel free to tell us if you get any difference to correct the code.                         #
-#                                                                                                  #
-#  Please use this cite the original reference.                                                    #
-#  If you think my work helps you, just keep this note intact on your program.                     #
-#                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
-#                                                                                                  #
-# ##################################################################################################
-
-import os
-from .pdb import *
-from .utilities import *
-from .structures import *
 from .routines import *
+
 
 class Definition:
     """
@@ -46,6 +43,7 @@ class Definition:
         The Definition class contains the structured definitions found
         in the files and several mappings for easy access to the information.
     """
+
     def __init__(self):
         """
             Create a new Definition Object
@@ -71,7 +69,7 @@ class Definition:
                  residues
         """
         return self.NAdef
-    
+
     def parseRotamer(self, reslines):
         """
             Parse ROTAMER.DAT, obtaining information about each atom and its
@@ -87,7 +85,7 @@ class Definition:
         restype = 1
         myResidue = DefinitionResidue(name, restype)
         for i in range(len(reslines)):
-            entries = string.split(reslines[i])
+            entries = reslines[i].split()
             atomname = entries[2]
             x = float(entries[5])
             y = float(entries[6])
@@ -112,29 +110,29 @@ class Definition:
                 myResidue: The parsed residue (DefinitionResidue)
         """
         myResidue = DefinitionResidue(name, restype)
-        refatom = -1 
-    
-        for i in range(0,len(reslines)-2):
-            entries = string.split(reslines[i])
+        refatom = -1
+
+        for i in range(0, len(reslines) - 2):
+            entries = reslines[i].split()
             atomname = entries[0]
             x = float(entries[1])
             y = float(entries[2])
             z = float(entries[3])
-            
+
             atom = DefinitionAtom(i, atomname, name, x, y, z)
             myResidue.addAtom(atom)
-        
+
             if atomname == "CA" and restype == 1: refatom = i
-          
+
         line = reslines[-2]
-        bonds = string.split(line)
+        bonds = line.split()
         bondmap = {}
-        for i in range(0,len(bonds),2):
-            bondA = int(bonds[i])-1
-            bondB = int(bonds[i+1])-1
+        for i in range(0, len(bonds), 2):
+            bondA = int(bonds[i]) - 1
+            bondB = int(bonds[i + 1]) - 1
             atomA = myResidue.get("atoms")[bondA]
             atomB = myResidue.get("atoms")[bondB]
-            
+
             atomA.addIntraBond(atomB.get("name"))
             atomB.addIntraBond(atomA.get("name"))
             try:
@@ -145,14 +143,14 @@ class Definition:
                 bondmap[bondB].append(bondA)
             except KeyError:
                 bondmap[bondB] = [bondA]
-                    
+
         line = reslines[-1]
-        dihedrals = string.split(line)
+        dihedrals = line.split()
         if int(dihedrals[0]) > 0:
-            for i in range(1,len(dihedrals)):
+            for i in range(1, len(dihedrals)):
                 dihedralA = int(dihedrals[i]) - 1
                 myResidue.addDihedral(myResidue.get("atoms")[dihedralA].get("name"))
-  
+
         if len(myResidue.get("dihedralatoms")) != int(dihedrals[0]) * 4:
             raise ValueError("Corrupt entry for torsion angles when parsing %s" % name)
 
@@ -160,11 +158,11 @@ class Definition:
             for i in range(myResidue.numAtoms()):
                 atom = myResidue.get("atoms")[i]
                 if atom.isBackbone():
-                    atom.set("refdistance",-1)
+                    atom.set("refdistance", -1)
                 else:
                     atom.set("refdistance", len(shortestPath(bondmap, i, refatom)) - 1)
         return myResidue
-    
+
     def readDefinition(self, defpath):
         """
             Read a definition file
@@ -181,10 +179,10 @@ class Definition:
                 if os.path.isfile(testpath):
                     defpath = testpath
                     break
-                    
+
         if not os.path.isfile(defpath):
             raise ValueError("%s not found!" % defpath)
-        
+
         file = open(defpath)
         lines = file.readlines()
         file.close()
@@ -192,21 +190,22 @@ class Definition:
         thisdef = DefinitionChain(defpath)
 
         for line in lines:
-            if line.startswith("//"): pass
+            if line.startswith("//"):
+                pass
             elif line.startswith("*"):
                 if len(reslines) > 0:
-                    ids = string.split(reslines[0])
+                    ids = reslines[0].split()
                     name = ids[0]
                     restype = int(ids[1])
-                    reslines = reslines[1:]  
+                    reslines = reslines[1:]
                     residue = self.parseDefinition(reslines, name, restype)
                     thisdef.addResidue(residue)
                     reslines = []
             else:
-                reslines.append(string.strip(line))
+                reslines.append(line.strip())
 
         thisdef.renumberResidues()
-        return thisdef        
+        return thisdef
 
     def readRotamerDefinition(self):
         """
@@ -214,25 +213,27 @@ class Definition:
         """
         if os.path.isfile(ROTAMERFILE):
             file = open(ROTAMERFILE)
-            lines =  file.readlines()
+            lines = file.readlines()
             file.close()
             reslines = []
             rotamerdef = Chain("ROTAMER")
-            
+
             for line in lines:
-                if line.startswith("*"): pass
+                if line.startswith("*"):
+                    pass
                 elif line.startswith("TER"):
                     if len(reslines) > 0:
                         residue = self.parseRotamer(reslines)
                         rotamerdef.addResidue(residue)
                         reslines = []
                 else:
-                    reslines.append(string.strip(line))
+                    reslines.append(line.strip())
 
             rotamerdef.renumberResidues()
             self.chains.append(rotamerdef)
         else:
             raise ValueError("%s not found!" % ROTAMERFILE)
+
 
 class DefinitionChain(Chain):
     """
@@ -241,6 +242,7 @@ class DefinitionChain(Chain):
         The DefinitionChain class extends the chain class to provide
         lookups for atom information.
     """
+
     def __init__(self, ID):
         """
            Initialize like the Chain constructor, but add necessary
@@ -251,7 +253,7 @@ class DefinitionChain(Chain):
         """
         Chain.__init__(self, ID)
         self.residuemap = {}
-        
+
     def addResidue(self, residue):
         """
             Add a residue to the chain
@@ -274,6 +276,7 @@ class DefinitionChain(Chain):
         except KeyError:
             return None
 
+
 class DefinitionResidue(Residue):
     """
         DefinitionResidue class
@@ -281,6 +284,7 @@ class DefinitionResidue(Residue):
         The DefinitionResidue class extends the Residue class to allow for a
         trimmed down initializing function.
     """
+
     def __init__(self, name, type):
         """
             Initialize the class using a few parameters
@@ -309,7 +313,7 @@ class DefinitionResidue(Residue):
                 atom: The atom to be added
         """
         self.dihedralatoms.append(atom)
-        
+
     def makeBondList(self, residue, atomname):
         """
             For the given atomname, make a list of bonded atoms.
@@ -349,9 +353,9 @@ class DefinitionResidue(Residue):
             return bonds
         else:
             return bonds
-        
-class DefinitionAtom(Atom):
 
+
+class DefinitionAtom(Atom):
     """
         Class DefinitionAtom
 
@@ -359,7 +363,7 @@ class DefinitionAtom(Atom):
         a trimmed down version of the initializating function from the Atom
         class for the definition files.
     """
-    
+
     def __init__(self, serial, name, resName, x, y, z):
         """
             Initialize using a few basic parameters - set all other fields
@@ -409,7 +413,3 @@ class DefinitionAtom(Atom):
         if self.name in BACKBONE:
             state = 1
         return state
-
-
-
-
