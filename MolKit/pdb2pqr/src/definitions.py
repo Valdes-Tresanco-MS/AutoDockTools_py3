@@ -1,3 +1,18 @@
+# ##################################################################################################
+#  Disclaimer                                                                                      #
+#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
+#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
+#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
+#  There is no guarantee that it works like the original distribution,                             #
+#  but feel free to tell us if you get any difference to correct the code.                         #
+#                                                                                                  #
+#  Please use this cite the original reference.                                                    #
+#  If you think my work helps you, just keep this note intact on your program.                     #
+#                                                                                                  #
+#  Modification date: 4/5/20 11:57                                                                 #
+#                                                                                                  #
+# ##################################################################################################
+
 """
     Definitions for PDB2PQR
 
@@ -41,7 +56,8 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 
 """
-    
+from .routines import *
+
 __date__ = "28 February 2006"
 __author__ = "Jens Erik Nielsen, Todd Dolinsky"
 
@@ -49,32 +65,9 @@ AAPATH = "dat/AA.xml"
 NAPATH = "dat/NA.xml"
 PATCHPATH = "dat/PATCHES.xml"
 
-# ##################################################################################################
-#  Disclaimer                                                                                      #
-#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
-#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
-#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
-#  There is no guarantee that it works like the original distribution,                             #
-#  but feel free to tell us if you get any difference to correct the code.                         #
-#                                                                                                  #
-#  Please use this cite the original reference.                                                    #
-#  If you think my work helps you, just keep this note intact on your program.                     #
-#                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
-#                                                                                                  #
-# ##################################################################################################
-
-import os
-import copy
-import re
-from xml import sax
-from .pdb import *
-from .utilities import *
-from .structures import *
-from .routines import *
 
 class DefinitionHandler(sax.ContentHandler):
-   
+
     def __init__(self):
         self.curelement = ""
         self.curatom = None
@@ -102,7 +95,7 @@ class DefinitionHandler(sax.ContentHandler):
         return
 
     def endElement(self, name):
-        if name == "residue": # Complete Residue object
+        if name == "residue":  # Complete Residue object
             residue = self.curholder
             if not isinstance(residue, DefinitionResidue):
                 raise ValueError("Internal error parsing XML!")
@@ -114,7 +107,7 @@ class DefinitionHandler(sax.ContentHandler):
                 self.curholder = None
                 self.curobj = None
 
-        elif name == "patch": # Complete patch object
+        elif name == "patch":  # Complete patch object
             patch = self.curholder
             if not isinstance(patch, Patch):
                 raise ValueError("Internal error parsing XML!")
@@ -125,9 +118,8 @@ class DefinitionHandler(sax.ContentHandler):
                 self.patches.append(patch)
                 self.curholder = None
                 self.curobj = None
-        
-        
-        elif name == "atom": # Complete atom object
+
+        elif name == "atom":  # Complete atom object
             atom = self.curatom
             if not isinstance(atom, DefinitionAtom):
                 raise ValueError("Internal error parsing XML!")
@@ -139,13 +131,14 @@ class DefinitionHandler(sax.ContentHandler):
                 self.curatom = None
                 self.curobj = self.curholder
 
-        else: # Just free the current element namespace
+        else:  # Just free the current element namespace
             self.curelement = ""
 
         return self.map
 
     def characters(self, text):
-        if text.isspace(): return
+        if text.isspace():
+            return
 
         # If this is a float, make it so
         try:
@@ -166,6 +159,7 @@ class DefinitionHandler(sax.ContentHandler):
             setattr(self.curobj, self.curelement, value)
         return
 
+
 class Definition:
     """
         Definition class
@@ -173,6 +167,7 @@ class Definition:
         The Definition class contains the structured definitions found
         in the files and several mappings for easy access to the information.
     """
+
     def __init__(self):
         """
             Create a new Definition Object
@@ -193,13 +188,13 @@ class Definition:
             file.close()
 
             self.map.update(handler.map)
-    
+
         # Now handle patches
 
         defpath = getDatFile(PATCHPATH)
         if defpath == "":
             raise ValueError("%s not found!" % PATCHPATH)
-     
+
         handler.map = {}
         file = open(defpath)
         sax.parseString(file.read(), handler)
@@ -207,7 +202,7 @@ class Definition:
 
         # Apply specific patches to the reference object, allowing users
         #  to specify protonation states in the PDB file
-        
+
         for patch in handler.patches:
             if patch.newname != "":
 
@@ -216,13 +211,13 @@ class Definition:
                 resnames = list(self.map.keys())
                 for name in resnames:
                     regexp = re.compile(patch.applyto).match(name)
-                    if not regexp: continue
+                    if not regexp:
+                        continue
                     newname = patch.newname.replace("*", name)
                     self.addPatch(patch, name, newname)
-                  
 
             # Either way, make sure the main patch name is available
-            
+
             self.addPatch(patch, patch.applyto, patch.name)
 
     def addPatch(self, patch, refname, newname):
@@ -235,7 +230,7 @@ class Definition:
                 newname:  The name of the new (patched) object (string)
         """
         try:
-            aadef = self.map[refname] # The reference
+            aadef = self.map[refname]  # The reference
             patchResidue = copy.deepcopy(aadef)
 
             # Add atoms from patch
@@ -243,19 +238,21 @@ class Definition:
             for atomname in patch.map:
                 patchResidue.map[atomname] = patch.map[atomname]
                 for bond in patch.map[atomname].bonds:
-                    if bond not in patchResidue.map: continue
+                    if bond not in patchResidue.map:
+                        continue
                     if atomname not in patchResidue.map[bond].bonds:
                         patchResidue.map[bond].bonds.append(atomname)
 
             # Rename atoms as directed
-            
+
             for key in patch.altnames:
                 patchResidue.altnames[key] = patch.altnames[key]
 
             # Remove atoms as directed
-                    
+
             for remove in patch.remove:
-                if not patchResidue.hasAtom(remove): continue
+                if not patchResidue.hasAtom(remove):
+                    continue
                 removebonds = patchResidue.map[remove].bonds
                 del patchResidue.map[remove]
                 for bond in removebonds:
@@ -274,14 +271,16 @@ class Definition:
             # Store the patch
 
             self.patches[newname] = patch
-                   
-        except KeyError: # Just store the patch
+
+        except KeyError:  # Just store the patch
             self.patches[newname] = patch
+
 
 class Patch:
     """
         Patch the definitionResidue class
     """
+
     def __init__(self):
         """
             Initialize the Patch object.
@@ -293,7 +292,7 @@ class Patch:
         self.altnames = {}
         self.dihedrals = []
         self.newname = ""
-        
+
     def __str__(self):
         """
             A basic string representation for debugging
@@ -309,7 +308,8 @@ class Patch:
         text += "Alternate naming map: \n"
         text += "\t%s\n" % self.altnames
         return text
-        
+
+
 class DefinitionResidue(Residue):
     """
         DefinitionResidue class
@@ -317,6 +317,7 @@ class DefinitionResidue(Residue):
         The DefinitionResidue class extends the Residue class to allow for a
         trimmed down initializing function.
     """
+
     def __init__(self):
         """
             Initialize the class using a few parameters
@@ -328,7 +329,7 @@ class DefinitionResidue(Residue):
         self.dihedrals = []
         self.map = {}
         self.altnames = {}
-        
+
     def __str__(self):
         """
             A basic string representation for debugging
@@ -364,15 +365,15 @@ class DefinitionResidue(Residue):
         bonds = []
         lev2bonds = []
         atom = self.map[atomname]
-        
+
         # Get directly bonded (length = 1) atoms
-        
+
         for bondedatom in atom.bonds:
             if bondedatom not in bonds:
                 bonds.append(bondedatom)
 
         # Get bonded atoms 2 bond lengths away
-    
+
         for bondedatom in atom.bonds:
             for bond2 in self.map[bondedatom].bonds:
                 if bond2 not in bonds and bond2 != atomname:
@@ -385,13 +386,15 @@ class DefinitionResidue(Residue):
             for bond3 in self.map[lev2atom].bonds:
                 if bond3 not in bonds:
                     bonds.append(bond3)
-         
+
         return bonds
+
 
 class DefinitionAtom(Atom):
     """
         A trimmed down version of the Atom class
     """
+
     def __init__(self):
         """
             Initialize the class
@@ -401,7 +404,7 @@ class DefinitionAtom(Atom):
         self.y = 0.0
         self.z = 0.0
         self.bonds = []
-     
+
     def __str__(self):
         """
             A basic string representation for debugging
@@ -410,7 +413,7 @@ class DefinitionAtom(Atom):
         for bond in self.bonds:
             text += " %s" % bond
         return text
-    
+
     def isBackbone(self):
         """
             Return true if atom name is in backbone, otherwise false
@@ -418,5 +421,7 @@ class DefinitionAtom(Atom):
             Returns
                 state: 1 if true, 0 if false
         """
-        if self.name in BACKBONE: return 0
-        else: return 1
+        if self.name in BACKBONE:
+            return 0
+        else:
+            return 1
