@@ -1,3 +1,18 @@
+# ##################################################################################################
+#  Disclaimer                                                                                      #
+#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
+#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
+#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
+#  There is no guarantee that it works like the original distribution,                             #
+#  but feel free to tell us if you get any difference to correct the code.                         #
+#                                                                                                  #
+#  Please use this cite the original reference.                                                    #
+#  If you think my work helps you, just keep this note intact on your program.                     #
+#                                                                                                  #
+#  Modification date: 4/5/20 2:44                                                                  #
+#                                                                                                  #
+# ##################################################################################################
+
 """
     Quatfit routines for PDB2PQR
 
@@ -27,23 +42,11 @@
 __date__ = "30 September 2003"
 __author__ = "David Heisterberg, Jan Labanowski, Jens Erik Nielsen, Todd Dolinsky"
 
-# ##################################################################################################
-#  Disclaimer                                                                                      #
-#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
-#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
-#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
-#  There is no guarantee that it works like the original distribution,                             #
-#  but feel free to tell us if you get any difference to correct the code.                         #
-#                                                                                                  #
-#  Please use this cite the original reference.                                                    #
-#  If you think my work helps you, just keep this note intact on your program.                     #
-#                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
-#                                                                                                  #
-# ##################################################################################################
 
 import math
+
 from .utilities import *
+
 
 def findCoordinates(numpoints, refcoords, defcoords, defatomcoords):
     """
@@ -67,7 +70,8 @@ def findCoordinates(numpoints, refcoords, defcoords, defatomcoords):
 
     # Only return the first coordinates
     return newcoords[0]
-    
+
+
 def qtransform(numpoints, defcoords, refcenter, fitcenter, rotation):
     """
         Transform the set of defcoords using the reference center, the fit
@@ -82,7 +86,7 @@ def qtransform(numpoints, defcoords, refcenter, fitcenter, rotation):
         Returns
             newcoords: The coordinates of the new point (list)
     """
-    
+
     if numpoints == 1:
         defcoords = [defcoords]
 
@@ -106,15 +110,16 @@ def qfit(numpoints, refcoords, defcoords):
                        a list of form [x,y,z] (list)
     """
     nrot = 30
-    
+
     refcenter, refcoords = center(numpoints, refcoords)
     defcenter, defcoords = center(numpoints, defcoords)
 
     q, u = qtrfit(numpoints, defcoords, refcoords, nrot)
-    rotated = rotmol(numpoints, defcoords, u)    
+    rotated = rotmol(numpoints, defcoords, u)
     newcoords = translate(numpoints, rotated, refcenter, 2)
 
     return refcenter, defcenter, u
+
 
 def qchichange(initcoords, refcoords, angle):
     """
@@ -131,37 +136,37 @@ def qchichange(initcoords, refcoords, angle):
     """
     # Initialize
 
-    L,R = [],[]
+    L, R = [], []
     for i in range(3):
         L.append(0.0)
-        R.append([0.0,0.0,0.0])
+        R.append([0.0, 0.0, 0.0])
 
     # Convert to radians and normalize
-    
-    radangle = math.pi * angle/180.0
+
+    radangle = math.pi * angle / 180.0
     normalized = normalize(initcoords)
 
     L[0] = normalized[0]
     L[1] = normalized[1]
     L[2] = normalized[2]
- 
+
     # Construct the rotation matrix
 
-    R[0][0] = math.cos(radangle) + L[0]*L[0] * (1.0 - math.cos(radangle))
-    R[1][1] = math.cos(radangle) + L[1]*L[1] * (1.0 - math.cos(radangle))
-    R[2][2] = math.cos(radangle) + L[2]*L[2] * (1.0 - math.cos(radangle))
-    R[1][0] = L[0]*L[1]*(1.0 - math.cos(radangle)) - L[2] * math.sin(radangle)
-    R[2][0] = L[0]*L[2]*(1.0 - math.cos(radangle)) + L[1] * math.sin(radangle)
-    R[0][1] = L[1]*L[0]*(1.0 - math.cos(radangle)) + L[2] * math.sin(radangle)
-    R[2][1] = L[1]*L[2]*(1.0 - math.cos(radangle)) - L[0] * math.sin(radangle)
-    R[0][2] = L[2]*L[0]*(1.0 - math.cos(radangle)) - L[1] * math.sin(radangle)
-    R[1][2] = L[2]*L[1]*(1.0 - math.cos(radangle)) + L[0] * math.sin(radangle)
-    
+    R[0][0] = math.cos(radangle) + L[0] * L[0] * (1.0 - math.cos(radangle))
+    R[1][1] = math.cos(radangle) + L[1] * L[1] * (1.0 - math.cos(radangle))
+    R[2][2] = math.cos(radangle) + L[2] * L[2] * (1.0 - math.cos(radangle))
+    R[1][0] = L[0] * L[1] * (1.0 - math.cos(radangle)) - L[2] * math.sin(radangle)
+    R[2][0] = L[0] * L[2] * (1.0 - math.cos(radangle)) + L[1] * math.sin(radangle)
+    R[0][1] = L[1] * L[0] * (1.0 - math.cos(radangle)) + L[2] * math.sin(radangle)
+    R[2][1] = L[1] * L[2] * (1.0 - math.cos(radangle)) - L[0] * math.sin(radangle)
+    R[0][2] = L[2] * L[0] * (1.0 - math.cos(radangle)) - L[1] * math.sin(radangle)
+    R[1][2] = L[2] * L[1] * (1.0 - math.cos(radangle)) + L[0] * math.sin(radangle)
 
     numpoints = len(refcoords)
     newcoords = rotmol(numpoints, refcoords, R)
 
     return newcoords
+
 
 def rotmol(numpoints, x, u):
     """
@@ -177,11 +182,12 @@ def rotmol(numpoints, x, u):
     out = []
     for i in range(numpoints):
         out.append([])
-        out[i].append(u[0][0] *x[i][0] + u[1][0] * x[i][1] + u[2][0] * x[i][2])
-        out[i].append(u[0][1] *x[i][0] + u[1][1] * x[i][1] + u[2][1] * x[i][2])
-        out[i].append(u[0][2] *x[i][0] + u[1][2] * x[i][1] + u[2][2] * x[i][2])
+        out[i].append(u[0][0] * x[i][0] + u[1][0] * x[i][1] + u[2][0] * x[i][2])
+        out[i].append(u[0][1] * x[i][0] + u[1][1] * x[i][1] + u[2][1] * x[i][2])
+        out[i].append(u[0][2] * x[i][0] + u[1][2] * x[i][1] + u[2][2] * x[i][2])
 
     return out
+
 
 def qtrfit(numpoints, defcoords, refcoords, nrot):
     """
@@ -216,43 +222,44 @@ def qtrfit(numpoints, defcoords, refcoords, nrot):
     c = []
 
     for i in range(numpoints):
-         xxyx = xxyx + defcoords[i][0] * refcoords[i][0]
-         xxyy = xxyy + defcoords[i][0] * refcoords[i][1]
-         xxyz = xxyz + defcoords[i][0] * refcoords[i][2]
-         xyyx = xyyx + defcoords[i][1] * refcoords[i][0]
-         xyyy = xyyy + defcoords[i][1] * refcoords[i][1]
-         xyyz = xyyz + defcoords[i][1] * refcoords[i][2]
-         xzyx = xzyx + defcoords[i][2] * refcoords[i][0]
-         xzyy = xzyy + defcoords[i][2] * refcoords[i][1]
-         xzyz = xzyz + defcoords[i][2] * refcoords[i][2]
+        xxyx = xxyx + defcoords[i][0] * refcoords[i][0]
+        xxyy = xxyy + defcoords[i][0] * refcoords[i][1]
+        xxyz = xxyz + defcoords[i][0] * refcoords[i][2]
+        xyyx = xyyx + defcoords[i][1] * refcoords[i][0]
+        xyyy = xyyy + defcoords[i][1] * refcoords[i][1]
+        xyyz = xyyz + defcoords[i][1] * refcoords[i][2]
+        xzyx = xzyx + defcoords[i][2] * refcoords[i][0]
+        xzyy = xzyy + defcoords[i][2] * refcoords[i][1]
+        xzyz = xzyz + defcoords[i][2] * refcoords[i][2]
 
     for i in range(4):
         c.append([])
-        for j in range(4): 
+        for j in range(4):
             c[i].append(0.0)
 
     c[0][0] = xxyx + xyyy + xzyz
-    
+
     c[0][1] = xzyy - xyyz
     c[1][1] = xxyx - xyyy - xzyz
-    
+
     c[0][2] = xxyz - xzyx
     c[1][2] = xxyy + xyyx
     c[2][2] = xyyy - xzyz - xxyx
-    
+
     c[0][3] = xyyx - xxyy
     c[1][3] = xzyx + xxyz
     c[2][3] = xyyz + xzyy
     c[3][3] = xzyz - xxyx - xyyy
 
-    d,v = jacobi(c, nrot) # diagonalize c
+    d, v = jacobi(c, nrot)  # diagonalize c
 
     for i in range(4):
         q.append(v[i][3])
 
     u = q2mat(q)
 
-    return q,u
+    return q, u
+
 
 def jacobi(a, nrot):
     """
@@ -284,9 +291,10 @@ def jacobi(a, nrot):
                 onorm = onorm + abs(a[i][j])
 
         if dnorm != 0:
-            if onorm/dnorm <= 1e-12: break
-            
-        for j in range(1,4):
+            if onorm / dnorm <= 1e-12:
+                break
+
+        for j in range(1, 4):
             for i in range(j):
                 b = a[i][j]
                 if abs(b) > 0.0:
@@ -294,22 +302,22 @@ def jacobi(a, nrot):
                     if abs(dma) + abs(b) <= abs(dma):
                         t = b / dma
                     else:
-                        q = 0.5 * dma/b
-                        t = 1.0/(abs(q) + math.sqrt(1 + q*q))
+                        q = 0.5 * dma / b
+                        t = 1.0 / (abs(q) + math.sqrt(1 + q * q))
                         if q < 0:
                             t = t * -1
-                    c = 1.0/math.sqrt(t*t + 1)
-                    s = t*c
+                    c = 1.0 / math.sqrt(t * t + 1)
+                    s = t * c
                     a[i][j] = 0.0
                     for k in range(i):
                         atemp = c * a[k][i] - s * a[k][j]
                         a[k][j] = s * a[k][i] + c * a[k][j]
                         a[k][i] = atemp
-                    for k in range(i+1 ,j):
+                    for k in range(i + 1, j):
                         atemp = c * a[i][k] - s * a[k][j]
                         a[k][j] = s * a[i][k] + c * a[k][j]
                         a[i][k] = atemp
-                    for k in range(j+1, 4):
+                    for k in range(j + 1, 4):
                         atemp = c * a[i][k] - s * a[j][k]
                         a[j][k] = s * a[i][k] + c * a[j][k]
                         a[i][k] = atemp
@@ -317,16 +325,16 @@ def jacobi(a, nrot):
                         vtemp = c * v[k][i] - s * v[k][j]
                         v[k][j] = s * v[k][i] + c * v[k][j]
                         v[k][i] = vtemp
-                            
-                    dtemp = c*c*d[i] + s*s*d[j] - 2.0*c*s*b
-                    d[j] = s*s*d[i] + c*c*d[j] +  2.0*c*s*b
+
+                    dtemp = c * c * d[i] + s * s * d[j] - 2.0 * c * s * b
+                    d[j] = s * s * d[i] + c * c * d[j] + 2.0 * c * s * b
                     d[i] = dtemp
 
     nrot = l
     for j in range(3):
         k = j
         dtemp = d[k]
-        for i in range(j+1,4):
+        for i in range(j + 1, 4):
             if d[i] < dtemp:
                 k = i
                 dtemp = d[k]
@@ -337,8 +345,9 @@ def jacobi(a, nrot):
                 dtemp = v[i][k]
                 v[i][k] = v[i][j]
                 v[i][j] = dtemp
-                        
-    return d,v
+
+    return d, v
+
 
 def q2mat(q):
     """
@@ -355,20 +364,21 @@ def q2mat(q):
         for j in range(3):
             u[i].append(0.0)
 
-    u[0][0] = q[0]*q[0] + q[1]*q[1] - q[2]*q[2] - q[3]*q[3]
+    u[0][0] = q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]
     u[0][1] = 2.0 * (q[1] * q[2] - q[0] * q[3])
     u[0][2] = 2.0 * (q[1] * q[3] + q[0] * q[2])
-    
+
     u[1][0] = 2.0 * (q[2] * q[1] + q[0] * q[3])
-    u[1][1] = q[0]*q[0] - q[1]*q[1] + q[2]*q[2] - q[3]*q[3]
+    u[1][1] = q[0] * q[0] - q[1] * q[1] + q[2] * q[2] - q[3] * q[3]
     u[1][2] = 2.0 * (q[2] * q[3] - q[0] * q[1])
-    
-    u[2][0] = 2.0 *(q[3] * q[1] - q[0] * q[2])
+
+    u[2][0] = 2.0 * (q[3] * q[1] - q[0] * q[2])
     u[2][1] = 2.0 * (q[3] * q[2] + q[0] * q[1])
-    u[2][2] = q[0]*q[0] - q[1]*q[1] - q[2]*q[2] + q[3]*q[3]
+    u[2][2] = q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]
 
     return u
-    
+
+
 def center(numpoints, refcoords):
     """
         Center a molecule using equally weighted points
@@ -383,7 +393,7 @@ def center(numpoints, refcoords):
     """
     refcenter = []
     relcoords = []
-    
+
     for i in range(3):
         refcenter.append(0.0)
 
@@ -394,13 +404,13 @@ def center(numpoints, refcoords):
 
     for i in range(3):
         refcenter[i] = refcenter[i] / numpoints
-        
+
     for i in range(numpoints):
         relcoords.append([])
         relcoords[i].append(refcoords[i][0] - refcenter[0])
         relcoords[i].append(refcoords[i][1] - refcenter[1])
         relcoords[i].append(refcoords[i][2] - refcenter[2])
-        
+
     return refcenter, relcoords
 
 
@@ -419,7 +429,7 @@ def translate(numpoints, refcoords, center, mode):
             relcoords: Moved refcoords relative to refcenter (list)
     """
     relcoords = []
-    
+
     if mode == 1:
         modif = -1
     elif mode == 2:
