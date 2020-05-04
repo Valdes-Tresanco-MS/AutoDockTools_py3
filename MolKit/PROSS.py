@@ -1,4 +1,19 @@
-#!/usr/bin/env python
+# ##################################################################################################
+#  Disclaimer                                                                                      #
+#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
+#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
+#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
+#  There is no guarantee that it works like the original distribution,                             #
+#  but feel free to tell us if you get any difference to correct the code.                         #
+#                                                                                                  #
+#  Please use this cite the original reference.                                                    #
+#  If you think my work helps you, just keep this note intact on your program.                     #
+#                                                                                                  #
+#  Modification date: 4/5/20 1:11                                                                  #
+#                                                                                                  #
+# ##################################################################################################
+
+
 """
 Calulate all torsion angles and assign secondary structure and mesostate code.
 
@@ -22,34 +37,17 @@ Choose old mesostate definitions or finegrained mesostate definitions.
 Default is finegrained.
 """
 
-# ##################################################################################################
-#  Disclaimer                                                                                      #
-#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
-#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
-#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
-#  There is no guarantee that it works like the original distribution,                             #
-#  but feel free to tell us if you get any difference to correct the code.                         #
-#                                                                                                  #
-#  Please use this cite the original reference.                                                    #
-#  If you think my work helps you, just keep this note intact on your program.                     #
-#                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
-#                                                                                                  #
-# ##################################################################################################
-
-import sys
-import _py2k_string as string
-import re
 import copy
 import gzip
 import math
-import types
+import re
+import locale
+import numpy as np
 
 # This script does not require Numeric
-HAVE_NUMPY = 0
 
-_RAD_TO_DEG = 180.0/math.pi
-_DEG_TO_RAD = math.pi/180.0
+_RAD_TO_DEG = 180.0 / math.pi
+_DEG_TO_RAD = math.pi / 180.0
 
 RESIDUES = ['ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'CYX', 'GLN', 'GLU',
             'GLX', 'GLY', 'HIS', 'HIP', 'ILE', 'LEU', 'LYS', 'MET',
@@ -85,7 +83,7 @@ CHI1_ATOMS = {
     'ASX': _CHI1_DEFAULT,
     'CYX': _CHI1_DEFAULT,
     'PCA': _CHI1_DEFAULT
-    }
+}
 
 CHI2_ATOMS = {
     'ARG': ('CA', 'CB', 'CG', 'CD'),
@@ -104,7 +102,7 @@ CHI2_ATOMS = {
     'PRO': ('CA', 'CB', 'CG', 'CD'),
     'TRP': ('CA', 'CB', 'CG', 'CD1'),
     'TYR': ('CA', 'CB', 'CG', 'CD1')
-    }
+}
 
 CHI3_ATOMS = {
     'ARG': ('CB', 'CG', 'CD', 'NE'),
@@ -113,26 +111,25 @@ CHI3_ATOMS = {
     'GLX': ('CB', 'CG', 'CD', 'OE1'),
     'LYS': ('CB', 'CG', 'CD', 'CE'),
     'MET': ('CB', 'CG', 'SD', 'CE')
-    }
+}
 
 CHI4_ATOMS = {
     'ARG': ('CG', 'CD', 'NE', 'CZ'),
     'LYS': ('CG', 'CD', 'CE', 'NZ')
-    }
-
+}
 
 # Unpack PDB Line Constants - used for simple index changes
-UP_SERIAL     = 0
-UP_NAME       = 1
-UP_ALTLOC     = 2
-UP_RESNAME    = 3
-UP_CHAINID    = 4
-UP_RESSEQ     = 5
-UP_ICODE      = 6
-UP_X          = 7
-UP_Y          = 8
-UP_Z          = 9
-UP_OCCUPANCY  = 10
+UP_SERIAL = 0
+UP_NAME = 1
+UP_ALTLOC = 2
+UP_RESNAME = 3
+UP_CHAINID = 4
+UP_RESSEQ = 5
+UP_ICODE = 6
+UP_X = 7
+UP_Y = 8
+UP_Z = 9
+UP_OCCUPANCY = 10
 UP_TEMPFACTOR = 11
 
 ##########################
@@ -149,54 +146,54 @@ MSDEFS = {}
 MSDEFS['fgmeso'] = {}
 mydefs = MSDEFS['fgmeso']
 
-mydefs['RC_DICT'] = {( 180,-165): 'Aa', ( 180,-135): 'Ab', ( 180,-105): 'Ac',
-                     ( 180, -75): 'Ad', ( 180, -45): 'Ae', ( 180, -15): 'Af',
-                     ( 180,  15): 'Ag', ( 180,  45): 'Ah', ( 180,  75): 'Ai',
-                     ( 180, 105): 'Aj', ( 180, 135): 'Ak', ( 180, 165): 'Al',
-                     (-150,-165): 'Ba', (-150,-135): 'Bb', (-150,-105): 'Bc',
+mydefs['RC_DICT'] = {(180, -165): 'Aa', (180, -135): 'Ab', (180, -105): 'Ac',
+                     (180, -75): 'Ad', (180, -45): 'Ae', (180, -15): 'Af',
+                     (180, 15): 'Ag', (180, 45): 'Ah', (180, 75): 'Ai',
+                     (180, 105): 'Aj', (180, 135): 'Ak', (180, 165): 'Al',
+                     (-150, -165): 'Ba', (-150, -135): 'Bb', (-150, -105): 'Bc',
                      (-150, -75): 'Bd', (-150, -45): 'Be', (-150, -15): 'Bf',
-                     (-150,  15): 'Bg', (-150,  45): 'Bh', (-150,  75): 'Bi',
+                     (-150, 15): 'Bg', (-150, 45): 'Bh', (-150, 75): 'Bi',
                      (-150, 105): 'Bj', (-150, 135): 'Bk', (-150, 165): 'Bl',
-                     (-120,-165): 'Ca', (-120,-135): 'Cb', (-120,-105): 'Cc',
+                     (-120, -165): 'Ca', (-120, -135): 'Cb', (-120, -105): 'Cc',
                      (-120, -75): 'Cd', (-120, -45): 'Ce', (-120, -15): 'Cf',
-                     (-120,  15): 'Cg', (-120,  45): 'Ch', (-120,  75): 'Ci',
+                     (-120, 15): 'Cg', (-120, 45): 'Ch', (-120, 75): 'Ci',
                      (-120, 105): 'Cj', (-120, 135): 'Ck', (-120, 165): 'Cl',
-                     ( -90,-165): 'Da', ( -90,-135): 'Db', ( -90,-105): 'Dc',
-                     ( -90, -75): 'Dd', ( -90, -45): 'De', ( -90, -15): 'Df',
-                     ( -90,  15): 'Dg', ( -90,  45): 'Dh', ( -90,  75): 'Di',
-                     ( -90, 105): 'Dj', ( -90, 135): 'Dk', ( -90, 165): 'Dl',
-                     ( -60,-165): 'Ea', ( -60,-135): 'Eb', ( -60,-105): 'Ec',
-                     ( -60, -75): 'Ed', ( -60, -45): 'Ee', ( -60, -15): 'Ef',
-                     ( -60,  15): 'Eg', ( -60,  45): 'Eh', ( -60,  75): 'Ei',
-                     ( -60, 105): 'Ej', ( -60, 135): 'Ek', ( -60, 165): 'El',
-                     ( -30,-165): 'Fa', ( -30,-135): 'Fb', ( -30,-105): 'Fc',
-                     ( -30, -75): 'Fd', ( -30, -45): 'Fe', ( -30, -15): 'Ff',
-                     ( -30,  15): 'Fg', ( -30,  45): 'Fh', ( -30,  75): 'Fi',
-                     ( -30, 105): 'Fj', ( -30, 135): 'Fk', ( -30, 165): 'Fl',
-                     (   0,-165): 'Ja', (   0,-135): 'Jb', (   0,-105): 'Jc',
-                     (   0, -75): 'Jd', (   0, -45): 'Je', (   0, -15): 'Jf',
-                     (   0,  15): 'Jg', (   0,  45): 'Jh', (   0,  75): 'Ji',
-                     (   0, 105): 'Jj', (   0, 135): 'Jk', (   0, 165): 'Jl',
-                     (  30,-165): 'Ha', (  30,-135): 'Hb', (  30,-105): 'Hc',
-                     (  30, -75): 'Hd', (  30, -45): 'He', (  30, -15): 'Hf',
-                     (  30,  15): 'Hg', (  30,  45): 'Hh', (  30,  75): 'Hi',
-                     (  30, 105): 'Hj', (  30, 135): 'Hk', (  30, 165): 'Hl',
-                     (  60,-165): 'Ia', (  60,-135): 'Ib', (  60,-105): 'Ic',
-                     (  60, -75): 'Id', (  60, -45): 'Ie', (  60, -15): 'If',
-                     (  60,  15): 'Ig', (  60,  45): 'Ih', (  60,  75): 'Ii',
-                     (  60, 105): 'Ij', (  60, 135): 'Ik', (  60, 165): 'Il',
-                     (  90,-165): 'Ja', (  90,-135): 'Jb', (  90,-105): 'Jc',
-                     (  90, -75): 'Jd', (  90, -45): 'Je', (  90, -15): 'Jf',
-                     (  90,  15): 'Jg', (  90,  45): 'Jh', (  90,  75): 'Ji',
-                     (  90, 105): 'Jj', (  90, 135): 'Jk', (  90, 165): 'Jl',
-                     ( 120,-165): 'Ka', ( 120,-135): 'Kb', ( 120,-105): 'Kc',
-                     ( 120, -75): 'Kd', ( 120, -45): 'Ke', ( 120, -15): 'Kf',
-                     ( 120,  15): 'Kg', ( 120,  45): 'Kh', ( 120,  75): 'Ki',
-                     ( 120, 105): 'Kj', ( 120, 135): 'Kk', ( 120, 165): 'Kl',
-                     ( 150,-165): 'La', ( 150,-135): 'Lb', ( 150,-105): 'Lc',
-                     ( 150, -75): 'Ld', ( 150, -45): 'Le', ( 150, -15): 'Lf',
-                     ( 150,  15): 'Lg', ( 150,  45): 'Lh', ( 150,  75): 'Li',
-                     ( 150, 105): 'Lj', ( 150, 135): 'Lk', ( 150, 165): 'Ll'}
+                     (-90, -165): 'Da', (-90, -135): 'Db', (-90, -105): 'Dc',
+                     (-90, -75): 'Dd', (-90, -45): 'De', (-90, -15): 'Df',
+                     (-90, 15): 'Dg', (-90, 45): 'Dh', (-90, 75): 'Di',
+                     (-90, 105): 'Dj', (-90, 135): 'Dk', (-90, 165): 'Dl',
+                     (-60, -165): 'Ea', (-60, -135): 'Eb', (-60, -105): 'Ec',
+                     (-60, -75): 'Ed', (-60, -45): 'Ee', (-60, -15): 'Ef',
+                     (-60, 15): 'Eg', (-60, 45): 'Eh', (-60, 75): 'Ei',
+                     (-60, 105): 'Ej', (-60, 135): 'Ek', (-60, 165): 'El',
+                     (-30, -165): 'Fa', (-30, -135): 'Fb', (-30, -105): 'Fc',
+                     (-30, -75): 'Fd', (-30, -45): 'Fe', (-30, -15): 'Ff',
+                     (-30, 15): 'Fg', (-30, 45): 'Fh', (-30, 75): 'Fi',
+                     (-30, 105): 'Fj', (-30, 135): 'Fk', (-30, 165): 'Fl',
+                     (0, -165): 'Ja', (0, -135): 'Jb', (0, -105): 'Jc',
+                     (0, -75): 'Jd', (0, -45): 'Je', (0, -15): 'Jf',
+                     (0, 15): 'Jg', (0, 45): 'Jh', (0, 75): 'Ji',
+                     (0, 105): 'Jj', (0, 135): 'Jk', (0, 165): 'Jl',
+                     (30, -165): 'Ha', (30, -135): 'Hb', (30, -105): 'Hc',
+                     (30, -75): 'Hd', (30, -45): 'He', (30, -15): 'Hf',
+                     (30, 15): 'Hg', (30, 45): 'Hh', (30, 75): 'Hi',
+                     (30, 105): 'Hj', (30, 135): 'Hk', (30, 165): 'Hl',
+                     (60, -165): 'Ia', (60, -135): 'Ib', (60, -105): 'Ic',
+                     (60, -75): 'Id', (60, -45): 'Ie', (60, -15): 'If',
+                     (60, 15): 'Ig', (60, 45): 'Ih', (60, 75): 'Ii',
+                     (60, 105): 'Ij', (60, 135): 'Ik', (60, 165): 'Il',
+                     (90, -165): 'Ja', (90, -135): 'Jb', (90, -105): 'Jc',
+                     (90, -75): 'Jd', (90, -45): 'Je', (90, -15): 'Jf',
+                     (90, 15): 'Jg', (90, 45): 'Jh', (90, 75): 'Ji',
+                     (90, 105): 'Jj', (90, 135): 'Jk', (90, 165): 'Jl',
+                     (120, -165): 'Ka', (120, -135): 'Kb', (120, -105): 'Kc',
+                     (120, -75): 'Kd', (120, -45): 'Ke', (120, -15): 'Kf',
+                     (120, 15): 'Kg', (120, 45): 'Kh', (120, 75): 'Ki',
+                     (120, 105): 'Kj', (120, 135): 'Kk', (120, 165): 'Kl',
+                     (150, -165): 'La', (150, -135): 'Lb', (150, -105): 'Lc',
+                     (150, -75): 'Ld', (150, -45): 'Le', (150, -15): 'Lf',
+                     (150, 15): 'Lg', (150, 45): 'Lh', (150, 75): 'Li',
+                     (150, 105): 'Lj', (150, 135): 'Lk', (150, 165): 'Ll'}
 
 # What mesostate to use when the angles are invalid (e.g. 999.99)
 mydefs['INVALID'] = '??'
@@ -210,8 +207,8 @@ mydefs['CODE_LENGTH'] = 2
 # Geometric parameters: DELTA is the size of the bins, XXX_OFF is
 # the offset from 0 degrees of the centers of the bins.
 
-mydefs['DELTA']   = 30.0
-mydefs['PHI_OFF'] =  0.0
+mydefs['DELTA'] = 30.0
+mydefs['PHI_OFF'] = 0.0
 mydefs['PSI_OFF'] = 15.0
 
 # Set up turns and turn dictionary.  Dictionary contains the number of
@@ -220,55 +217,55 @@ mydefs['PSI_OFF'] = 15.0
 
 mydefs['TURNS'] = {'EfDf': 5226, 'EeEf': 4593, 'EfEf': 4061, 'EfDg': 3883,
                    'EeDg': 2118, 'EeEe': 1950, 'EfCg': 1932, 'EeDf': 1785,
-                   'EkJf': 1577, 'EkIg': 1106, 'EfEe':  995, 'EkJg':  760,
-                   'EeCg':  553, 'DfDf':  479, 'EfCf':  395, 'DgDf':  332,
-                   'DfDg':  330, 'IhIg':  310, 'EfDe':  309, 'EkIh':  298,
-                   'DgCg':  275, 'DfCg':  267, 'IbDg':  266, 'DfEe':  260,
-                   'FeEf':  250, 'IbEf':  249, 'DfEf':  219, 'IhJf':  216,
-                   'IhJg':  213, 'IgIg':  207, 'EfCh':  188, 'DgEe':  180,
-                   'DgEf':  176, 'EeEg':  172, 'IhIh':  153, 'EeDe':  150,
-                   'IgJg':  147, 'EkKf':  147, 'EeCh':  147, 'IbDf':  131,
-                   'DgDg':  128, 'EgDf':  127, 'FeDg':  114, 'ElIg':  111,
-                   'IgIh':  107, 'DfDe':  107, 'EjIg':  101, 'EeCf':  100,
-                   'DfCh':   94, 'DgCf':   91, 'DfCf':   91, 'DeEe':   91,
-                   'DkIh':   88, 'FeDf':   79, 'EkIf':   78, 'EeDh':   76,
-                   'DgCh':   74, 'IgJf':   71, 'EjJg':   71, 'FeEe':   69,
-                   'DlIh':   66, 'EgCg':   65, 'ElIh':   62, 'EjJf':   62,
-                   'FeCg':   59, 'DlIg':   56, 'IbCg':   54, 'EfEg':   54,
-                   'EkJe':   53, 'FkJf':   52, 'ElJg':   51, 'DgDe':   49,
-                   'DlJg':   46, 'EgCf':   45, 'IaEf':   40, 'FkIg':   39,
-                   'JaEf':   38, 'EjIh':   38, 'EgEf':   38, 'DkJg':   36,
-                   'DeEf':   34, 'EeCi':   31, 'JgIh':   29, 'IcEf':   29,
-                   'EkKe':   29, 'DkIg':   29, 'IbEe':   27, 'EgDg':   27,
-                   'EeFe':   27, 'EjKf':   26, 'IaDf':   25, 'HhIg':   24,
-                   'HbDg':   24, 'ElJf':   24, 'EfDh':   24, 'IcDf':   23,
-                   'EfBh':   23, 'IcDg':   22, 'IcCg':   22, 'FkJg':   21,
-                   'FeCh':   21, 'IgKf':   20, 'FdDg':   20, 'EkHh':   20,
-                   'DfDh':   20, 'DgBh':   19, 'DfBh':   19, 'DeDf':   19,
-                   'DfFe':   18, 'EfFe':   17, 'EgEe':   16, 'EgDe':   16,
-                   'DkJf':   16, 'JgJg':   15, 'IbEg':   15, 'IbCh':   15,
-                   'EfBg':   15, 'DgCe':   15, 'JlEf':   14, 'CgCg':   14,
-                   'HhJf':   13, 'EeBi':   13, 'DfBi':   13, 'IhIf':   12,
-                   'FeEg':   12, 'FdEf':   12, 'EdEf':   12, 'DlJf':   12,
-                   'DhCg':   12, 'JgIg':   11, 'IeBg':   11, 'FjIg':   11,
-                   'FdCh':   11, 'EdEe':   11, 'JfIh':   10, 'JaEe':   10,
-                   'HhJg':   10, 'HbEf':   10, 'HbCh':   10, 'FkIh':   10,
-                   'FjJf':   10, 'ElJe':   10, 'DhDf':   10, 'CgDf':   10}
+                   'EkJf': 1577, 'EkIg': 1106, 'EfEe': 995, 'EkJg': 760,
+                   'EeCg': 553, 'DfDf': 479, 'EfCf': 395, 'DgDf': 332,
+                   'DfDg': 330, 'IhIg': 310, 'EfDe': 309, 'EkIh': 298,
+                   'DgCg': 275, 'DfCg': 267, 'IbDg': 266, 'DfEe': 260,
+                   'FeEf': 250, 'IbEf': 249, 'DfEf': 219, 'IhJf': 216,
+                   'IhJg': 213, 'IgIg': 207, 'EfCh': 188, 'DgEe': 180,
+                   'DgEf': 176, 'EeEg': 172, 'IhIh': 153, 'EeDe': 150,
+                   'IgJg': 147, 'EkKf': 147, 'EeCh': 147, 'IbDf': 131,
+                   'DgDg': 128, 'EgDf': 127, 'FeDg': 114, 'ElIg': 111,
+                   'IgIh': 107, 'DfDe': 107, 'EjIg': 101, 'EeCf': 100,
+                   'DfCh': 94, 'DgCf': 91, 'DfCf': 91, 'DeEe': 91,
+                   'DkIh': 88, 'FeDf': 79, 'EkIf': 78, 'EeDh': 76,
+                   'DgCh': 74, 'IgJf': 71, 'EjJg': 71, 'FeEe': 69,
+                   'DlIh': 66, 'EgCg': 65, 'ElIh': 62, 'EjJf': 62,
+                   'FeCg': 59, 'DlIg': 56, 'IbCg': 54, 'EfEg': 54,
+                   'EkJe': 53, 'FkJf': 52, 'ElJg': 51, 'DgDe': 49,
+                   'DlJg': 46, 'EgCf': 45, 'IaEf': 40, 'FkIg': 39,
+                   'JaEf': 38, 'EjIh': 38, 'EgEf': 38, 'DkJg': 36,
+                   'DeEf': 34, 'EeCi': 31, 'JgIh': 29, 'IcEf': 29,
+                   'EkKe': 29, 'DkIg': 29, 'IbEe': 27, 'EgDg': 27,
+                   'EeFe': 27, 'EjKf': 26, 'IaDf': 25, 'HhIg': 24,
+                   'HbDg': 24, 'ElJf': 24, 'EfDh': 24, 'IcDf': 23,
+                   'EfBh': 23, 'IcDg': 22, 'IcCg': 22, 'FkJg': 21,
+                   'FeCh': 21, 'IgKf': 20, 'FdDg': 20, 'EkHh': 20,
+                   'DfDh': 20, 'DgBh': 19, 'DfBh': 19, 'DeDf': 19,
+                   'DfFe': 18, 'EfFe': 17, 'EgEe': 16, 'EgDe': 16,
+                   'DkJf': 16, 'JgJg': 15, 'IbEg': 15, 'IbCh': 15,
+                   'EfBg': 15, 'DgCe': 15, 'JlEf': 14, 'CgCg': 14,
+                   'HhJf': 13, 'EeBi': 13, 'DfBi': 13, 'IhIf': 12,
+                   'FeEg': 12, 'FdEf': 12, 'EdEf': 12, 'DlJf': 12,
+                   'DhCg': 12, 'JgIg': 11, 'IeBg': 11, 'FjIg': 11,
+                   'FdCh': 11, 'EdEe': 11, 'JfIh': 10, 'JaEe': 10,
+                   'HhJg': 10, 'HbEf': 10, 'HbCh': 10, 'FkIh': 10,
+                   'FjJf': 10, 'ElJe': 10, 'DhDf': 10, 'CgDf': 10}
 
 # Set up the PII defitions, similar to dictionary above.
 
-mydefs['PII'] = {'Dk':1, 'Dl':1, 'Ek':1, 'El':1}
+mydefs['PII'] = {'Dk': 1, 'Dl': 1, 'Ek': 1, 'El': 1}
 
 # Set up the codes that define helix and strand.  Here, rather than storing
 # the dictionary like we did above, we'll store the regular expression
 # matcher directly.  This prevents us from recompiling it every time we
 # want to find a helix or strand.
 
-helix  = ('De', 'Df', 'Ed', 'Ee', 'Ef', 'Fd', 'Fe')
+helix = ('De', 'Df', 'Ed', 'Ee', 'Ef', 'Fd', 'Fe')
 strand = ('Bj', 'Bk', 'Bl', 'Cj', 'Ck', 'Cl', 'Dj', 'Dk', 'Dl')
 
-pat_helix  = "(%s){5,}" % string.join(["(%s)" % x for x in helix], '|')
-pat_strand = "(%s){3,}" % string.join(["(%s)" % x for x in strand], '|')
+pat_helix = "(%s){5,}" % '|'.join(["(%s)" % x for x in helix])
+pat_strand = "(%s){3,}" % '|'.join(["(%s)" % x for x in strand])
 
 mydefs['HELIX'] = re.compile(pat_helix)
 mydefs['STRAND'] = re.compile(pat_strand)
@@ -280,18 +277,18 @@ mydefs['STRAND'] = re.compile(pat_strand)
 MSDEFS['oldmeso'] = {}
 mydefs = MSDEFS['oldmeso']
 
-mydefs['RC_DICT'] = {( 180, 180): 'A', ( 180,-120): 'B', ( 180, -60): 'C',
-                     ( 180,   0): 'D', ( 180,  60): 'E', ( 180, 120): 'F',
-                     (-120, 180): 'G', (-120,-120): 'H', (-120, -60): 'I',
-                     (-120,   0): 'J', (-120,  60): 'K', (-120, 120): 'L',
-                     ( -60, 180): 'M', ( -60,-120): 'N', ( -60, -60): 'O',
-                     ( -60,   0): 'P', ( -60,  60): 'Q', ( -60, 120): 'R',
-                     (   0, 180): 'S', (   0,-120): 'T', (   0, -60): 'U',
-                     (   0,   0): 'V', (   0,  60): 'W', (   0, 120): 'X',
-                     (  60, 180): 'm', (  60,-120): 'r', (  60, -60): 'q',
-                     (  60,   0): 'p', (  60,  60): 'o', (  60, 120): 'n',
-                     ( 120, 180): 'g', ( 120,-120): 'l', ( 120, -60): 'k',
-                     ( 120,   0): 'j', ( 120,  60): 'i', ( 120, 120): 'h'}
+mydefs['RC_DICT'] = {(180, 180): 'A', (180, -120): 'B', (180, -60): 'C',
+                     (180, 0): 'D', (180, 60): 'E', (180, 120): 'F',
+                     (-120, 180): 'G', (-120, -120): 'H', (-120, -60): 'I',
+                     (-120, 0): 'J', (-120, 60): 'K', (-120, 120): 'L',
+                     (-60, 180): 'M', (-60, -120): 'N', (-60, -60): 'O',
+                     (-60, 0): 'P', (-60, 60): 'Q', (-60, 120): 'R',
+                     (0, 180): 'S', (0, -120): 'T', (0, -60): 'U',
+                     (0, 0): 'V', (0, 60): 'W', (0, 120): 'X',
+                     (60, 180): 'm', (60, -120): 'r', (60, -60): 'q',
+                     (60, 0): 'p', (60, 60): 'o', (60, 120): 'n',
+                     (120, 180): 'g', (120, -120): 'l', (120, -60): 'k',
+                     (120, 0): 'j', (120, 60): 'i', (120, 120): 'h'}
 
 # What mesostate to use when the angles are invalid (e.g. 999.99)
 mydefs['INVALID'] = '?'
@@ -305,9 +302,9 @@ mydefs['CODE_LENGTH'] = 1
 # Geometric parameters: DELTA is the size of the bins, XXX_OFF is
 # the offset from 0 degrees of the centers of the bins.
 
-mydefs['DELTA']   = 60.0
-mydefs['PHI_OFF'] =  0.0
-mydefs['PSI_OFF'] =  0.0
+mydefs['DELTA'] = 60.0
+mydefs['PHI_OFF'] = 0.0
+mydefs['PSI_OFF'] = 0.0
 
 # Set up turns and turn dictionary.  Dictionary contains the type
 # of the turn (no primes)
@@ -321,21 +318,22 @@ mydefs['TURNS'] = {'OO': 1, 'OP': 1, 'OJ': 1, 'PO': 1, 'PP': 1, 'PJ': 1,
 
 # Set up the PII defitions, similar to dictionary above.
 
-mydefs['PII'] = {'M':1, 'R':1}
+mydefs['PII'] = {'M': 1, 'R': 1}
 
 # Set up the codes that define helix and strand.  Here, rather than storing
 # the dictionary like we did above, we'll store the regular expression
 # matcher directly.  This prevents us from recompiling it every time we
 # want to find a helix or strand.
 
-helix  = ('O', 'P')
+helix = ('O', 'P')
 strand = ('L', 'G', 'F', 'A')
 
-pat_helix  = "(%s){5,}" % string.join(["(%s)" % x for x in helix],  '|')
-pat_strand = "(%s){3,}" % string.join(["(%s)" % x for x in strand], '|')
+pat_helix = "(%s){5,}" % '|'.join(["(%s)" % x for x in helix])
+pat_strand = "(%s){3,}" % '|'.join(["(%s)" % x for x in strand])
 
 mydefs['HELIX'] = re.compile(pat_helix)
 mydefs['STRAND'] = re.compile(pat_strand)
+
 
 ##########################
 # End Mesostate Definition Code
@@ -354,29 +352,35 @@ def res_rc(r1, r2, r3=180, mcodes=None):
     180.0.
     """
 
-    if not mcodes: mcodes = default
+    if not mcodes:
+        mcodes = default
     ms = MSDEFS[mcodes]
-    OMEGA   = ms['OMEGA']
+    OMEGA = ms['OMEGA']
     INVALID = ms['INVALID']
     PHI_OFF = ms['PHI_OFF']
     PSI_OFF = ms['PSI_OFF']
-    DELTA   = ms['DELTA']
+    DELTA = ms['DELTA']
     RC_DICT = ms['RC_DICT']
 
     if (abs(r3) <= 90.0):
         return OMEGA
-    elif r1>180.0 or r2>180.0 or r3>180.0:
+    elif r1 > 180.0 or r2 > 180.0 or r3 > 180.0:
         return INVALID
 
-    ir1 = -int(PHI_OFF) + int(round((r1+PHI_OFF)/DELTA )) * int(DELTA)
-    ir2 = -int(PSI_OFF) + int(round((r2+PSI_OFF)/DELTA )) * int(DELTA)
+    ir1 = -int(PHI_OFF) + int(round((r1 + PHI_OFF) / DELTA)) * int(DELTA)
+    ir2 = -int(PSI_OFF) + int(round((r2 + PSI_OFF) / DELTA)) * int(DELTA)
 
-    while ir1 <= -180: ir1 = ir1 + 360
-    while ir1 >   180: ir1 = ir1 - 360
-    while ir2 <= -180: ir2 = ir2 + 360
-    while ir2 >   180: ir2 = ir2 - 360
+    while ir1 <= -180:
+        ir1 = ir1 + 360
+    while ir1 > 180:
+        ir1 = ir1 - 360
+    while ir2 <= -180:
+        ir2 = ir2 + 360
+    while ir2 > 180:
+        ir2 = ir2 - 360
 
-    return RC_DICT[(ir1,ir2)]
+    return RC_DICT[(ir1, ir2)]
+
 
 def rc_codes(chain, phi=None, psi=None, ome=None, mcodes=None):
     """rc_codes(chain, phi, psi, ome) - return rotamer codes
@@ -385,12 +389,17 @@ def rc_codes(chain, phi=None, psi=None, ome=None, mcodes=None):
     function will return a list of mesostate codes that
     applies to the chain, as determined by res_rc.
     """
-    if not mcodes: mcodes = default
+    if not mcodes:
+        mcodes = default
     n = list(range(len(chain)))
-    if phi is None: phi = list(map(chain.phi, n))
-    if psi is None: psi = list(map(chain.psi, n))
-    if ome is None: ome = list(map(chain.omega, n))
+    if phi is None:
+        phi = list(map(chain.phi, n))
+    if psi is None:
+        psi = list(map(chain.psi, n))
+    if ome is None:
+        ome = list(map(chain.omega, n))
     return list(map(lambda x, y, z: res_rc(x, y, z, mcodes), phi, psi, ome))
+
 
 def rc_ss(chain, phi=None, psi=None, ome=None, mcodes=None):
     """rc_ss(chain, phi, psi, ome) - calculate secondary structure
@@ -405,9 +414,9 @@ def rc_ss(chain, phi=None, psi=None, ome=None, mcodes=None):
 
     if not mcodes: mcodes = default
     ms = MSDEFS[mcodes]
-    PII    = ms['PII']
-    TURNS  = ms['TURNS']
-    HELIX  = ms['HELIX']
+    PII = ms['PII']
+    TURNS = ms['TURNS']
+    HELIX = ms['HELIX']
     STRAND = ms['STRAND']
 
     if phi is None:
@@ -423,21 +432,21 @@ def rc_ss(chain, phi=None, psi=None, ome=None, mcodes=None):
 
     chain.gaps()
 
-    sst = ['C']*nres
+    sst = ['C'] * nres
 
     is_PII = PII.has_key
 
-    for i in range(nres-1):
+    for i in range(nres - 1):
         code = codes[i]
         if is_PII(code):
             sst[i] = 'P'
 
     is_turn = TURNS.has_key
 
-    for i in range(nres-1):
-        code = codes[i] + codes[i+1]
+    for i in range(nres - 1):
+        code = codes[i] + codes[i + 1]
         if is_turn(code):
-            sst[i] = sst[i+1] = 'T'
+            sst[i] = sst[i + 1] = 'T'
 
     helices = _rc_find(codes, HELIX, mcodes)
     strands = _rc_find(codes, STRAND, mcodes)
@@ -452,9 +461,10 @@ def rc_ss(chain, phi=None, psi=None, ome=None, mcodes=None):
         i, j = strand
         for k in range(i, j):
             if sst[k] in ('C', 'P'): sst[k] = 'E'
-#            if sst[k] == 'C': sst[k] = 'E'
+    #            if sst[k] == 'C': sst[k] = 'E'
 
     return phi, psi, ome, sst
+
 
 def _rc_find(codes, pattern, mcodes=None):
     """_rc_find(codes, pat_obj) - find a endpoints of a regexp
@@ -464,11 +474,12 @@ def _rc_find(codes, pattern, mcodes=None):
     pattern whose matches will be returned as pairs indicated start,
     end in <codes>
     """
-    if not mcodes: mcodes = default
+    if not mcodes:
+        mcodes = default
     CODE_LENGTH = MSDEFS[mcodes]['CODE_LENGTH']
 
     if not type(codes) == type(''):
-        codes = string.join(codes, '')
+        codes = ''.join(codes)
 
     matches = []
     it = pattern.finditer(codes)
@@ -476,7 +487,7 @@ def _rc_find(codes, pattern, mcodes=None):
     try:
         while 1:
             mat = next(it)
-            matches.append((mat.start()/CODE_LENGTH, mat.end()/CODE_LENGTH))
+            matches.append((mat.start() / CODE_LENGTH, mat.end() / CODE_LENGTH))
     except StopIteration:
         pass
 
@@ -494,17 +505,21 @@ def is_atom(o):
 def is_residue(o):
     return hasattr(o, '_is_a_residue')
 
+
 def is_chain(o):
     return hasattr(o, '_is_a_chain')
 
+
 def is_mol(o):
     return hasattr(o, '_is_a_mol')
+
 
 ####################
 
 
 HAVE_POP = hasattr([], 'pop')
 HAVE_EXTEND = hasattr([], 'extend')
+
 
 class TypedList:
     """A Python list restricted to having objects of the same type.
@@ -535,7 +550,7 @@ class TypedList:
     def __init__(self, function, elements=None):
         self._func = function
         self.elements = []
-        if not elements is None:
+        if elements is not None:
             if self._func(elements):
                 self.elements.append(elements)
             else:
@@ -548,16 +563,18 @@ class TypedList:
         else:
             raise TypeError('Element to be added to list has incorrect type.')
 
-    def __len__(self): return len(self.elements)
+    def __len__(self):
+        return len(self.elements)
 
     def __repr__(self):
         return "%s(%s, %s)" % (self.__class__, self._func.__name__,
-                              repr(self.elements))
+                               repr(self.elements))
 
     def __str__(self):
         return repr(self.elements)
 
-    def __getitem__(self, i): return self.elements[i]
+    def __getitem__(self, i):
+        return self.elements[i]
 
     def __setitem__(self, i, v):
         if self._func(v):
@@ -565,7 +582,8 @@ class TypedList:
         else:
             raise TypeError('Item not of correct type in __setitem__')
 
-    def __delitem__(self, i): del self.elements[i]
+    def __delitem__(self, i):
+        del self.elements[i]
 
     def __getslice__(self, i, j):
         new = self.__class__(self._func)
@@ -581,8 +599,7 @@ class TypedList:
 
     def __add__(self, other):
         if not hasattr(other, '_is_a_typed_list'):
-            raise TypeError('List to be concatenated not instance of %s' %\
-                  self.__class__)
+            raise TypeError('List to be concatenated not instance of %s' % self.__class__)
         if self._func != other._func:
             raise TypeError('Lists to be added not of same type')
         new = self.__class__(self._func)
@@ -614,11 +631,14 @@ class TypedList:
     def _alltrue(self, els):
         return len(els) == len([_f for _f in map(self._func, els) if _f])
 
-    def sort(self): self.elements.sort()
+    def sort(self):
+        self.elements.sort()
 
-    def reverse(self): self.elements.reverse()
+    def reverse(self):
+        self.elements.reverse()
 
-    def count(self, el): return self.elements.count(el)
+    def count(self, el):
+        return self.elements.count(el)
 
     def extend(self, els):
         if self._alltrue(els):
@@ -638,9 +658,11 @@ class TypedList:
             del self.elements[-1]
             return el
 
-    def index(self, el): return self.elements.index(el)
+    def index(self, el):
+        return self.elements.index(el)
 
-    def remove(self, el): self.elements.remove(el)
+    def remove(self, el):
+        self.elements.remove(el)
 
     def insert(self, pos, el):
         if self._func(el):
@@ -652,11 +674,7 @@ class TypedList:
         return range(len(self.elements))
 
     def reverse_indices(self, len=len):
-        return range(len(self.elements)-1, -1, -1)
-
-
-
-
+        return range(len(self.elements) - 1, -1, -1)
 
 
 ####################
@@ -715,18 +733,16 @@ class molResidue(TypedList):
         """returns coordinates of named atoms.
         If names is omitted all atom coordinates are returned."""
 
-        if len(names)==0:
+        if len(names) == 0:
             atoms = self.elements
         else:
             atoms = self.atoms_with_name(*names)
 
         na = len(atoms)
-        if na == 0: return
+        if na == 0:
+            return
 
-        if HAVE_NUMPY:
-            a = numpy.zeros((na, 3), 'd')
-        else:
-            a = [None]*na
+        a = np.zeros((na, 3), 'd')
 
         pos = 0
         for atom in atoms:
@@ -740,6 +756,7 @@ class molResidue(TypedList):
     def type(self):
         return 'residue'
 
+
 class molChain(TypedList):
     _is_a_chain = 1
 
@@ -749,8 +766,8 @@ class molChain(TypedList):
         for key, value in list(kw.items()):
             setattr(self, key, value)
 
-
-    def num_residues(self): return len(self)
+    def num_residues(self):
+        return len(self)
 
     def num_atoms(self):
         na = 0
@@ -789,10 +806,9 @@ class molChain(TypedList):
         """returns residues excluding specified names as a python list"""
         ret = []
         for res in self.elements:
-            if not res.name in names:
+            if res.name not in names:
                 ret.append(res)
         return ret
-
 
     def atoms_with_name(self, *names):
         ret = []
@@ -836,10 +852,7 @@ class molChain(TypedList):
         else:
             atoms = self.atoms_with_name(*names)
             coords = [a.coords() for a in atoms]
-        if HAVE_NUMPY:
-            return numpy.array(coords)
-        else:
-            return coords
+        return np.array(coords)
 
     def atoms(self):
         atoms = []
@@ -871,8 +884,7 @@ class molChain(TypedList):
                 try:
                     acnt = AtomCount[rid][anam]
                 except KeyError:
-                    print("Unable to locate %s %s %s in present dictionary."%\
-                          (rid[0], rid[1], anam))
+                    print("Unable to locate %s %s %s in present dictionary." % (rid[0], rid[1], anam))
                     return
 
                 if acnt == 1:
@@ -919,12 +931,12 @@ class molChain(TypedList):
     structure.  This include waters, heme groups, as well as residues
     with nonstandard structures
     """
-        for i in range(self.num_residues()-1, -1, -1):
+        for i in range(self.num_residues() - 1, -1, -1):
             if hasattr(self[i], 'het'):
                 del self[i]
 
     def delete_waters(self):
-        for i in range(self.num_residues()-1, -1, -1):
+        for i in range(self.num_residues() - 1, -1, -1):
             if self[i].name == 'HOH':
                 del self[i]
 
@@ -937,7 +949,7 @@ class molChain(TypedList):
             res.rotatex(theta)
 
     def rotatey(self, theta):
-
+        for res in self.elements:
             res.rotatey(theta)
 
     def rotatez(self, theta):
@@ -947,19 +959,21 @@ class molChain(TypedList):
     def type(self):
         return 'Chain'
 
+
 class molMol(TypedList):
     _is_a_mol = 1
 
     def __init__(self, name='', chains=None):
         self.name = name
-        self.resolution  = None
+        self.resolution = None
         self.method = []
         self.rprog = None
         self.rfree = None
         self.rvalu = None
         TypedList.__init__(self, is_chain, chains)
 
-    def num_chain(self): return len(self)
+    def num_chain(self):
+        return len(self)
 
     def num_res(self):
         nr = 0
@@ -994,7 +1008,6 @@ class molMol(TypedList):
                 if res.name in names: residues.append(res)
         return residues
 
-
     def atoms_with_name(self, *names):
         ret = []
         Append = ret.append
@@ -1019,7 +1032,6 @@ class molMol(TypedList):
             ret[len(ret):] = chain.atoms_not_with_name(*names)
         return ret
 
-
     def atom_coordinates(self, *names):
 
         coords = []
@@ -1032,10 +1044,7 @@ class molMol(TypedList):
             atoms = self.atoms_with_name(*names)
             coords = [a.coords() for a in atoms]
             del atoms
-        if HAVE_NUMPY:
-            return numpy.array(coords)
-        else:
-            return coords
+        return np.array(coords)
 
     def delete_alt_locs(self):
         """delete_alt_locs - remove all secondary conformations"""
@@ -1072,7 +1081,6 @@ class molMol(TypedList):
     This function is a wrapper for pdbout.write_pdb.
     """
         pdbout.write_pdb(self, file, renum, seq)
-
 
 
 def pack_pdb_line(atom, idx, aan, aanum, ic, cn, f, fmt):
@@ -1113,21 +1121,22 @@ def pack_pdb_line(atom, idx, aan, aanum, ic, cn, f, fmt):
 
     try:
         occ = atom.occ
-        bf  = atom.bf
+        bf = atom.bf
     except AttributeError:
         occ = 1.00
-        bf  = 25.00
+        bf = 25.00
 
     x = atom.xcoord()
     y = atom.ycoord()
     z = atom.zcoord()
 
-#    fmt = '%s %s %s %s %s %s %s %s %s %s %s\n'
+    #    fmt = '%s %s %s %s %s %s %s %s %s %s %s\n'
 
-#    atfmt = 'ATOM  %5i %4s%1s%3s %1s%4s%1s   %8.3f%8.3f%8.3f%6.2f%6.2f\n'
-#    htfmt = 'HETATM%5i %4s%1s%3s %1s%4s%1s   %8.3f%8.3f%8.3f%6.2f%6.2f\n'
+    #    atfmt = 'ATOM  %5i %4s%1s%3s %1s%4s%1s   %8.3f%8.3f%8.3f%6.2f%6.2f\n'
+    #    htfmt = 'HETATM%5i %4s%1s%3s %1s%4s%1s   %8.3f%8.3f%8.3f%6.2f%6.2f\n'
 
     f.write(fmt % (idx, atn, al, aan, cn, aanum, ic, x, y, z, occ, bf))
+
 
 def pad(nm):
     """pad(nm) - a function to pad an atom name with appropraiate spaces"""
@@ -1141,7 +1150,7 @@ def pad(nm):
     except ValueError:
         nm = ' ' + nm
 
-    return nm + space[0:4-len(nm)]
+    return nm + space[0:4 - len(nm)]
 
 
 def write_pdb(myMol, f, renum=0, seq=None, pack=pack_pdb_line):
@@ -1206,7 +1215,7 @@ def write_pdb(myMol, f, renum=0, seq=None, pack=pack_pdb_line):
         cname = chain.name
         rname = ''
         rnum = 0
-        rlast = int(chain[0].idx)-1
+        rlast = int(chain[0].idx) - 1
 
         for res in chain:
             rname = res.name
@@ -1237,7 +1246,6 @@ def write_pdb(myMol, f, renum=0, seq=None, pack=pack_pdb_line):
     if close:
         out.write('END\n')
         out.close()
-
 
 
 def write_sequences(chain, f):
@@ -1291,13 +1299,11 @@ class Atom3d:
 
     def __repr__(self):
         return "Atom3d(%s, %s, %s)" % (self.x, self.y, self.z)
+
     __str__ = __repr__
 
     def coords(self):
-        if HAVE_NUMPY:
-            return numpy.array((self.x, self.y, self.z))
-        else:
-            return [self.x, self.y, self.z]
+        return np.array((self.x, self.y, self.z))
 
     def set_coords(self, x, y=None, z=None):
         if y is None:
@@ -1330,42 +1336,42 @@ class Atom3d:
 
     __copy__ = clone
 
-#   def __deepcopy__(self):
-#       cnf = copy.deepcopy(self.__dict__)
-#       return self.__class__(0, 0, 0, cnf)
+    #   def __deepcopy__(self):
+    #       cnf = copy.deepcopy(self.__dict__)
+    #       return self.__class__(0, 0, 0, cnf)
 
     def distance(self, other, sqrt=math.sqrt):
         if not hasattr(other, '_is_an_atom3d'):
             raise TypeError('distance argument must be Atom3d type')
 
-        return sqrt( (self.x - other.x)**2 +
-                     (self.y - other.y)**2 +
-                     (self.z - other.z)**2 )
+        return sqrt((self.x - other.x) ** 2 +
+                    (self.y - other.y) ** 2 +
+                    (self.z - other.z) ** 2)
 
     def sqr_distance(self, other):
         if not hasattr(other, '_is_an_atom3d'):
             raise TypeError('sqr_distance argument must be Atom3d type')
 
-        return (self.x - other.x)**2 + \
-               (self.y - other.y)**2 + \
-               (self.z - other.z)**2
+        return (self.x - other.x) ** 2 + \
+               (self.y - other.y) ** 2 + \
+               (self.z - other.z) ** 2
 
     def angle(self, a, b, sqrt=math.sqrt, acos=math.acos):
         if not hasattr(a, '_is_an_atom3d') or \
-           not hasattr(b, '_is_an_atom3d'):
+                not hasattr(b, '_is_an_atom3d'):
             raise TypeError('angle arguments must be Atom3d type')
 
         x1, y1, z1 = self.x - a.x, self.y - a.y, self.z - a.z
         x2, y2, z2 = b.x - a.x, b.y - a.y, b.z - a.z
-        v11 = x1**2 + y1**2 + z1**2
-        v22 = x2**2 + y2**2 + z2**2
+        v11 = x1 ** 2 + y1 ** 2 + z1 ** 2
+        v22 = x2 ** 2 + y2 ** 2 + z2 ** 2
 
-        if (v11 == 0.0 or v22 == 0.0):
+        if v11 == 0.0 or v22 == 0.0:
             raise ValueError('Null vector in angle')
 
-        v12 = x1*x2 + y1*y2 + z1*z2
+        v12 = x1 * x2 + y1 * y2 + z1 * z2
 
-        ang = v12/sqrt(v11*v22)
+        ang = v12 / sqrt(v11 * v22)
 
         if ang >= 1.0:
             return 0.0
@@ -1377,27 +1383,27 @@ class Atom3d:
     def torsion(self, a, b, c, sqrt=math.sqrt, acos=math.acos):
 
         if not hasattr(a, '_is_an_atom3d') or \
-           not hasattr(b, '_is_an_atom3d') or \
-           not hasattr(c, '_is_an_atom3d'):
+                not hasattr(b, '_is_an_atom3d') or \
+                not hasattr(c, '_is_an_atom3d'):
             raise TypeError('torsion arguments must be Atom3d type')
 
         v12x, v12y, v12z = self.x - a.x, self.y - a.y, self.z - a.z
         v32x, v32y, v32z = b.x - a.x, b.y - a.y, b.z - a.z
         v43x, v43y, v43z = c.x - b.x, c.y - b.y, c.z - b.z
 
-        vn13x = v12y*v32z - v12z*v32y
-        vn13y = v12z*v32x - v12x*v32z
-        vn13z = v12x*v32y - v12y*v32x
+        vn13x = v12y * v32z - v12z * v32y
+        vn13y = v12z * v32x - v12x * v32z
+        vn13z = v12x * v32y - v12y * v32x
 
-        vn24x = v32z*v43y - v32y*v43z
-        vn24y = v32x*v43z - v32z*v43x
-        vn24z = v32y*v43x - v32x*v43y
+        vn24x = v32z * v43y - v32y * v43z
+        vn24y = v32x * v43z - v32z * v43x
+        vn24z = v32y * v43x - v32x * v43y
 
-        v12 = vn13x*vn24x + vn13y*vn24y + vn13z*vn24z
-        v11 = vn13x**2 + vn13y**2 + vn13z**2
-        v22 = vn24x**2 + vn24y**2 + vn24z**2
+        v12 = vn13x * vn24x + vn13y * vn24y + vn13z * vn24z
+        v11 = vn13x ** 2 + vn13y ** 2 + vn13z ** 2
+        v22 = vn24x ** 2 + vn24y ** 2 + vn24z ** 2
 
-        ang = v12/sqrt(v11*v22)
+        ang = v12 / sqrt(v11 * v22)
         if ang >= 1.0:
             return 0.0
         elif ang <= -1.0:
@@ -1405,13 +1411,13 @@ class Atom3d:
         else:
             ang = acos(ang) * _RAD_TO_DEG
 
-        vtmp = vn13x * (vn24y*v32z - vn24z*v32y) + \
-               vn13y * (vn24z*v32x - vn24x*v32z) + \
-               vn13z * (vn24x*v32y - vn24y*v32x) < 0.0
+        vtmp = vn13x * (vn24y * v32z - vn24z * v32y) + vn13y * (vn24z * v32x - vn24x * v32z) + vn13z * \
+               (vn24x * v32y - vn24y * v32x) < 0.0
         if vtmp:
             return -ang
         else:
             return ang
+
 
 ########################
 # functions that operate on a collection of atoms
@@ -1419,7 +1425,6 @@ class Atom3d:
 
 
 def fromint(v1, dis, v2, a, v3, t, sqrt=math.sqrt, sin=math.sin, cos=math.cos):
-
     ang = a * _DEG_TO_RAD
     sina = sin(ang)
     cosa = cos(ang)
@@ -1435,49 +1440,52 @@ def fromint(v1, dis, v2, a, v3, t, sqrt=math.sqrt, sin=math.sin, cos=math.cos):
     u1x = x2 - x3
     u1y = y2 - y3
     u1z = z2 - z3
-    d = 1.0 / sqrt(u1x*u1x + u1y*u1y + u1z*u1z)
-    u1x = u1x*d
-    u1y = u1y*d
-    u1z = u1z*d
+    d = 1.0 / sqrt(u1x * u1x + u1y * u1y + u1z * u1z)
+    u1x = u1x * d
+    u1y = u1y * d
+    u1z = u1z * d
 
     u2x = x1 - x2
     u2y = y1 - y2
     u2z = z1 - z2;
-    d = 1.0 / sqrt(u2x*u2x + u2y*u2y + u2z*u2z)
-    u2x = u2x*d
-    u2y = u2y*d
-    u2z = u2z*d
+    d = 1.0 / sqrt(u2x * u2x + u2y * u2y + u2z * u2z)
+    u2x = u2x * d
+    u2y = u2y * d
+    u2z = u2z * d
 
-    cosine = u1x*u2x + u1y*u2y + u1z*u2z
+    cosine = u1x * u2x + u1y * u2y + u1z * u2z
 
     if (abs(cosine) < 1.0):
-        sine = 1.0/sqrt(1.0 - cosine*cosine)
+        sine = 1.0 / sqrt(1.0 - cosine * cosine)
     else:
-        sine = 1.0/sqrt(cosine*cosine - 1.0)
+        sine = 1.0 / sqrt(cosine * cosine - 1.0)
 
-    u3x = sine * (u1y*u2z - u1z*u2y)
-    u3y = sine * (u1z*u2x - u1x*u2z)
-    u3z = sine * (u1x*u2y - u1y*u2x)
+    u3x = sine * (u1y * u2z - u1z * u2y)
+    u3y = sine * (u1z * u2x - u1x * u2z)
+    u3z = sine * (u1x * u2y - u1y * u2x)
 
-    u4x = cost * (u3y*u2z - u3z*u2y)
-    u4y = cost * (u3z*u2x - u3x*u2z)
-    u4z = cost * (u3x*u2y - u3y*u2x)
+    u4x = cost * (u3y * u2z - u3z * u2y)
+    u4y = cost * (u3z * u2x - u3x * u2z)
+    u4z = cost * (u3x * u2y - u3y * u2x)
 
-    return Atom3d(x1 + dis*(-u2x*cosa + u4x + u3x*sint),
-                  y1 + dis*(-u2y*cosa + u4y + u3y*sint),
-                  z1 + dis*(-u2z*cosa + u4z + u3z*sint))
+    return Atom3d(x1 + dis * (-u2x * cosa + u4x + u3x * sint),
+                  y1 + dis * (-u2y * cosa + u4y + u3y * sint),
+                  z1 + dis * (-u2z * cosa + u4z + u3z * sint))
 
-def _atof(s, atof=string.atof):
+
+def _atof(s, atof=locale.atof):
     try:
         return atof(s)
     except:
         return None
 
-def _atoi(s, atoi=string.atoi):
+
+def _atoi(s, atoi=locale.atoi):
     try:
         return atoi(s)
     except:
         return None
+
 
 def get_sequences(file):
     if file[-3:] == '.gz':
@@ -1493,7 +1501,7 @@ def get_sequences(file):
         else:
             line = ff.readline()
 
-    if not line: # no SEQRES records
+    if not line:  # no SEQRES records
         return {}
 
     sequences = {}
@@ -1502,7 +1510,7 @@ def get_sequences(file):
 
     while line[:6] == 'SEQRES':
         chain = line[11]
-        residues = string.split(line[19:71])
+        residues = line[19:71].split()
         if chain not in sequences:
             sequences[chain] = []
         sequences[chain].extend(residues)
@@ -1511,29 +1519,30 @@ def get_sequences(file):
     return sequences
 
 
-def unpack_pdb_line(line, ATOF=_atof, ATOI=_atoi, STRIP=string.strip):
+def unpack_pdb_line(line, ATOF=_atof, ATOI=_atoi, STRIP=None):
     return (ATOI(line[6:11]),
-           STRIP(line[12:16]),
-           line[16],
-           STRIP(line[17:21]),
-           line[21],
-           STRIP(line[22:26]),
-           line[26],                     # Insertion of residues (?)
-           ATOF(line[30:38]),
-           ATOF(line[38:46]),
-           ATOF(line[46:54]),
-           ATOF(line[54:60]),
-           ATOF(line[60:66]))
+            line[12:16].strip(),
+            line[16],
+            line[17:21].strip(),
+            line[21],
+            line[22:26].strip(),
+            line[26],  # Insertion of residues (?)
+            ATOF(line[30:38]),
+            ATOF(line[38:46]),
+            ATOF(line[46:54]),
+            ATOF(line[54:60]),
+            ATOF(line[60:66]))
 
 
 def atom_build(t, atom=Atom3d):
-    atm = atom(t[UP_X], t[UP_Y], t[UP_Z]);
-    atm.occ = t[UP_OCCUPANCY];
-    atm.bf = t[UP_TEMPFACTOR];
-    atm.name = t[UP_NAME];
-    atm.idx = t[UP_SERIAL];
-    atm.alt = t[UP_ALTLOC];
+    atm = atom(t[UP_X], t[UP_Y], t[UP_Z])
+    atm.occ = t[UP_OCCUPANCY]
+    atm.bf = t[UP_TEMPFACTOR]
+    atm.name = t[UP_NAME]
+    atm.idx = t[UP_SERIAL]
+    atm.alt = t[UP_ALTLOC]
     return atm
+
 
 def _type_mol(mol):
     if not len(mol):
@@ -1560,13 +1569,15 @@ def _type_mol(mol):
         del chain
     return mol
 
+
 def is_protein(chain):
     for res in chain.elements:
         if res.name in RESIDUES:
             return 1
-        #elif hasattr(res, 'het') and not hasattr(res, 'chain_het'):
+        # elif hasattr(res, 'het') and not hasattr(res, 'chain_het'):
         #    return 0
     return 0
+
 
 ###########################
 # End of protein objects and  functions
@@ -1651,9 +1662,9 @@ def read_pdb(f, as_protein=0, as_rna=0, as_dna=0, all_models=0,
         try:
             if len(line) > 10 and line[:6] == 'REMARK' and line[9] == '2':
                 line = line[10:70].upper()
-                rpos = string.find(line, 'RESOLUTION.')
+                rpos = line.find('RESOLUTION.')
                 if rpos >= 0:
-                    new_mol.resolution = float(line[rpos+11:].split()[0])
+                    new_mol.resolution = float(line[rpos + 11:].split()[0])
         except:
             pass
 
@@ -1672,30 +1683,30 @@ def read_pdb(f, as_protein=0, as_rna=0, as_dna=0, all_models=0,
             if len(line) > 10 and line[:6] == 'REMARK' and line[9] == '3':
                 line = line[10:70].upper()
 
-                if string.find(line, ':') >= 0:
-                    get_val = lambda x: string.split(x, ':')[1].strip()
+                if line.find(':') >= 0:
+                    get_val = lambda x: x.split(':')[1].strip()
                 else:
-                    get_val = lambda x: string.split(x)[0]
+                    get_val = lambda x: x.split()[0]
 
-                ppos = string.find(line,  '  PROGRAM  ')
-                rfpos = string.find(line, '  FREE R VALUE  ')
-                rvpos = string.find(line, '  R VALUE  ')
+                ppos = line.find('  PROGRAM  ')
+                rfpos = line.find('  FREE R VALUE  ')
+                rvpos = line.find('  R VALUE  ')
 
                 if ppos >= 0:
-                    new_mol.rprog = get_val(line[ppos+11:])
+                    new_mol.rprog = get_val(line[ppos + 11:])
                 if rfpos >= 0:
-                    new_mol.rfree = float(get_val(line[rfpos+16:]))
+                    new_mol.rfree = float(get_val(line[rfpos + 16:]))
                 if rvpos >= 0:
-                    new_mol.rvalu = float(get_val(line[rvpos+11:]))
+                    new_mol.rvalu = float(get_val(line[rvpos + 11:]))
         except:
             pass
 
         if line[:6] == 'COMPND':
-            if string.find(line, 'MOL_ID') != -1: continue
-            new_mol.name = new_mol.name + string.strip(line[10:72]) + ' '
+            if line.find('MOL_ID') != -1: continue
+            new_mol.name = new_mol.name + line[10:72].strip() + ' '
         if line[:4] == 'ATOM' or line[:4] == 'HETA' or line[:5] == 'MODEL':
             break
-    new_mol.name = string.strip(new_mol.name)
+    new_mol.name = new_mol.name.strip()
     data = inp.readlines()
     if line[:4] in ('ATOM', 'HETA', 'MODE'):
         data.insert(0, line)
@@ -1723,7 +1734,7 @@ def read_pdb(f, as_protein=0, as_rna=0, as_dna=0, all_models=0,
                 old_res = t[UP_RESSEQ]
                 old_icode = t[UP_ICODE]
                 new_res = Residue(t[UP_RESNAME], idx=old_res, icode=old_icode)
-                #if key == 'HETA' and not t[UP_RESNAME] in \
+                # if key == 'HETA' and not t[UP_RESNAME] in \
                 #       sequences.get(t[UP_CHAINID], (' ',)):
                 #    new_res.het = 1
 
@@ -1744,7 +1755,7 @@ def read_pdb(f, as_protein=0, as_rna=0, as_dna=0, all_models=0,
 
             if t[UP_NAME] in AtomsPresent[(old_res, old_icode)]:
                 AtomsPresent[(old_res, old_icode)][t[UP_NAME]] = \
-                     AtomsPresent[(old_res, old_icode)][t[UP_NAME]] + 1
+                    AtomsPresent[(old_res, old_icode)][t[UP_NAME]] + 1
             else:
                 AtomsPresent[(old_res, old_icode)][t[UP_NAME]] = 1
 
@@ -1753,12 +1764,12 @@ def read_pdb(f, as_protein=0, as_rna=0, as_dna=0, all_models=0,
         elif key == 'MODE':
             if len(new_mol) > 0 and not all_models:
                 break
-            #new_chain = Chain(string.split(line)[1])
-            #AppendResidue = new_chain.elements.append
-            #new_mol.append(new_chain)
-            #old_chain = ' '
+            # new_chain = Chain(string.split(line)[1])
+            # AppendResidue = new_chain.elements.append
+            # new_mol.append(new_chain)
+            # old_chain = ' '
 
-            modnum = int(string.split(line)[1])
+            modnum = int(line.split()[1])
             old_chain = None
             old_res = None
             old_icode = None
@@ -1767,16 +1778,14 @@ def read_pdb(f, as_protein=0, as_rna=0, as_dna=0, all_models=0,
     if close:
         inp.close()
 
-
-
     if as_protein or as_dna or as_rna:
         return new_mol
     else:
         return _type_mol(new_mol)
 
-def _read_chain(f, as_protein=0, as_rna=0, as_dna=0, unpack=unpack_pdb_line,
-                atom_build = atom_build):
 
+def _read_chain(f, as_protein=0, as_rna=0, as_dna=0, unpack=unpack_pdb_line,
+                atom_build=atom_build):
     if as_protein:
         Chain = Protein
         Residue = AminoAcid
@@ -1800,7 +1809,7 @@ def _read_chain(f, as_protein=0, as_rna=0, as_dna=0, unpack=unpack_pdb_line,
         if key == 'ATOM' or key == 'HETA':
             break
         elif key == 'MODE':
-            new_chain.name = string.split(line)[1]
+            new_chain.name = line.split()[1]
             line = None
 
     if line:
@@ -1838,6 +1847,7 @@ def _read_chain(f, as_protein=0, as_rna=0, as_dna=0, unpack=unpack_pdb_line,
     else:
         return _type_mol([new_chain])[0]
 
+
 ##########################
 
 
@@ -1852,7 +1862,6 @@ class Protein(molChain):
             if tmp != 3:
                 del res[i]
 
-
     def gaps(self):
         """gaps() - identify gaps in the chain
 
@@ -1864,31 +1873,31 @@ class Protein(molChain):
     """
         residues = self.elements
         dlist = []
-        for i in range(len(self)-1):
+        for i in range(len(self) - 1):
             ca1 = residues[i].atoms_with_name('CA')
             if residues[i].name == 'ACE':
                 ca1 = residues[i].atoms_with_name('CH3')
 
-            ca2 = residues[i+1].atoms_with_name('CA')
-            if residues[i+1].name == 'NME':
-                ca2 = residues[i+1].atoms_with_name('CH3')
+            ca2 = residues[i + 1].atoms_with_name('CA')
+            if residues[i + 1].name == 'NME':
+                ca2 = residues[i + 1].atoms_with_name('CH3')
 
             if not ca1 or not ca2:
-                if hasattr(residues[i+1], 'het'): continue
+                if hasattr(residues[i + 1], 'het'): continue
                 self[i].gap = 1
             else:
                 d = ca1[0].sqr_distance(ca2[0])
                 if d > 18.0:
                     residues[i].gap = 1
                 elif d <= 0.1:
-                    dlist.append(i+1)
+                    dlist.append(i + 1)
         dlist.reverse()
         for i in dlist:
             del residues[i]
 
     def phi(self, i):
         res = self.elements[i]
-        if i==0 or hasattr(self.elements[i-1], 'gap'):
+        if i == 0 or hasattr(self.elements[i - 1], 'gap'):
             return 999.99
 
         try:
@@ -1897,10 +1906,10 @@ class Protein(molChain):
             return 999.99
 
         try:
-            if self[i-1].name == 'ACE':
-                prev = self[i-1].atoms_with_name('CH3')[0]
+            if self[i - 1].name == 'ACE':
+                prev = self[i - 1].atoms_with_name('CH3')[0]
             else:
-                prev = self[i-1].atoms_with_name('C')[0]
+                prev = self[i - 1].atoms_with_name('C')[0]
         except IndexError:
             return 999.99
         else:
@@ -1908,7 +1917,7 @@ class Protein(molChain):
 
     def psi(self, i):
         res = self.elements[i]
-        if i >= len(self)-1 or hasattr(res, 'gap'):
+        if i >= len(self) - 1 or hasattr(res, 'gap'):
             return 999.99
 
         try:
@@ -1917,7 +1926,7 @@ class Protein(molChain):
             return 999.99
 
         try:
-            next = self[i+1].atoms_with_name('N')[0]
+            next = self[i + 1].atoms_with_name('N')[0]
         except IndexError:
             return 999.99
         else:
@@ -1934,27 +1943,27 @@ class Protein(molChain):
     """
         res = self.elements[i]
 
-#        if i >= len(self)-1 or hasattr(res, 'gap'):
-#            return 999.99
+        #        if i >= len(self)-1 or hasattr(res, 'gap'):
+        #            return 999.99
 
-#        try:
-#            a, b = res.atoms_with_name('CA', 'C')
-#        except:
-#            return 999.99
+        #        try:
+        #            a, b = res.atoms_with_name('CA', 'C')
+        #        except:
+        #            return 999.99
 
-#        try:
-#            c, d = self[i+1].atoms_with_name('N', 'CA')
-#        except:
-#            return 999.99
+        #        try:
+        #            c, d = self[i+1].atoms_with_name('N', 'CA')
+        #        except:
+        #            return 999.99
 
         if not i or hasattr(res, 'gap'):
             return 999.99
 
         try:
-            if self[i-1].name == 'ACE':
-                a, b = self[i-1].atoms_with_name('CH3', 'C')
+            if self[i - 1].name == 'ACE':
+                a, b = self[i - 1].atoms_with_name('CH3', 'C')
             else:
-                a, b = self[i-1].atoms_with_name('CA', 'C')
+                a, b = self[i - 1].atoms_with_name('CA', 'C')
         except:
             return 999.99
 
@@ -2025,7 +2034,6 @@ class Protein(molChain):
         residues = []
         Append = residues.append
         res_class = res.__class__
-        Strip = string.strip
 
         for i in ids:
             res = self[i]
@@ -2041,18 +2049,17 @@ class Protein(molChain):
 
     def torsions(self, i=None, map=map):
         if not i is None:
-            return self.phi(i), self.psi(i), self.omega(i), self.chi1(i),\
+            return self.phi(i), self.psi(i), self.omega(i), self.chi1(i), \
                    self.chi2(i), self.chi3(i), self.chi4(i)
         else:
             n = list(range(len(self)))
-            return list(map(self.phi, n)),\
-                   list(map(self.psi, n)),\
-                   list(map(self.omega, n)),\
-                   list(map(self.chi1, n)),\
-                   list(map(self.chi2, n)),\
-                   list(map(self.chi3, n)),\
+            return list(map(self.phi, n)), \
+                   list(map(self.psi, n)), \
+                   list(map(self.omega, n)), \
+                   list(map(self.chi1, n)), \
+                   list(map(self.chi2, n)), \
+                   list(map(self.chi3, n)), \
                    list(map(self.chi4, n))
-
 
     def pross(self, phi=None, psi=None, ome=None, mcodes=None):
         return rc_ss(self, phi, psi, ome, mcodes)
@@ -2065,10 +2072,10 @@ class Protein(molChain):
 
     def sequence(self, one=0):
         n = self.num_residues()
-        seq = list(map(getattr, self.elements, ('name',)*n))
+        seq = list(map(getattr, self.elements, ('name',) * n))
         if one:
             get_one = ONE_LETTER_CODES.get
-            seq = list(map(get_one, seq, 'X'*n))
+            seq = list(map(get_one, seq, 'X' * n))
         return seq
 
 
@@ -2125,14 +2132,10 @@ class AminoAcid(molResidue):
     def assign_radii(self):
         d_get = SASARAD[self.name].get
         for atom in self.elements:
-            atom.radius = d_get(atom.name,0.0)
-
-
-
+            atom.radius = d_get(atom.name, 0.0)
 
 
 ##########################
-
 
 
 class PDBFile:
@@ -2154,14 +2157,13 @@ class PDBFile:
         return _read_chain(self.file, as_protein, as_rna, as_dna)
 
 
-
-def run(file,mcode):
+def run(file, mcode):
     mol = read_pdb(file)
     mol.delete_hetero()
     fmt = "%5s %3s  %s %s %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f\n"
 
-# Default is to screen, change here if file output wanted
-#   angfile = open('angles.dat', 'w')
+    # Default is to screen, change here if file output wanted
+    #   angfile = open('angles.dat', 'w')
     angfile = sys.stdout
 
     for chain in mol:
@@ -2173,10 +2175,11 @@ def run(file,mcode):
         phi, psi, ome, ss = chain.pross(phi, psi, ome)
         pos = 0
         for res in chain.elements:
-            ms = res_rc(phi[pos], psi[pos],mcodes=mcode)
-            angfile.write( fmt % (res.idx, res.name, ss[pos], ms, phi[pos], psi[pos], ome[pos],
-                         chi1[pos], chi2[pos], chi3[pos], chi4[pos]))
+            ms = res_rc(phi[pos], psi[pos], mcodes=mcode)
+            angfile.write(fmt % (res.idx, res.name, ss[pos], ms, phi[pos], psi[pos], ome[pos],
+                                 chi1[pos], chi2[pos], chi3[pos], chi4[pos]))
             pos = pos + 1
+
 
 #   angfile.close()
 
