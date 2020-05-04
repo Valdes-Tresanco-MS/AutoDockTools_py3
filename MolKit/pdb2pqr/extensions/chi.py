@@ -1,3 +1,18 @@
+# ##################################################################################################
+#  Disclaimer                                                                                      #
+#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
+#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
+#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
+#  There is no guarantee that it works like the original distribution,                             #
+#  but feel free to tell us if you get any difference to correct the code.                         #
+#                                                                                                  #
+#  Please use this cite the original reference.                                                    #
+#  If you think my work helps you, just keep this note intact on your program.                     #
+#                                                                                                  #
+#  Modification date: 4/5/20 3:24                                                                  #
+#                                                                                                  #
+# ##################################################################################################
+
 """
     Chi extension
 
@@ -11,28 +26,14 @@
 __date__ = "17 February 2006"
 __author__ = "Todd Dolinsky"
 
-# ##################################################################################################
-#  Disclaimer                                                                                      #
-#  This file is a python3 translation of AutoDockTools (v.1.5.7)                                   #
-#  Modifications made by Valdes-Tresanco MS (https://github.com/Valdes-Tresanco-MS)                #
-#  Tested by Valdes-Tresanco-MS and Valdes-Tresanco ME                                             #
-#  There is no guarantee that it works like the original distribution,                             #
-#  but feel free to tell us if you get any difference to correct the code.                         #
-#                                                                                                  #
-#  Please use this cite the original reference.                                                    #
-#  If you think my work helps you, just keep this note intact on your program.                     #
-#                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
-#                                                                                                  #
-# ##################################################################################################
+from ..src.routines import *
 
-from src.utilities import *
-from src.routines import *
 
 def usage():
-    str  = "        --chi         :  Print the per-residue backbone chi\n"
+    str = "        --chi         :  Print the per-residue backbone chi\n"
     str += "                         angle to {output-path}.chi\n"
     return str
+
 
 def chi(routines, outroot):
     """
@@ -49,29 +50,39 @@ def chi(routines, outroot):
     routines.write("\nPrinting chi angles for each residue...\n")
     routines.write("Residue     chi\n")
     routines.write("----------------\n")
-    
+
     # Initialize some variables
 
     protein = routines.protein
 
     for residue in protein.getResidues():
-        if residue.hasAtom("N"): ncoords = residue.getAtom("N").getCoords()
-        else: continue
+        if residue.hasAtom("N"):
+            ncoords = residue.getAtom("N").getCoords()
+        else:
+            continue
 
-        if residue.hasAtom("CA"): cacoords = residue.getAtom("CA").getCoords()
-        else: continue
+        if residue.hasAtom("CA"):
+            cacoords = residue.getAtom("CA").getCoords()
+        else:
+            continue
 
-        if residue.hasAtom("CB"): cbcoords = residue.getAtom("CB").getCoords()
-        else: continue
+        if residue.hasAtom("CB"):
+            cbcoords = residue.getAtom("CB").getCoords()
+        else:
+            continue
 
-        if residue.hasAtom("CG"): gcoords = residue.getAtom("CG").getCoords()
-        elif residue.hasAtom("OG"): gcoords = residue.getAtom("OG").getCoords()
-        elif residue.hasAtom("SG"): gcoords = residue.getAtom("SG").getCoords()
-        else: continue
+        if residue.hasAtom("CG"):
+            gcoords = residue.getAtom("CG").getCoords()
+        elif residue.hasAtom("OG"):
+            gcoords = residue.getAtom("OG").getCoords()
+        elif residue.hasAtom("SG"):
+            gcoords = residue.getAtom("SG").getCoords()
+        else:
+            continue
 
         chi = getDihedral(ncoords, cacoords, cbcoords, gcoords)
         routines.write("%s\t%.4f\n" % (residue, chi))
         file.write("%s\t%.4f\n" % (residue, chi))
-        
+
     routines.write("\n")
     file.close()
