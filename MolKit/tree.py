@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 3/5/20 22:23                                                                 #
+#  Modification date: 4/5/20 1:31                                                                  #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -771,8 +771,7 @@ By default, no message is returned.
                     return result
 
                 else:
-                    raise RuntimeError ("could not find level of type %s"%what)
-
+                    raise RuntimeError("could not find level of type %s" % what)
 
     def findChildrenOfType(self, what):
         """for a set of nodes, go down the tree until we find Nodes of the
@@ -986,7 +985,6 @@ class TreeNode:
         # should be handled at deletion time
         self.childByName = {}  # {'name': childnode}
 
-
     def deleteSubTree(self):
         """ Function to actually delete all the reference to a TreeNode to
         Free the memory !!!!"""
@@ -1075,8 +1073,8 @@ class TreeNode:
 
         assert child in self.children
         self.children.remove(child)
-            # also correct self.childrenName if it exists:
-        if self.childrenName!=None:
+        # also correct self.childrenName if it exists:
+        if self.childrenName != None:
             setattr(self, self.childrenName, self.children)
             #            exec('self.'+self.childrenName+'=self.children')
             # commented in next three lines 5/9
