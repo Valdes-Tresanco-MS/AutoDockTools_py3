@@ -22,20 +22,22 @@ __author__ = "Todd Dolinsky"
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
+#  Modification date: 4/5/20 3:26                                                                  #
 #                                                                                                  #
 # ##################################################################################################
 
-from src.utilities import *
-from src.routines import *
+from ..src.routines import *
+from ..src.utilities import *
 
-ANGLE_CUTOFF = 20.0       # A - D - H(D) angle
-DIST_CUTOFF = 3.3         # H(D) to A distance
+ANGLE_CUTOFF = 20.0  # A - D - H(D) angle
+DIST_CUTOFF = 3.3  # H(D) to A distance
+
 
 def usage():
-    str  = "        --hbond       :  Print a list of hydrogen bonds to\n"
-    str += "                         {output-path}.hbond\n"
-    return str
+    text = "        --hbond       :  Print a list of hydrogen bonds to\n"
+    text += "                         {output-path}.hbond\n"
+    return text
+
 
 def hbond(routines, outroot):
     """
@@ -52,8 +54,8 @@ def hbond(routines, outroot):
 
     # Initialize - set nearby cells, donors/acceptors
     # The cell size adds one for the D-H(D) bond, and rounds up
-    
-    cellsize = int(DIST_CUTOFF + 1.0 + 1.0) 
+
+    cellsize = int(DIST_CUTOFF + 1.0 + 1.0)
     protein = routines.protein
     routines.setDonorsAndAcceptors()
     routines.cells = Cells(cellsize)
@@ -62,31 +64,37 @@ def hbond(routines, outroot):
     for donor in protein.getAtoms():
 
         # Grab the list of donors
-        if not donor.hdonor: continue
+        if not donor.hdonor:
+            continue
         donorhs = []
         for bond in donor.bonds:
-            if bond.isHydrogen(): donorhs.append(bond)
-        if donorhs == []: continue
+            if bond.isHydrogen():
+                donorhs.append(bond)
+        if not donorhs:
+            continue
 
-      
         # For each donor, grab all acceptors
-            
+
         closeatoms = routines.cells.getNearCells(donor)
         for acc in closeatoms:
-            if not acc.hacceptor: continue
-            if donor.residue == acc.residue: continue
+            if not acc.hacceptor:
+                continue
+            if donor.residue == acc.residue:
+                continue
             for donorh in donorhs:
 
                 # Do distance and angle checks
-                
+
                 dist = distance(donorh.getCoords(), acc.getCoords())
-                if dist > DIST_CUTOFF: continue
+                if dist > DIST_CUTOFF:
+                    continue
                 angle = getAngle(acc.getCoords(), donor.getCoords(), donorh.getCoords())
-                if angle > ANGLE_CUTOFF: continue
-                routines.write("Donor: %s %s\tAcceptor: %s %s\tHdist: %.2f\tAngle: %.2f\n" % \
-                      (donor.residue, donor.name, acc.residue, acc.name, dist, angle)) 
-                file.write("Donor: %s %s\tAcceptor: %s %s\tHdist: %.2f\tAngle: %.2f\n" % \
-                      (donor.residue, donor.name, acc.residue, acc.name, dist, angle))
+                if angle > ANGLE_CUTOFF:
+                    continue
+                routines.write("Donor: %s %s\tAcceptor: %s %s\tHdist: %.2f\tAngle: %.2f\n" %
+                               (donor.residue, donor.name, acc.residue, acc.name, dist, angle))
+                file.write("Donor: %s %s\tAcceptor: %s %s\tHdist: %.2f\tAngle: %.2f\n" %
+                           (donor.residue, donor.name, acc.residue, acc.name, dist, angle))
 
     routines.write("\n")
     file.close()
