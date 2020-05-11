@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
+#  Modification date: 10/5/20 21:49                                                                #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -21,12 +21,7 @@
 # Copyright: M. Sanner TSRI 2000
 #
 #############################################################################
-#
-# $Header: /opt/cvs/python/packages/share1.5/PyBabel/__init__.py,v 1.10 2006/03/15 00:45:52 annao Exp $
-#
-# $Id: __init__.py,v 1.10 2006/03/15 00:45:52 annao Exp $
-#
-#
+
 
 """
 
