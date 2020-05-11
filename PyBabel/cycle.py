@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
+#  Modification date: 10/5/20 22:08                                                                #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -21,9 +21,6 @@
 # Copyright: M. Sanner TSRI 2000
 #
 #############################################################################
-#
-# $Id: cycle.py,v 1.8 2003/09/04 23:53:56 lindy Exp $
-#
 
 """
 This file implements the RingFinder class that can be used to identify
@@ -64,15 +61,13 @@ Michel Sanner April 2000
 """
 
 
-
-
 class RingFinder:
     """ """
+
     def __init__(self):
         """ """
         self.num = 0
         self.rings = []
-
 
     def tagOneAtomBond(self, atom, inbond):
         # tag all bond that cannot be in a ring by adding them as keys to
@@ -81,14 +76,14 @@ class RingFinder:
         # since findRings2 will oly consider atoms for which at least one
         # bond is not yet in a cycle, pretending that the only bond to an
         # atom is already in a cycle will pevent it from being considered
-        if len(atom.bonds)==1:
+        if len(atom.bonds) == 1:
             bond = atom.bonds[0]
             self.bondInCycle[bond] = 2
-            #print 'REMOVE ',atom.name,bond.atom1.name,'-',bond.atom2.name
-            if bond!=inbond:
+            # print 'REMOVE ',atom.name,bond.atom1.name,'-',bond.atom2.name
+            if bond != inbond:
                 atom2 = bond.atom1
-                if atom2==atom:
-                    atom2=bond.atom2
+                if atom2 == atom:
+                    atom2 = bond.atom2
                 self.tagOneAtomBond(atom2, bond)
         else:
             num = 0
@@ -97,66 +92,66 @@ class RingFinder:
                     num = num + 1
                     bond = b
             if num == 1:
-                #print 'REMOVE ',atom.name,bond.atom1.name,'-',bond.atom2.name
+                # print 'REMOVE ',atom.name,bond.atom1.name,'-',bond.atom2.name
                 self.bondInCycle[bond] = 2
                 atom2 = bond.atom1
-                if atom2==atom:
-                    atom2=bond.atom2
+                if atom2 == atom:
+                    atom2 = bond.atom2
                 self.tagOneAtomBond(atom2, bond)
 
-                
     def findRings2(self, atoms, bonds, maxSize=20):
         # EXPANSIVE but robust
         # for each atom for which at least one bond is not yet in a cycle
         # find the smallest cycle. Then check if the cycle is already known
         # if maxSize is specified, only ring of size maxSize will be found
-        
-        self.bondInCycle = {} # key is bond, is created when bond has been
-                              # traversed (persistant across search over atoms
-        self._rings = []      # dict. with atoms as keys per cycle
-        self.allRingAtoms = {} # dict with keys being all atoms in cycles
-        self.allRingBonds = {} # dict with keys being all bonds in cycles
-        self.ringCount = 0     # number of cycles
-        maxLevel = maxSize/2 + 1
+
+        self.bondInCycle = {}  # key is bond, is created when bond has been
+        # traversed (persistant across search over atoms
+        self._rings = []  # dict. with atoms as keys per cycle
+        self.allRingAtoms = {}  # dict with keys being all atoms in cycles
+        self.allRingBonds = {}  # dict with keys being all bonds in cycles
+        self.ringCount = 0  # number of cycles
+        maxLevel = maxSize / 2 + 1
 
         # tag all bonds that cannot be in cycles, i.e. they connect an atom
         # having only 1 neighbor (recursively)
-        #for a in atoms:
+        # for a in atoms:
         #    self.tagOneAtomBond(a, None)
-            
+
         # loop over all atoms
         for a in atoms:
             # being in a cycle requires at least 2 neighbors
-            if len(a.bonds)==1:
+            if len(a.bonds) == 1:
                 continue
             # count number of bond already in cycles or connecting
             # to an leaf atom (i.e. atom with only 1 neighbor)
             num = 0
             for b in a.bonds:
                 atom2 = b.atom1
-                if atom2==a: atom2=b.atom2
-                if len(atom2.bonds)==1 or b in self.bondInCycle:
+                if atom2 == a:
+                    atom2 = b.atom2
+                if len(atom2.bonds) == 1 or b in self.bondInCycle:
                     num = num + 1
 
             # if at least on bond not in a cycle find smallest cycle for a
             if num < len(a.bonds):
-                #print 'Find smallest Ring for', a.name, num, len(a.bonds)
+                # print 'Find smallest Ring for', a.name, num, len(a.bonds)
                 # ra is a list of atoms in cycle
                 # rb is a list of bonds in cycle
-                #print 'Find smallest cycle for', a.name
+                # print 'Find smallest cycle for', a.name
                 ra, rb = self.findSmallestRing(a, maxLevel)
-                #print 'Found cycle:', ra
+                # print 'Found cycle:', ra
                 # check is that cycle has been found before
                 if len(ra):
                     same = 0
                     for r in self._rings:
-                        if len(ra)==len(r):
+                        if len(ra) == len(r):
                             same = 1
                             for a in ra:
                                 if a not in r:
                                     same = 0
                                     break
-                            if same==1:
+                            if same == 1:
                                 break
 
                     # if it hasn't be found before, add it
@@ -170,14 +165,14 @@ class RingFinder:
                         # starting a last of cycles woth even number of atoms
                         # and one before last of rinfs with odd number of at.
                         l = len(ra)
-                        if (l/2*2) != l:
-                            end = l-1 # odd -> skip last
+                        if (l / 2 * 2) != l:
+                            end = l - 1  # odd -> skip last
                         else:
-                            end = l-2 # end, use last
+                            end = l - 2  # end, use last
                         for i in range(end, 1, -2):
                             ras.append(ra[i])
                         ra = ras
-                        
+
                         # build the dict of atoms for that cycle
                         d = {}
                         ringnum = len(self._rings)
@@ -190,7 +185,7 @@ class RingFinder:
                         # add it to _rings
                         self._rings.append(d)
                         # add the cycle to self.rings
-                        self.rings.append( {'atoms':ra, 'bonds':rb } )
+                        self.rings.append({'atoms': ra, 'bonds': rb})
                         # update dict of all atoms in cycles
                         self.allRingAtoms.update(d)
                         # update dict of all bonds in cycles
@@ -199,15 +194,14 @@ class RingFinder:
                         # increment cycl counter
                         self.ringCount = self.ringCount + 1
 
-##                          print 'RING ======================'
-##                          for a in ra:
-##                              print a.name
-##                          for b in rb:
-##                              print b.atom1.name,'-',b.atom2.name
-##                          print 'END RING ======================'
+        ##                          print 'RING ======================'
+        ##                          for a in ra:
+        ##                              print a.name
+        ##                          for b in rb:
+        ##                              print b.atom1.name,'-',b.atom2.name
+        ##                          print 'END RING ======================'
         self.allRingAtoms = list(self.allRingAtoms.keys())
         self.allRingBonds = list(self.allRingBonds.keys())
-
 
     def findSmallestRing(self, root, maxLevel):
         # each new generation adds a level in the width first traversal
@@ -236,15 +230,15 @@ class RingFinder:
         for b in root.bonds:
             bondseen[bond] = 1
             atom2 = b.atom1
-            if atom2==root:
+            if atom2 == root:
                 atom2 = b.atom2
-            if len(atom2.bonds)>1:
-                #print 'adding to stack 0', atom2.name
+            if len(atom2.bonds) > 1:
+                # print 'adding to stack 0', atom2.name
                 levelDict[atom2] = b
                 levelstack.append(atom2)
                 atinstack[atom2] = 1
 
-        maxLen = len(levelstack) # number of bonds with level 0
+        maxLen = len(levelstack)  # number of bonds with level 0
         stackPtr = 0
 
         # width first traversal, i.e. loop over stack adding levels
@@ -254,38 +248,38 @@ class RingFinder:
             stacks.append(levelstack)
             levelDict = {}
             bndDicts.append(levelDict)
-            #print "Looping over LEVEL: ", level
+            # print "Looping over LEVEL: ", level
             # loop over atoms at this level
             for levelroot in stacks[level]:
-##                  if len(levelroot.bonds)==1:
-##                      continue
+                ##                  if len(levelroot.bonds)==1:
+                ##                      continue
                 # find bond through with we came to levelroot atom
                 bond = bndDicts[level][levelroot]
                 # if already seen get next level root
 
-##                  if bondseen.has_key(bond):
-##                      continue
+                ##                  if bondseen.has_key(bond):
+                ##                      continue
 
-##                  if len(bond.atom1.bonds)==1 or len(bond.atom2.bonds)==1:
-##                      continue # this bond cannot be in a cycle
-##                  if self.bondInCycle.has_key(bond) and \
-##                     self.bondInCycle[bond]==2:
-##                      continue
+                ##                  if len(bond.atom1.bonds)==1 or len(bond.atom2.bonds)==1:
+                ##                      continue # this bond cannot be in a cycle
+                ##                  if self.bondInCycle.has_key(bond) and \
+                ##                     self.bondInCycle[bond]==2:
+                ##                      continue
                 # else make this bond as seen
                 bondseen[bond] = 1
-                #print 'level ROOT', levelroot.name, bond, atinstack.has_key(levelroot)
+                # print 'level ROOT', levelroot.name, bond, atinstack.has_key(levelroot)
                 # add children of levelroot to the current level
                 for b in levelroot.bonds:
                     # except for the parent of levelroot
                     if b is bond:
                         continue
                     atom2 = b.atom1
-                    if atom2==levelroot:
+                    if atom2 == levelroot:
                         atom2 = b.atom2
-                    if len(atom2.bonds)==1:
+                    if len(atom2.bonds) == 1:
                         continue
-                    
-                    #print levelroot.name, atom2.name
+
+                    # print levelroot.name, atom2.name
                     # if the child of levelroot is instack we found a cycle
                     # so we start back tracking from both sides through the
                     # levels until we reach a common atom. If that atom is
@@ -299,22 +293,23 @@ class RingFinder:
                     # bndDicts[level]
 
                     if atom2 in atinstack:
-                        #print 'CYCLE', atom2.name
+                        # print 'CYCLE', atom2.name
                         # even number of atoms
-                        #print 'instack'
-                        #for a in atinstack:
+                        # print 'instack'
+                        # for a in atinstack:
                         #    print a.name
                         if atom2 in levelDict:
-                            #print 'EVEN ******************'
+                            # print 'EVEN ******************'
                             # cycle with even number of atoms
                             # b1 is the bond from which we arrived at atom2
                             # previousely at this level
                             b1 = levelDict[atom2]
                             at1 = levelroot
                             at2 = b1.atom1
-                            if at2==atom2: at2 = b1.atom2
+                            if at2 == atom2:
+                                at2 = b1.atom2
 
-                            #print 'ringAtoms1', atom2.name, at1.name, at2.name
+                            # print 'ringAtoms1', atom2.name, at1.name, at2.name
                             ringAtoms = [atom2, at1, at2]
                             ringBonds = [b, b1]
                             # backtrack through level
@@ -322,10 +317,10 @@ class RingFinder:
                             # odd number of atoms in cycle
                             # b1 is the bond from which we arrived at atom2
                             # previousely at this level
-                            #print 'ODD ******************'
+                            # print 'ODD ******************'
                             at1 = levelroot
                             at2 = atom2
-                            #print 'ringAtoms2', at1.name, at2.name
+                            # print 'ringAtoms2', at1.name, at2.name
 
                             ringAtoms = [at1, at2]
                             ringBonds = [b]
@@ -333,79 +328,78 @@ class RingFinder:
                             continue
 
                         # backtrack
-                        for i in range(level,-1,-1):
-                            #print 'level:', i
+                        for i in range(level, -1, -1):
+                            # print 'level:', i
                             b1 = bndDicts[i][at1]
                             other1 = b1.atom1
-                            if other1==at1: other1 = b1.atom2
-                            #print other1.name
+                            if other1 == at1:
+                                other1 = b1.atom2
+                            # print other1.name
                             b2 = bndDicts[i][at2]
                             other2 = b2.atom1
-                            if other2==at2: other2 = b2.atom2
-                            #print other2.name
+                            if other2 == at2:
+                                other2 = b2.atom2
+                            # print other2.name
                             at1 = other1
                             at2 = other2
                             ringBonds.append(b1)
                             ringBonds.append(b2)
                             ringAtoms.append(other1)
-                            if other1!=other2:
+                            if other1 != other2:
                                 ringAtoms.append(other2)
                             else:
                                 break
-                        if other1==root or other2==root:
+                        if other1 == root or other2 == root:
                             for b in ringBonds:
                                 self.bondInCycle[b] = 1
                             return (ringAtoms, ringBonds)
 
                     else:
-                        #print 'adding to stack', atom2.name, len(levelstack)
+                        # print 'adding to stack', atom2.name, len(levelstack)
                         levelstack.append(atom2)
                         levelDict[atom2] = b
                         atinstack[atom2] = 1
 
             level = level + 1
-            if level==maxLevel:
-                return [],[]
+            if level == maxLevel:
+                return [], []
             maxLen = maxLen + len(levelstack)
             stackPtr = stackPtr + 1
-        return [],[]
-    
+        return [], []
 
     def backtrack(self, atom1, atom2, b):
         """go up ancestor tree until first common parent is found"""
-        ringAtoms = [ atom2 ]
-        ringbonds = [ b ]
+        ringAtoms = [atom2]
+        ringbonds = [b]
         b._ring_seen = 1
-        while atom1!=atom2:
-            ringAtoms.append( atom1 )
-            ringbonds.append( atom1._ring_ancestor_bond )
+        while atom1 != atom2:
+            ringAtoms.append(atom1)
+            ringbonds.append(atom1._ring_ancestor_bond)
             atom1 = atom1._ring_ancestor
-        return { 'atoms':ringAtoms, 'bonds':ringbonds }
-
+        return {'atoms': ringAtoms, 'bonds': ringbonds}
 
     def tag_neighbors(self, atom1, bond):
         """ """
         atom2 = bond.atom1
-        if atom2==atom1: atom2 = bond.atom2
-        #print 'atom2', atom2.name, bond
-        if hasattr(atom2,'_ring_ancestor'):
-            self._rings.append( self.backtrack(atom1, atom2, bond) )
-            #print '\n********************* ring found'
-            #for a in self._rings[-1]['atoms']:
-                #print a.name
+        if atom2 == atom1: atom2 = bond.atom2
+        # print 'atom2', atom2.name, bond
+        if hasattr(atom2, '_ring_ancestor'):
+            self._rings.append(self.backtrack(atom1, atom2, bond))
+            # print '\n********************* ring found'
+            # for a in self._rings[-1]['atoms']:
+            # print a.name
             return
 
         atom2._ring_ancestor = atom1
         atom2._ring_ancestor_bond = bond
         bond._ring_seen = 1
         for b in atom2.bonds:
-            #FIXME: we are supposed to skip di-sulfite bridges here
+            # FIXME: we are supposed to skip di-sulfite bridges here
             if hasattr(b, '_ring_seen') and b._ring_seen:
                 continue
-            self.tag_neighbors( atom2, b )
-        #print 'step back from', atom2.name, bond
-        
-                
+            self.tag_neighbors(atom2, b)
+        # print 'step back from', atom2.name, bond
+
     def findRings(self, atoms, bonds):
         """method to find cycles in molecules, first we simply tag all atoms
         and bonds in rings using a depth first traversal then we call
@@ -416,30 +410,31 @@ class RingFinder:
         i = 0
         for b in bonds:
             b._ring_seen = 0
-            
+
         self._rings = []
 
         # first try with leaf atoms (i.e only 1 neighbor)
         done = 0
         for a in atoms:
-            if len(a.bonds)==1:
+            if len(a.bonds) == 1:
                 a._ring_ancestor = None
                 a._ring_ancestor_bond = None
-                #print 'start at ',a, a.bonds[0]
+                # print 'start at ',a, a.bonds[0]
                 self.tag_neighbors(a, a.bonds[0])
                 done = 1
                 break
 
-        #print 'AAAA', done
-        
+        # print 'AAAA', done
+
         # for molecules with all atoms in cycles we did not find a leaf
         if not done:
             for a in atoms:
                 if not hasattr(a, '_ring_ancestor'):
                     l = len(a.bonds)
-                    if l==2:
+                    if l == 2:
                         atom_before = a.bonds[0].atom1
-                        if atom_before==a: atom_before=a.bonds[0].atom2
+                        if atom_before == a:
+                            atom_before = a.bonds[0].atom2
                         a._ring_ancestor = atom_before
                         a._ring_ancestor_bond = a.bonds[0]
                         self.tag_neighbors(a, a.bonds[1])
@@ -447,36 +442,15 @@ class RingFinder:
                         if a.bonds[0]._ring_seen:
                             continue
                         atom_before = a.bonds[1].atom1
-                        if atom_before==a: atom_before=a.bonds[1].atom2
+                        if atom_before == a:
+                            atom_before = a.bonds[1].atom2
                         a._ring_ancestor = atom_before
                         a._ring_ancestor_bond = a.bonds[0]
-                
-##          for a in atoms:
-##              if not hasattr(a, '_ring_ancestor'):
-##                  l = len(a.bonds)
-##                  if l==0 or l > 2: continue
-##                  if l==2:
-##                      atom_before = a.bonds[0].atom1
-##                      if atom_before==a: atom_before=a.bonds[0].atom2
-##                      a._ring_ancestor = atom_before
-##                      a._ring_ancestor_bond = a.bonds[0]
-##                      self.tag_neighbors(a, a.bonds[1])
-
-##                      if a.bonds[0]._ring_seen:
-##                          continue
-##                      atom_before = a.bonds[1].atom1
-##                      if atom_before==a: atom_before=a.bonds[1].atom2
-##                      a._ring_ancestor = atom_before
-##                      a._ring_ancestor_bond = a.bonds[0]
-##                  else:
-##                      a._ring_ancestor = None
-##                      a._ring_ancestor_bond = None
-##                      self.tag_neighbors(a, a.bonds[0])
 
         for a in atoms:
-            if hasattr(a,'_ring_ancestor'):
+            if hasattr(a, '_ring_ancestor'):
                 delattr(a, '_ring_ancestor')
-            if hasattr(a,'_ring_ancestor_bond'):
+            if hasattr(a, '_ring_ancestor_bond'):
                 delattr(a, '_ring_ancestor_bond')
         for b in bonds:
             delattr(b, '_ring_seen')
@@ -484,7 +458,6 @@ class RingFinder:
         self.checkRings()
         delattr(self, '_rings')
 
-        
     def smallestCycle(self, atom):
         """
         find smalest cycle containing starting at atom and traversing
@@ -495,19 +468,22 @@ class RingFinder:
         """
         if self._result:
             return self._result
-        
+
         for b in atom.bonds:
             if self._result:
                 return self._result
-            if not hasattr(b, '_ring'): continue
-            if b._seen: continue
+            if not hasattr(b, '_ring'):
+                continue
+            if b._seen:
+                continue
             atom2 = b.atom1
-            if atom2==atom: atom2 = b.atom2
+            if atom2 == atom:
+                atom2 = b.atom2
             if atom2._ancestor:
                 l1 = [atom2]
-                atom2.rings.append( self.ringCount )
+                atom2.rings.append(self.ringCount)
                 l2 = [atom]
-                atom.rings.append( self.ringCount )
+                atom.rings.append(self.ringCount)
                 b1 = [b]
                 b2 = []
                 a2 = atom2
@@ -518,7 +494,7 @@ class RingFinder:
                     a = a2._ancestor
                     if a != l2[-1]:
                         l1.append(a)
-                        a.rings.append( self.ringCount )
+                        a.rings.append(self.ringCount)
                         a2 = a
                     else:
                         break
@@ -527,28 +503,27 @@ class RingFinder:
                     a = a1._ancestor
                     if a != l1[-1]:
                         l2.append(a)
-                        a.rings.append( self.ringCount )
+                        a.rings.append(self.ringCount)
                         a1 = a
                     else:
                         break
-                    
+
                 l2.reverse()
                 b2.reverse()
-                self._result = (l2+l1, b2+b1)
+                self._result = (l2 + l1, b2 + b1)
                 return
             else:
                 atom2._ancestor = atom
                 atom2._ancestor_bond = b
                 self.stack.append(atom2)
                 b._seen = 1
-           
+
         if len(self.stack):
             a = self.stack[0]
             self.stack.remove(a)
             self.smallestCycle(a)
 
         return self._result
-
 
     def checkRings(self):
         """
@@ -569,59 +544,69 @@ class RingFinder:
             self.allRingAtoms = self.allRingAtoms + ring['atoms']
             self.allRingBonds = self.allRingBonds + ring['bonds']
 
-        for a in self.allRingAtoms: a.rings = []
-        for b in self.allRingBonds: b._ring = 1
+        for a in self.allRingAtoms:
+            a.rings = []
+        for b in self.allRingBonds:
+            b._ring = 1
 
         # breadth first walking over atoms and bonds in rings
         # tag atoms in shortest cycle
         for a in self.allRingAtoms:
-            if len(a.rings)>0: continue
+            if len(a.rings) > 0:
+                continue
 
             self.stack = []
-            for b in self.allRingBonds: b._seen = 0
-            for at in self.allRingAtoms: at._ancestor = None
+            for b in self.allRingBonds:
+                b._seen = 0
+            for at in self.allRingAtoms:
+                at._ancestor = None
             a._ancestor_bond = None
             self._result = None
 
             ratoms, rbonds = self.smallestCycle(a)
 
             if a in ratoms:
-                self.ringCount = self.ringCount+1
-                self.rings.append( {'atoms':ratoms, 'bonds':rbonds} )
+                self.ringCount = self.ringCount + 1
+                self.rings.append({'atoms': ratoms, 'bonds': rbonds})
             else:
                 for at in ratoms:
                     at.rings = at.rings[:-1]
 
         # clean up
         for a in self.allRingAtoms:
-            if hasattr(a, '_ancestor'): delattr(a, '_ancestor')
-            if hasattr(a, '_ancestor_bond'): delattr(a, '_ancestor_bond')
+            if hasattr(a, '_ancestor'):
+                delattr(a, '_ancestor')
+            if hasattr(a, '_ancestor_bond'):
+                delattr(a, '_ancestor_bond')
 
         for b in self.allRingBonds:
-            if hasattr(b, '_ring'): delattr(b, '_ring')
-            if hasattr(b, '_seen'): delattr(b, '_seen')
+            if hasattr(b, '_ring'):
+                delattr(b, '_ring')
+            if hasattr(b, '_seen'):
+                delattr(b, '_seen')
 
-        if hasattr(self, '_result'): delattr(self, '_result')
+        if hasattr(self, '_result'):
+            delattr(self, '_result')
 
-        
     def printRings(self):
         """ """
         if not hasattr(self, 'rings'):
             return
         i = 0
         for r in self.rings:
-            print('RING ',i)
+            print('RING ', i)
             for j in range(len(r['atoms'])):
                 a = r['atoms'][j]
                 b = r['bonds'][j]
-                print('%10s %4d %s'%(a.name, a.number, repr(b)))
+                print('%10s %4d %s' % (a.name, a.number, repr(b)))
             i = i + 1
 
-            
+
 if __name__ == '__main__':
-    import pdb, sys
+    import sys
     from MolKit.pdbParser import NewPdbParser
-    parser = NewPdbParser("/tsri/pdb/struct/%s.pdb"%sys.argv[1])
+
+    parser = NewPdbParser("/tsri/pdb/struct/%s.pdb" % sys.argv[1])
     mols = parser.parse()
     mol = mols[0]
     mol.buildBondsByDistance()
@@ -633,19 +618,18 @@ if __name__ == '__main__':
     r.findRings(allAtoms, bonds)
     r.printRings()
 
-
     from MolKit.pdbParser import NewPdbqParser
+
     parser = NewPdbqParser("./txp.pdbq")
     mols = parser.parse()
     mol = mols[0]
     mol.buildBondsByDistance()
     allAtoms = mol.chains.residues.atoms
 
-
     print('Looking for rings ...')
     r = RingFinder()
     print("Done")
-    bonds = (allAtoms.bonds)[0]
+    bonds = allAtoms.bonds[0]
     r.findRings(allAtoms, bonds)
 
     r.printRings()
