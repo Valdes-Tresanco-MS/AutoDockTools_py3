@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 28/8/19 4:40                                                                 #
+#  Modification date: 10/5/20 22:13                                                                #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -21,15 +21,7 @@
 # Copyright: M. Sanner TSRI 2000
 #
 #############################################################################
-#
-# $Header: /opt/cvs/python/packages/share1.5/PyBabel/tools.py,v 1.1.1.1 2001/04/03 19:47:47 gillet Exp $
-#
-# $Id: tools.py,v 1.1.1.1 2001/04/03 19:47:47 gillet Exp $
-#
-#
-#
 
-import _py2k_string as string
 
 def read_element_table(filename):
     """void <- read_element_table(filename)
@@ -43,39 +35,39 @@ def read_element_table(filename):
     f.close()
     elemTable = {}
     for i in range(len(lines)):
-        dd = string.split(lines[i])
-        elemTable[dd[1]] = { 'num':i,
-                             'cov_rad':float(dd[2]),
-                             'bond_ord_rad':float(dd[3]),
-                             'vdw_rad':float(dd[4]),
-                             'bs_rad':float(dd[5]),
-                             'max_bonds':int(dd[6]),
-                             'rgb': (float(dd[7]),float(dd[8]),float(dd[9]))
-                           }
+        dd = lines[i].split()
+        elemTable[dd[1]] = {'num': i,
+                            'cov_rad': float(dd[2]),
+                            'bond_ord_rad': float(dd[3]),
+                            'vdw_rad': float(dd[4]),
+                            'bs_rad': float(dd[5]),
+                            'max_bonds': int(dd[6]),
+                            'rgb': (float(dd[7]), float(dd[8]), float(dd[9]))
+                            }
     return elemTable
 
 
 def writeElementTableAsPythonCode(elemTab, inFileName, outFileName):
     """write elemTable as a python dictionary that can be imported"""
 
-    f = open(outFileName,'w')
-    f.write("# File generated from %s\n#\n"%inFileName)
+    f = open(outFileName, 'w')
+    f.write("# File generated from %s\n#\n" % inFileName)
     f.write("babel_elements = {\n")
-    for k,v in list(elemTab.items()):
-        f.write("  '%s': %s, \n" % (k,str(v)))
-    f.write('}\n#END\n');
+    for k, v in list(elemTab.items()):
+        f.write("  '%s': %s, \n" % (k, str(v)))
+    f.write('}\n#END\n')
     f.close()
 
 
 def read_types_table(filename):
     f = open(filename)
     typestab = {}
-    nrow, ncol = list(map( int, string.split(f.readline())))
-    typeFormats = string.split(f.readline())
+    nrow, ncol = list(map(int, f.readline().split()))
+    typeFormats = f.readline().split()
     for t in typeFormats:
         typestab[t] = []
-    for i in range(nrow-1):
-        typeNames = string.split(f.readline())
+    for i in range(nrow - 1):
+        typeNames = f.readline().split()
         for j in range(ncol):
             typestab[typeFormats[j]].append(typeNames[j])
     f.close()
@@ -85,12 +77,12 @@ def read_types_table(filename):
 def writeTypesTableAsPythonCode(typestab, inFileName, outFileName):
     """write typestab as a python dictionary that can be imported"""
 
-    f = open(outFileName,'w')
-    f.write("# File generated from %s\n#\n"%inFileName)
+    f = open(outFileName, 'w')
+    f.write("# File generated from %s\n#\n" % inFileName)
     f.write("babel_types = {\n")
-    for k,v in list(typestab.items()):
-        f.write("  '%s': %s, \n" % (k,str(v)))
-    f.write('}\n#END\n');
+    for k, v in list(typestab.items()):
+        f.write("  '%s': %s, \n" % (k, str(v)))
+    f.write('}\n#END\n')
     f.close()
 
 
