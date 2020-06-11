@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 4/5/20 1:31                                                                  #
+#  Modification date: 11/06/20, 11:31 a. m.                                                        #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -52,6 +52,24 @@ from MolKit.listSet import ListSet
 
 verbose = False
 
+def cmp_to_key(mycmp):
+    'Convert a cmp= function into a key= function'
+    class K(object):
+        def __init__(self, obj, *args):
+            self.obj = obj
+        def __lt__(self, other):
+            return mycmp(self.obj, other.obj) < 0
+        def __gt__(self, other):
+            return mycmp(self.obj, other.obj) > 0
+        def __eq__(self, other):
+            return mycmp(self.obj, other.obj) == 0
+        def __le__(self, other):
+            return mycmp(self.obj, other.obj) <= 0
+        def __ge__(self, other):
+            return mycmp(self.obj, other.obj) >= 0
+        def __ne__(self, other):
+            return mycmp(self.obj, other.obj) != 0
+    return K
 
 def evalString(string):
     if len(string) == 0:
@@ -906,12 +924,14 @@ range specified using the '-' character
         return name
 
     def sort(self, func=None):
-        if len(self.data) == 0: return
-
+        if len(self.data)==0:
+            return
         if func is None:
-            self.data.sort(self.data[0].compare)
+            sorted(self.data)
+            # self.data.sort(self.data[0].compare)
         else:
-            self.data.sort(func)
+            sorted(self.data, key=cmp_to_key(func))
+            # self.data.sort(func)
 
 
 ##      def compare(self, tn1, tn2):

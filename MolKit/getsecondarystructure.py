@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 3/5/20 23:47                                                                 #
+#  Modification date: 11/06/20, 11:30 a. m.                                                        #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -391,18 +391,15 @@ class GetSecondaryStructureFromPross(GetSecondaryStructure):
         tData = [Turn]
         cData = [Coil]
 
-        is_PII = PII.has_key
-
         for i in range(nres - 1):
             code = codes[i]
-            if is_PII(code):
+            if code in PII:
                 sst[i] = 'P'
 
-        is_turn = TURNS.has_key
 
         for i in range(nres - 1):
             code = codes[i] + codes[i + 1]
-            if is_turn(code):
+            if code in TURNS:
                 sst[i] = sst[i + 1] = 'T'
 
         helices = self._rc_find(codes, HELIX)
@@ -413,15 +410,14 @@ class GetSecondaryStructureFromPross(GetSecondaryStructure):
         for helix in helices:
             i, j = helix
             # hData.append([chain.residues[i],chain.residues[j]])
-            for k in range(i, j):
+            for k in range(int(i), int(j)):
                 sst[k] = 'H'
 
         for strand in strands:
             i, j = strand
             # sData.append([chain.residues[i],chain.residues[j]])
-            for k in range(i, j):
-                if sst[k] in ('C', 'P'):
-                    sst[k] = 'E'
+            for k in range(int(i), int(j)):
+                if sst[k] in ('C', 'P'): sst[k] = 'E'
         # self.sst = sst
 
         turns = self.findSS(sst, ('T'))
@@ -470,7 +466,7 @@ class GetSecondaryStructureFromPross(GetSecondaryStructure):
         CODE_LENGTH = self.MSDEFS['CODE_LENGTH']
 
         if not type(codes) == type(''):
-            codes = codes.join('')
+            codes = ''.join(codes)
 
         matches = []
         it = pattern.finditer(codes)
