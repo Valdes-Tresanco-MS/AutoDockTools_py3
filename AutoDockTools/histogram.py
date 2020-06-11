@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 2/5/20 19:51                                                                 #
+#  Modification date: 10/05/20, 6:51 p. m.                                                         #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -27,8 +27,8 @@
 
 import numpy
 
-class Histogram:
 
+class Histogram:
     """Histogram in one variable
 
     Constructor: Histogram(|data|, |bins|, |range|=None)
@@ -57,14 +57,14 @@ class Histogram:
             self.max = numpy.maximum.reduce(data)
         else:
             self.min, self.max = range
-        self.min = self.min+0.
-        self.max = self.max+0.
-        self.bin_width = (self.max-self.min)/nbins
-        if self.bin_width==0:
+        self.min = self.min + 0.
+        self.max = self.max + 0.
+        self.bin_width = (self.max - self.min) / nbins
+        if self.bin_width == 0:
             print('range is 0 so set bin_width to 1.')
             self.bin_width = 1.
         self.array = numpy.zeros((nbins, 2), numpy.float)
-        self.array[:, 0] = self.min + self.bin_width*(numpy.arange(nbins)+0.5)
+        self.array[:, 0] = self.min + self.bin_width * (numpy.arange(nbins) + 0.5)
         self.addData(data)
 
     def __len__(self):
@@ -82,24 +82,24 @@ class Histogram:
         default range of the histogram, which is fixed when the
         histogram is created.
         """
-        n = (len(data)+999)/1000
+        n = (len(data) + 999) / 1000
         for i in range(n):
-            self._addData(data[1000*i:1000*(i+1)])
+            self._addData(data[1000 * i:1000 * (i + 1)])
 
     def _addData(self, data):
         data = numpy.array(data, numpy.float)
         data = numpy.repeat(data, numpy.logical_and(numpy.less_equal(data, self.max),
-                                            numpy.greater_equal(data, self.min)))
-        data = numpy.floor((data - self.min)/self.bin_width).astype(numpy.int)
+                                                    numpy.greater_equal(data, self.min)))
+        data = numpy.floor((data - self.min) / self.bin_width).astype(numpy.int)
         self.rIdata = data
         nbins = self.array.shape[0]
         histo = numpy.add.reduce(numpy.equal(numpy.arange(nbins)[:, None], data), -1)
         histo[-1] = histo[-1] + numpy.add.reduce(numpy.equal(nbins, data))
-        self.array[:, 1] =  self.array[:, 1] + histo
+        self.array[:, 1] = self.array[:, 1] + histo
 
     def normalize(self, norm=1.):
         "Scales all counts by the same factor such that their sum is |norm|."
-        self.array[:, 1] = norm*self.array[:, 1]/numpy.add.reduce(self.array[:, 1])
+        self.array[:, 1] = norm * self.array[:, 1] / numpy.add.reduce(self.array[:, 1])
 
 
 class HistogramRI(Histogram):
@@ -111,34 +111,31 @@ class HistogramRI(Histogram):
         Histogram.__init__(self, data, nbins, range)
         self.data = data
 
-    
     def createReverseIndex(self):
-        #first build the data in the correct form:
+        # first build the data in the correct form:
         nbins = self.array.shape[0]
         data = numpy.array(self.data, numpy.float)
         data = numpy.repeat(data, numpy.logical_and(numpy.less_equal(data, self.max),
-                    numpy.greater_equal(data, self.min)))
-        data = numpy.floor((data-self.min)/self.bin_width).astype(numpy.int)
+                                                    numpy.greater_equal(data, self.min)))
+        data = numpy.floor((data - self.min) / self.bin_width).astype(numpy.int)
         self.cRI_data = data
-        #check for pt outside of nbins
-        #sometimes max point falls outside of right-most bin
-        #first stuff works with python2.0 second with both
+        # check for pt outside of nbins
+        # sometimes max point falls outside of right-most bin
+        # first stuff works with python2.0 second with both
         try:
-            self.cRI_data = numpy.putmask(data, numpy.greater_equal(data,nbins),nbins-1)
+            self.cRI_data = numpy.putmask(data, numpy.greater_equal(data, nbins), nbins - 1)
         except:
             for i in range(data.shape[0]):
-                if data[i]>=nbins: data[i] = nbins-1
+                if data[i] >= nbins: data[i] = nbins - 1
         self.reverseIndex = []
         for i in range(nbins):
             newentry = numpy.nonzero(numpy.equal(data, i))[0].tolist()
-            #print i,'th entry =', newentry
+            # print i,'th entry =', newentry
             self.reverseIndex.append(newentry)
-            
+
 
 if __name__ == '__main__':
-
-
     data = numpy.arange(500)
-    #data = numpy.arange(5000)
-    #h = Histogram(data, 10)
+    # data = numpy.arange(5000)
+    # h = Histogram(data, 10)
     hRI = HistogramRI(data, 10)

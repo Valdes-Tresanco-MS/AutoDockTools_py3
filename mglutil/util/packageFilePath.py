@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 10/5/20 17:44                                                                #
+#  Modification date: 10/05/20, 7:04 p. m.                                                         #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -300,8 +300,7 @@ returns None if it doesn't exist and can't be created
     if old_rc is None:
         return None
 
-    from Support.version import __version__
-    Version = __version__
+    Version = '1.5.7'
 
     lRessourceFolder = old_rc + os.sep + Version
 

@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 10/5/20 17:50                                                                #
+#  Modification date: 10/05/20, 7:04 p. m.                                                         #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -34,7 +34,7 @@ import socket
 # from string import split
 split = str.split
 
-from Support.version import __version__
+# from Support.version import __version__
 # from mglutil import __revision__
 
 # create hostDict with hostMacros accessible by anyone
