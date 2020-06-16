@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 3/5/20 3:41                                                                  #
+#  Modification date: 15/06/20, 6:04 p. m.                                                         #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -29,6 +29,7 @@ from MolKit.moleculeWriter import MoleculeWriter
 from MolKit.protein import Chain
 from MolKit.protein import SecondaryStructureSet
 from MolKit.tree import TreeNode, TreeNodeSet
+from MolKit.pdbParser import PdbParser
 
 
 ###############################################################################

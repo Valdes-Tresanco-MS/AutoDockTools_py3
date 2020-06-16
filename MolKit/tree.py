@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 11/06/20, 11:31 a. m.                                                        #
+#  Modification date: 15/06/20, 7:16 p. m.                                                         #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -709,7 +709,9 @@ By default, no message is returned.
             stringRepr = self.stringRepr
             levelBelow = self[0].isAbove(what)
             if levelBelow > 1:
-                exec("result=self" + ".children" * levelBelow)
+                _locals = locals()
+                exec("result=self" + ".children" * levelBelow, globals(), _locals)
+                result = _locals['result']
                 if uniq:
                     result = result.uniq()
                 if stringRepr is not None:
@@ -728,7 +730,9 @@ By default, no message is returned.
             else:
                 levelAbove = self[0].isBelow(what)
                 if levelAbove > 1:
-                    exec("result=self" + ".parent" * levelAbove)
+                    _locals = locals()
+                    exec("result=self" + ".parent" * levelAbove, globals(), _locals)
+                    result = _locals['result']
                     if uniq:
                         result = result.uniq()
                     if stringRepr is not None:
@@ -764,7 +768,9 @@ By default, no message is returned.
         else:
             levelBelow = self[0].isAbove(what)
             if levelBelow > 1:
-                exec("result=self" + ".children" * levelBelow)
+                _locals = locals()
+                exec("result=self" + ".children" * levelBelow, globals(), _locals)
+                result = _locals['result']
                 if uniq:
                     result = result.uniq()
                 return result
@@ -777,7 +783,10 @@ By default, no message is returned.
             else:
                 levelAbove = self[0].isBelow(what)
                 if levelAbove > 1:
-                    exec("result=self" + ".parent" * levelAbove)
+                    result = None
+                    _locals = locals()
+                    exec("result = self" + ".parent" * levelAbove, globals(), _locals)
+                    result = _locals['result']
                     if uniq:
                         result = result.uniq()
                     return result
