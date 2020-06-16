@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 15/06/20, 8:19 p. m.                                                         #
+#  Modification date: 15/06/20, 8:27 p. m.                                                         #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -20,7 +20,7 @@ setup(
     version='1.5.7',
     packages=['MolKit', 'MolKit.data', 'MolKit.pdb2pqr', 'MolKit.pdb2pqr.src', 'MolKit.pdb2pqr.propka',
               'MolKit.pdb2pqr.pdb2pka', 'MolKit.pdb2pqr.pdb2pka.substruct', 'MolKit.pdb2pqr.pdb2pka.ligandclean',
-              'MolKit.pdb2pqr.extensions', 'PyBabel', '_bhtree', 'mglutil', 'mglutil.math', 'mglutil.util',
+              'MolKit.pdb2pqr.extensions', 'PyBabel', 'mglutil', 'mglutil.math', 'mglutil.util',
               'AutoDockTools', 'AutoDockTools.Utilities24'],
     url='https://github.com/Valdes-Tresanco-MS/AutoDockTools_py3',
     license='MGLTools LICENSE',
