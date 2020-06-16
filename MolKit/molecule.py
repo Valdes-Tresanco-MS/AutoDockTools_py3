@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 4/5/20 0:20                                                                  #
+#  Modification date: 15/06/20, 7:46 p. m.                                                         #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -973,7 +973,9 @@ class MoleculeSet(TreeNodeSet):
         else:
             levelBelow = self[0].isAbove(what)
             if levelBelow > 1:
-                exec("result=self" + ".children" * levelBelow)
+                _locals = locals()
+                exec("result=self" + ".children" * levelBelow, globals(), _locals)
+                result = _locals['result']
                 result = result.copy()
                 if uniq:
                     result = result.uniq()
@@ -987,7 +989,9 @@ class MoleculeSet(TreeNodeSet):
             else:
                 levelAbove = self[0].isBelow(what)
                 if levelAbove > 1:
-                    exec("result=self" + ".parent" * levelAbove)
+                    _locals = locals()
+                    exec("result=self" + ".parent" * levelAbove, globals(), _locals)
+                    result = _locals['result']
                     if uniq:
                         result = result.uniq()
                     return result
