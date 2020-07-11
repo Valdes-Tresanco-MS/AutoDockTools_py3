@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 4/5/20 0:24                                                                  #
+#  Modification date: 11/7/20 9:15                                                                 #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -546,19 +546,13 @@ NOTE: The list currently registered parsers is in
             name = name + '@' + self.altLoc
             atom.name = name
             atom.altname = self.altLoc
-            if len(mol.curRes.atoms) > 1:
-                # the new atom has been added to the current residue
-                # You have to go to the one before.
-                lastAtom = mol.curRes.atoms[-2]
-                if atom.normalname == lastAtom.normalname:
-                    # Add the new alternate atom to the LastAtom.alternate and
-                    # add the lastAtom to the atom.alternate.
-                    lastAtom.alternate.append(atom)
-                    atom.alternate.append(lastAtom)
-                    for l in lastAtom.alternate:
-                        if atom.name != l.name:
-                            atom.alternate.append(l)
-                            l.alternate.append(atom)
+            # fixed ambiguous way to get alternates
+            for atm in mol.curRes.atoms:
+                if atom.normalname == atm.normalname:
+                    if atm not in atom.alternate:
+                        atom.alternate.append(atm)
+                    if atom not in atm.alternate:
+                        atm.alternate.append(atom)
 
         # call the progress bar
         self.updateProgressBar()

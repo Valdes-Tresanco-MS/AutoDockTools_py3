@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 2/5/20 1:36                                                                  #
+#  Modification date: 8/7/20 15:11                                                                 #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -28,33 +28,44 @@ from MolKit.mol2Parser import Mol2Parser
 from MolKit.pdbParser import PdbParser, PdbqParser, PdbqsParser, PdbqtParser, PQRParser, F2DParser
 
 
-def Read(filename, modelsAs='molecules'):
-    if not os.path.exists(filename):
-        raise AssertionError("%s does't exist" % filename)
+def Read(filename=None, alllines=None, dataformat='pdb', modelsAs='molecules'):
+    if not alllines and not filename:
+        raise AssertionError("%s invalid molecule" % filename)
+    elif alllines and filename:
+        alllines = None
+    elif filename:
+        if not os.path.exists(filename):
+            raise AssertionError("%s does't exist" % filename)
 
-    ext = filename.split('.')
-    if ext[-1] == 'pdb':
-        parser = PdbParser(filename, modelsAs=modelsAs)
+    if alllines:
+        ext = dataformat
+        args = [None, alllines]
+    else:
+        ext = filename.split('.')[1]
+        args = [filename, None]
+    if ext == 'pdb':
+        parser = PdbParser(*args, modelsAs=modelsAs)
 
-    elif ext[-1] == 'pdbq':
-        parser = PdbqParser(filename, modelsAs=modelsAs)
+    elif ext == 'pdbq':
+        parser = PdbqParser(*args, modelsAs=modelsAs)
 
-    elif ext[-1] == 'pdbqt':
-        parser = PdbqtParser(filename, modelsAs=modelsAs)
+    elif ext == 'pdbqt':
+        parser = PdbqtParser(*args, modelsAs=modelsAs)
 
-    elif ext[-1] == 'pdbqs':
-        parser = PdbqsParser(filename, modelsAs=modelsAs)
+    elif ext == 'pdbqs':
+        parser = PdbqsParser(*args, modelsAs=modelsAs)
 
-    elif ext[-1] == 'pqr':
-        parser = PQRParser(filename, modelsAs=modelsAs)
+    elif ext == 'pqr':
+        parser = PQRParser(*args, modelsAs=modelsAs)
 
-    elif ext[-1] == 'mol2':
+    # FIXME: pass all lines???
+    elif ext == 'mol2':
         parser = Mol2Parser(filename)  # ??should modelsAs be available for mol2 format??
 
-    elif ext[-1] == 'cif':
+    elif ext == 'cif':
         parser = MMCIFParser(filename)
 
-    elif ext[-1] == 'f2d':
+    elif ext == 'f2d':
         parser = F2DParser(filename)
 
     else:
