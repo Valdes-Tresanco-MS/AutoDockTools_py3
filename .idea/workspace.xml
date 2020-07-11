@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="SCOPE_TYPE" value="3" />
+  </component>
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -43,11 +46,11 @@
     <option name="showStatusBarWidget" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dade6379-1666-4ac7-9de4-69950a5437c6" name="Default Changelist" comment="    updated PyBabel &gt; util.py" />
-    <list id="3a722add-0bc2-4f80-b5ae-1d8a562c55ee" name="    updated PyBabel &gt; util.py" comment="">
-      <change afterPath="$PROJECT_DIR$/mglutil/__init__.py" afterDir="false" />
+    <list default="true" id="dade6379-1666-4ac7-9de4-69950a5437c6" name="Default Changelist" comment="added setup">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
+    <list id="3a722add-0bc2-4f80-b5ae-1d8a562c55ee" name="    updated PyBabel &gt; util.py" comment="    updated PyBabel &gt; util.py" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -57,12 +60,14 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="Setup Script" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="JupyterTrust" id="f674bf79-a8b1-47d3-a574-c3a48aae8994" />
   <component name="ProjectId" id="1bNJyVb020p3AE1lMvN0N7jnbo6" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -73,7 +78,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/pdb2pqr/pdb2pka/ligand_topology.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -82,19 +87,42 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/../../../../Programs/AutodockTools_1.5.7/Lib/site-packages/MolKit/pdb2pqr/pdb2pka/ligand_topology.py" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="two.files.diff.last.used.file" value="$USER_HOME$/programs/AMDock/MolKit/tree.py" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Drive\scripts\PROG_PROJECTS\AutoDockTools_py3\AutoDockTools" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\Drive\scripts\PROG_PROJECTS\AutoDockTools_py3\MolKit\pdb2pqr" />
       <recent name="D:\Drive\scripts\PROG_PROJECTS\AutoDockTools_py3" />
+      <recent name="D:\Drive\scripts\PROG_PROJECTS\AutoDockTools_py3\MolKit\pdb2pqr" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.prepare_receptor4">
+  <component name="RunManager" selected="Python.test">
+    <configuration name="extract_ss" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="AutoDockTools_py3" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/PycharmProjects/untitled3" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/PycharmProjects/untitled3/extract_ss.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="prepare_ligand4" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="AutoDockTools_py3" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -206,18 +234,19 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Python.extract_ss" />
       <item itemvalue="Python.prepare_ligand4" />
-      <item itemvalue="Python.test" />
       <item itemvalue="Python.prepare_receptor4" />
       <item itemvalue="Python.rotamerLib" />
+      <item itemvalue="Python.test" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.test" />
+        <item itemvalue="Python.extract_ss" />
         <item itemvalue="Python.prepare_receptor4" />
         <item itemvalue="Python.prepare_ligand4" />
         <item itemvalue="Python.rotamerLib" />
-        <item itemvalue="Python.test" />
-        <item itemvalue="Python.prepare_ligand4" />
       </list>
     </recent_temporary>
   </component>
@@ -237,126 +266,17 @@
       <workItem from="1588610683067" duration="10624000" />
       <workItem from="1588650901858" duration="800000" />
       <workItem from="1589163725550" duration="11000" />
-      <workItem from="1589163823922" duration="2931000" />
-    </task>
-    <task id="LOCAL-00078" summary="updated MolKit &gt; pdb2pqr &gt; pdb2pqr.py">
-      <created>1588579385769</created>
-      <option name="number" value="00078" />
-      <option name="presentableId" value="LOCAL-00078" />
-      <option name="project" value="LOCAL" />
-      <updated>1588579385769</updated>
-    </task>
-    <task id="LOCAL-00079" summary="updated MolKit &gt; pdb2pqr &gt; routines.py">
-      <created>1588580241610</created>
-      <option name="number" value="00079" />
-      <option name="presentableId" value="LOCAL-00079" />
-      <option name="project" value="LOCAL" />
-      <updated>1588580241610</updated>
-    </task>
-    <task id="LOCAL-00080" summary="updated MolKit &gt; pdb2pqr &gt; structures.py">
-      <created>1588580424037</created>
-      <option name="number" value="00080" />
-      <option name="presentableId" value="LOCAL-00080" />
-      <option name="project" value="LOCAL" />
-      <updated>1588580424037</updated>
-    </task>
-    <task id="LOCAL-00081" summary="updated MolKit &gt; pdb2pqr &gt; utilities.py.py">
-      <created>1588580597392</created>
-      <option name="number" value="00081" />
-      <option name="presentableId" value="LOCAL-00081" />
-      <option name="project" value="LOCAL" />
-      <updated>1588580597392</updated>
-    </task>
-    <task id="LOCAL-00082" summary="updated MolKit &gt; pdb2pqr &gt; extensions &gt; chi.py">
-      <created>1588580682808</created>
-      <option name="number" value="00082" />
-      <option name="presentableId" value="LOCAL-00082" />
-      <option name="project" value="LOCAL" />
-      <updated>1588580682808</updated>
-    </task>
-    <task id="LOCAL-00083" summary="updated MolKit &gt; pdb2pqr &gt; extensions &gt; hbond.py">
-      <created>1588580779644</created>
-      <option name="number" value="00083" />
-      <option name="presentableId" value="LOCAL-00083" />
-      <option name="project" value="LOCAL" />
-      <updated>1588580779644</updated>
-    </task>
-    <task id="LOCAL-00084" summary="updated MolKit &gt; pdb2pqr &gt; extensions &gt; phi.py">
-      <created>1588580852815</created>
-      <option name="number" value="00084" />
-      <option name="presentableId" value="LOCAL-00084" />
-      <option name="project" value="LOCAL" />
-      <updated>1588580852815</updated>
-    </task>
-    <task id="LOCAL-00085" summary="updated MolKit &gt; pdb2pqr &gt; extensions &gt; psi.py">
-      <created>1588580906078</created>
-      <option name="number" value="00085" />
-      <option name="presentableId" value="LOCAL-00085" />
-      <option name="project" value="LOCAL" />
-      <updated>1588580906078</updated>
-    </task>
-    <task id="LOCAL-00086" summary="updated MolKit &gt; pdb2pqr &gt; extensions &gt; rama.py">
-      <created>1588580981124</created>
-      <option name="number" value="00086" />
-      <option name="presentableId" value="LOCAL-00086" />
-      <option name="project" value="LOCAL" />
-      <updated>1588580981124</updated>
-    </task>
-    <task id="LOCAL-00087" summary="updated MolKit &gt; pdb2pqr &gt; propka &gt; propkalib.py.py">
-      <created>1588611095240</created>
-      <option name="number" value="00087" />
-      <option name="presentableId" value="LOCAL-00087" />
-      <option name="project" value="LOCAL" />
-      <updated>1588611095240</updated>
-    </task>
-    <task id="LOCAL-00088" summary="updated MolKit &gt; pdb2pqr &gt; src &gt; aa.py">
-      <created>1588611279181</created>
-      <option name="number" value="00088" />
-      <option name="presentableId" value="LOCAL-00088" />
-      <option name="project" value="LOCAL" />
-      <updated>1588611279181</updated>
-    </task>
-    <task id="LOCAL-00089" summary="updated MolKit &gt; pdb2pqr &gt; src &gt; definitions.py">
-      <created>1588611445262</created>
-      <option name="number" value="00089" />
-      <option name="presentableId" value="LOCAL-00089" />
-      <option name="project" value="LOCAL" />
-      <updated>1588611445262</updated>
-    </task>
-    <task id="LOCAL-00090" summary="updated MolKit &gt; pdb2pqr &gt; src &gt; forcefield.py">
-      <created>1588611668362</created>
-      <option name="number" value="00090" />
-      <option name="presentableId" value="LOCAL-00090" />
-      <option name="project" value="LOCAL" />
-      <updated>1588611668362</updated>
-    </task>
-    <task id="LOCAL-00091" summary="updated MolKit &gt; pdb2pqr &gt; src &gt; hydrogens.py">
-      <created>1588613620715</created>
-      <option name="number" value="00091" />
-      <option name="presentableId" value="LOCAL-00091" />
-      <option name="project" value="LOCAL" />
-      <updated>1588613620715</updated>
-    </task>
-    <task id="LOCAL-00092" summary="updated MolKit &gt; pdb2pqr &gt; src &gt; inputgen.py">
-      <created>1588613804242</created>
-      <option name="number" value="00092" />
-      <option name="presentableId" value="LOCAL-00092" />
-      <option name="project" value="LOCAL" />
-      <updated>1588613804242</updated>
-    </task>
-    <task id="LOCAL-00093" summary="updated MolKit &gt; pdb2pqr &gt; src &gt; na.py">
-      <created>1588613865250</created>
-      <option name="number" value="00093" />
-      <option name="presentableId" value="LOCAL-00093" />
-      <option name="project" value="LOCAL" />
-      <updated>1588613865250</updated>
-    </task>
-    <task id="LOCAL-00094" summary="updated MolKit &gt; pdb2pqr &gt; src &gt; pdb.py">
-      <created>1588614525291</created>
-      <option name="number" value="00094" />
-      <option name="presentableId" value="LOCAL-00094" />
-      <option name="project" value="LOCAL" />
-      <updated>1588614525291</updated>
+      <workItem from="1589163823922" duration="9590000" />
+      <workItem from="1589288990718" duration="81000" />
+      <workItem from="1591820198645" duration="38000" />
+      <workItem from="1591892465728" duration="7468000" />
+      <workItem from="1592078103188" duration="1213000" />
+      <workItem from="1592180250559" duration="2144000" />
+      <workItem from="1592240837281" duration="172000" />
+      <workItem from="1592261102485" duration="1331000" />
+      <workItem from="1592262578380" duration="14392000" />
+      <workItem from="1592343373027" duration="225000" />
+      <workItem from="1594476830641" duration="1130000" />
     </task>
     <task id="LOCAL-00095" summary="updated MolKit &gt; pdb2pqr &gt; src &gt; protein.py">
       <created>1588614651669</created>
@@ -582,7 +502,126 @@
       <option name="project" value="LOCAL" />
       <updated>1589167072689</updated>
     </task>
-    <option name="localTasksCounter" value="127" />
+    <task id="LOCAL-00127" summary="added mglutil">
+      <created>1589167289105</created>
+      <option name="number" value="00127" />
+      <option name="presentableId" value="LOCAL-00127" />
+      <option name="project" value="LOCAL" />
+      <updated>1589167289105</updated>
+    </task>
+    <task id="LOCAL-00128" summary="updated mglutil &gt; bhtfunctions.py">
+      <created>1589167446978</created>
+      <option name="number" value="00128" />
+      <option name="presentableId" value="LOCAL-00128" />
+      <option name="project" value="LOCAL" />
+      <updated>1589167446978</updated>
+    </task>
+    <task id="LOCAL-00129" summary="updated mglutil &gt; util">
+      <created>1589150176895</created>
+      <option name="number" value="00129" />
+      <option name="presentableId" value="LOCAL-00129" />
+      <option name="project" value="LOCAL" />
+      <updated>1589150176895</updated>
+    </task>
+    <task id="LOCAL-00130" summary="updated mglutil &gt; util &gt; misc.py">
+      <created>1589150226429</created>
+      <option name="number" value="00130" />
+      <option name="presentableId" value="LOCAL-00130" />
+      <option name="project" value="LOCAL" />
+      <updated>1589150226429</updated>
+    </task>
+    <task id="LOCAL-00131" summary="updated mglutil &gt; util">
+      <created>1589150828243</created>
+      <option name="number" value="00131" />
+      <option name="presentableId" value="LOCAL-00131" />
+      <option name="project" value="LOCAL" />
+      <updated>1589150828243</updated>
+    </task>
+    <task id="LOCAL-00132" summary="updated AutoDockTools module">
+      <created>1589151103101</created>
+      <option name="number" value="00132" />
+      <option name="presentableId" value="LOCAL-00132" />
+      <option name="project" value="LOCAL" />
+      <updated>1589151103102</updated>
+    </task>
+    <task id="LOCAL-00133" summary="updated mglutil &gt; math">
+      <created>1589151906244</created>
+      <option name="number" value="00133" />
+      <option name="presentableId" value="LOCAL-00133" />
+      <option name="project" value="LOCAL" />
+      <updated>1589151906245</updated>
+    </task>
+    <task id="LOCAL-00134" summary="updated AutoDockTools module">
+      <created>1589153032170</created>
+      <option name="number" value="00134" />
+      <option name="presentableId" value="LOCAL-00134" />
+      <option name="project" value="LOCAL" />
+      <updated>1589153032170</updated>
+    </task>
+    <task id="LOCAL-00135" summary="updated AutoDockTools module">
+      <created>1589154692216</created>
+      <option name="number" value="00135" />
+      <option name="presentableId" value="LOCAL-00135" />
+      <option name="project" value="LOCAL" />
+      <updated>1589154692216</updated>
+    </task>
+    <task id="LOCAL-00136" summary="updated AutoDockTools module">
+      <created>1591893437442</created>
+      <option name="number" value="00136" />
+      <option name="presentableId" value="LOCAL-00136" />
+      <option name="project" value="LOCAL" />
+      <updated>1591893437442</updated>
+    </task>
+    <task id="LOCAL-00137" summary="updated fixed some bugs in MolKit">
+      <created>1591893592020</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1591893592021</updated>
+    </task>
+    <task id="LOCAL-00138" summary="updated fixed some bugs in MolKit">
+      <created>1592261436274</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1592261436275</updated>
+    </task>
+    <task id="LOCAL-00139" summary="updated fixed some bugs in MolKit">
+      <created>1592266619288</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1592266619289</updated>
+    </task>
+    <task id="LOCAL-00140" summary="updated fixed some bugs in MolKit">
+      <created>1592270042313</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1592270042313</updated>
+    </task>
+    <task id="LOCAL-00141" summary="added setup">
+      <created>1592270469541</created>
+      <option name="number" value="00141" />
+      <option name="presentableId" value="LOCAL-00141" />
+      <option name="project" value="LOCAL" />
+      <updated>1592270469541</updated>
+    </task>
+    <task id="LOCAL-00142" summary="added setup">
+      <created>1592270829928</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1592270829928</updated>
+    </task>
+    <task id="LOCAL-00143" summary="fixed minor bugs">
+      <created>1594477272416</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1594477272417</updated>
+    </task>
+    <option name="localTasksCounter" value="144" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -601,17 +640,9 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="updated MolKit &gt; pdb2pqr &gt; src &gt; utilities.py" />
-    <MESSAGE value="updated MolKit &gt; pdb2pqr &gt; pdb2pka &gt; apbs.py" />
-    <MESSAGE value="added MolKit &gt; pdb2pqr &gt; dat" />
-    <MESSAGE value="updated MolKit &gt; pdb2pqr &gt; pdb2pka &gt; example.py" />
-    <MESSAGE value="updated MolKit &gt; pdb2pqr &gt; pdb2pka &gt; inputgen_pKa.py" />
-    <MESSAGE value="updated MolKit &gt; pdb2pqr &gt; pdb2pka &gt; ligand_topology.py" />
-    <MESSAGE value="updated MolKit &gt; pdb2pqr &gt; pdb2pka &gt; NEWligand_topology.py" />
-    <MESSAGE value="    updated MolKit &gt; pdb2pqr &gt; pdb2pka &gt; pka.py" />
-    <MESSAGE value="    updated MolKit &gt; pdb2pqr &gt; pdb2pka &gt; pKa_base.py" />
     <MESSAGE value="    updated MolKit &gt; pdb2pqr &gt; pdb2pka &gt; pMC_mult.py" />
     <MESSAGE value="    updated MolKit &gt; pdb2pqr &gt; pdb2pka &gt; substruct &gt; __init__.py" />
     <MESSAGE value="    updated MolKit &gt; pdb2pqr &gt; pdb2pka &gt; ligandclean &gt; ligff.py" />
@@ -628,7 +659,16 @@
     <MESSAGE value="    updated PyBabel &gt; gasteiger.py" />
     <MESSAGE value="    updated PyBabel &gt; tools.py" />
     <MESSAGE value="    updated PyBabel &gt; util.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="    updated PyBabel &gt; util.py" />
+    <MESSAGE value="added mglutil" />
+    <MESSAGE value="updated mglutil &gt; bhtfunctions.py" />
+    <MESSAGE value="updated mglutil &gt; util &gt; misc.py" />
+    <MESSAGE value="updated mglutil &gt; util" />
+    <MESSAGE value="updated mglutil &gt; math" />
+    <MESSAGE value="updated AutoDockTools module" />
+    <MESSAGE value="updated fixed some bugs in MolKit" />
+    <MESSAGE value="added setup" />
+    <MESSAGE value="fixed minor bugs" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed minor bugs" />
   </component>
   <component name="WindowStateProjectService">
     <state x="586" y="198" key="#Inspections" timestamp="1588494675975">
@@ -643,60 +683,77 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="-529" y="176" width="1273" height="690" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588610908376" />
-    <state x="707" y="384" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1588477911914">
+    <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1589155161291">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="707" y="384" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.1040@0.0.1920.1040" timestamp="1588477911914" />
-    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2" timestamp="1589167167051">
+    <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589155161291" />
+    <state x="707" y="384" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1589151132563">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1589167167051" />
-    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog" timestamp="1589165680516">
+    <state x="707" y="384" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.1040@0.0.1920.1040" timestamp="1589151132563" />
+    <state x="255" y="51" width="858" height="854" key="CommitChangelistDialog2" timestamp="1594480381261">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588618479240" />
-    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1588618115928">
+    <state x="255" y="51" width="1390" height="846" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1594480381261" />
+    <state x="255" y="51" width="858" height="854" key="CommitChangelistDialog2/0.0.1920.1047@0.0.1920.1047" timestamp="1592270828553" />
+    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog" timestamp="1594480492127">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1589165548717" />
-    <state width="1877" height="457" key="GridCell.Tab.0.bottom" timestamp="1589167074585">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="92" y="92" width="1736" height="856" maximized="true" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1594480492127" />
+    <state x="740" y="277" width="424" height="482" key="FileChooserDialogImpl" timestamp="1592262604348">
+      <screen x="0" y="0" width="1920" height="1047" />
     </state>
-    <state width="1877" height="457" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589167074585" />
-    <state width="1877" height="457" key="GridCell.Tab.0.center" timestamp="1589167074585">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1589289065145" />
+    <state x="740" y="277" width="424" height="482" key="FileChooserDialogImpl/0.0.1920.1047@0.0.1920.1047" timestamp="1592262604348" />
+    <state width="1878" height="210" key="GridCell.Tab.0.bottom" timestamp="1592294584181">
+      <screen x="0" y="0" width="1920" height="1047" />
     </state>
-    <state width="1877" height="457" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589167074585" />
-    <state width="1877" height="457" key="GridCell.Tab.0.left" timestamp="1589167074585">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1877" height="457" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589155877500" />
+    <state width="1878" height="210" key="GridCell.Tab.0.bottom/0.0.1920.1047@0.0.1920.1047" timestamp="1592294584181" />
+    <state width="1878" height="210" key="GridCell.Tab.0.center" timestamp="1592294584180">
+      <screen x="0" y="0" width="1920" height="1047" />
     </state>
-    <state width="1877" height="457" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589167074585" />
-    <state width="1877" height="457" key="GridCell.Tab.0.right" timestamp="1589167074585">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1877" height="457" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589155877500" />
+    <state width="1878" height="210" key="GridCell.Tab.0.center/0.0.1920.1047@0.0.1920.1047" timestamp="1592294584180" />
+    <state width="1878" height="210" key="GridCell.Tab.0.left" timestamp="1592294584179">
+      <screen x="0" y="0" width="1920" height="1047" />
     </state>
-    <state width="1877" height="457" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589167074585" />
-    <state x="461" y="165" width="1157" height="710" key="SettingsEditor" timestamp="1589163866790">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1877" height="457" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589155877500" />
+    <state width="1878" height="210" key="GridCell.Tab.0.left/0.0.1920.1047@0.0.1920.1047" timestamp="1592294584179" />
+    <state width="1878" height="210" key="GridCell.Tab.0.right" timestamp="1592294584181">
+      <screen x="0" y="0" width="1920" height="1047" />
+    </state>
+    <state width="1877" height="457" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589155877500" />
+    <state width="1878" height="210" key="GridCell.Tab.0.right/0.0.1920.1047@0.0.1920.1047" timestamp="1592294584181" />
+    <state x="461" y="166" width="1157" height="728" key="SettingsEditor" timestamp="1591893552713">
+      <screen x="0" y="0" width="1920" height="1047" />
     </state>
     <state x="461" y="165" width="1157" height="710" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1589163866790" />
+    <state x="461" y="166" width="1157" height="728" key="SettingsEditor/0.0.1920.1047@0.0.1920.1047" timestamp="1591893552713" />
     <state x="807" y="434" key="VCS.ChangelistChooser" timestamp="1589167140722">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="807" y="434" key="VCS.ChangelistChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1589167140722" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1589167177940">
+    <state x="552" y="253" width="800" height="526" key="Vcs.Push.Dialog.v2" timestamp="1594480337648">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1589167177940" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1594480337648" />
+    <state x="552" y="255" width="800" height="526" key="Vcs.Push.Dialog.v2/0.0.1920.1047@0.0.1920.1047" timestamp="1592270835786" />
     <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1588573679996">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588573679996" />
+    <state x="769" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1594476864978">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="769" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1594476864978" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/AutoDockTools_py3$rotamerLib.coverage" NAME="rotamerLib Coverage Results" MODIFIED="1588572929364" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/MolKit" />
-    <SUITE FILE_PATH="coverage/AutoDockTools_py3$test.coverage" NAME="test Coverage Results" MODIFIED="1588571267078" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/AutoDockTools_py3$prepare_ligand4.coverage" NAME="prepare_ligand4 Coverage Results" MODIFIED="1588610819114" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
+    <SUITE FILE_PATH="coverage/AutoDockTools_py3$extract_ss.coverage" NAME="extract_ss Coverage Results" MODIFIED="1591942575325" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/PycharmProjects/untitled3" />
+    <SUITE FILE_PATH="coverage/AutoDockTools_py3$test.coverage" NAME="test Coverage Results" MODIFIED="1592292525173" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/AutoDockTools_py3$prepare_ligand4.coverage" NAME="prepare_ligand4 Coverage Results" MODIFIED="1589155600467" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
     <SUITE FILE_PATH="coverage/AutoDockTools_py3$prepare_ligand4__1_.coverage" NAME="prepare_ligand4 Coverage Results" MODIFIED="1588495316551" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
-    <SUITE FILE_PATH="coverage/AutoDockTools_py3$prepare_receptor4.coverage" NAME="prepare_receptor4 Coverage Results" MODIFIED="1588617532708" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
+    <SUITE FILE_PATH="coverage/AutoDockTools_py3$prepare_receptor4.coverage" NAME="prepare_receptor4 Coverage Results" MODIFIED="1589155605826" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
   </component>
 </project>
