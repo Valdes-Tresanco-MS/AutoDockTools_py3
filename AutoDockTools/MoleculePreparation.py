@@ -11,7 +11,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 2/5/20 19:51                                                                 #
+#  Modification date: 3/9/20 20:09                                                                 #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -695,6 +695,7 @@ class ReceptorWriter:
         if self.write_CONECT:
             self.writeCONECTRecords(receptor, outptr)
         outptr.close()
+        receptor.returnCode = 0
 
 
     def writeCONECTRecords(self, fptr, mol):
