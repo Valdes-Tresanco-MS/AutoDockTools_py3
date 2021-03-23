@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 4/7/20 5:48                                                                  #
+#  Modification date: 3/23/21, 10:40 AM                                                            #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -144,6 +144,9 @@ class Residue(ProteinMolecule):
         self.icode = icode
         self.psi = None  # not calculated
         self.phi = None  # not calculated
+
+    def __lt__(self, other):
+        return self.name < other.name
 
     def getPsi(self):
         """  compute PSI N(i),CA(i),C(i),N(i+1) """
