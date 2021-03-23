@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 2/5/20 19:57                                                                 #
+#  Modification date: 14/02/21, 12:38 p. m.                                                        #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -165,22 +165,25 @@ if __name__ == '__main__':
             print("renamed %d atoms: each newname is the original name of the atom plus its (1-based) uniqIndex" %(len(mol.allAtoms)))        
     preserved = {}
     has_autodock_element = False
-    if charges_to_add is not None and preserve_charge_types is not None:
+    if charges_to_add and preserve_charge_types:
         if hasattr(mol, 'allAtoms') and not hasattr(mol.allAtoms[0], 'autodock_element'):
             file_name, file_ext = os.path.splitext(receptor_filename)
             if file_ext == '.pdbqt':
                 has_autodock_element = True
-        if preserve_charge_types is not None and has_autodock_element==False:
+        if preserve_charge_types and not has_autodock_element:
             print('prepare_receptor4: input format does not have autodock_element SO unable to preserve charges on ' + preserve_charge_types)
             print('exiting...')
-            sys.exit()  
+            sys.exit(1)
         preserved_types = preserve_charge_types.split(',') 
         if verbose: print("preserved_types=", preserved_types)
         for t in preserved_types:
-            if verbose: print('preserving charges on type->', t)
-            if not len(t): continue
+            if verbose:
+                print('preserving charges on type->', t)
+            if not len(t):
+                continue
             ats = mol.allAtoms.get(lambda x: x.autodock_element==t)
-            if verbose: print("preserving charges on ", ats.name)
+            if verbose:
+                print("preserving charges on ", ats.name)
             for a in ats:
                 if a.chargeSet is not None:
                     preserved[a] = [a.chargeSet, a.charge]
@@ -212,7 +215,7 @@ if __name__ == '__main__':
                         delete_single_nonstd_residues=delete_single_nonstd_residues,
                         dict=dictionary)    
 
-    if charges_to_add is not None:
+    if charges_to_add:
         #restore any previous charges
         for atom, chargeList in list(preserved.items()):
             atom._charges[chargeList[0]] = chargeList[1]

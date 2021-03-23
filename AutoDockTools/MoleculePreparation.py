@@ -11,7 +11,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 3/9/20 20:09                                                                 #
+#  Modification date: 14/02/21, 12:43 p. m.                                                        #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -213,32 +213,34 @@ class AutoDockMoleculePreparation:
         if debug: print("in addCharges:mol.name=", mol.name, " and charges_to_add=", charges_to_add)
         isPeptide = mol.isPeptide = self.detectIsPeptide()
         if charges_to_add=='gasteiger':
-            chargeCalculator = self.chargeCalculator = GasteigerChargeCalculator()
+            self.chargeCalculator = GasteigerChargeCalculator()
             if isPeptide:
                 print("adding gasteiger charges to peptide")
-                chargeCalculator = self.chargeCalculator = GasteigerChargeCalculator()
         elif charges_to_add=='Kollman':
             if not mol.isPeptide:
                 print("adding Kollman charges to non-peptide")
-            chargeCalculator = self.chargeCalculator = KollmanChargeCalculator()
+            self.chargeCalculator = KollmanChargeCalculator()
+        else:
+            # pre-define the chargeCalculator
+            self.chargeCalculator = GasteigerChargeCalculator()
         #KEEP charges from file, if there are any
         #MODE SWITCH 2: adding charges????  ||NOT IN USE||
         if debug: print("self.chargeType=", self.chargeType)
-        if self.chargeType is None:
-            len_zero_charges = len([x for x in mol.chains.residues.atoms if x.charge==0])
+        if not self.chargeType:
+            len_zero_charges = len([x for x in mol.chains.residues.atoms if x.chargeSet and x.charge == 0])
             if len_zero_charges==len(mol.allAtoms):
                 print("WARNING: all atoms in '%s' had zero charges! Adding gasteiger charges..."%mol.name)
-                chargeCalculator = self.chargeCalculator = GasteigerChargeCalculator()
-                chargeCalculator.addCharges(mol.allAtoms)
+                self.chargeCalculator.addCharges(mol.allAtoms)
             else:
-                len_charged = len([x for x in mol.chains.residues.atoms if x.chargeSet!=None])
+                len_charged = len([x for x in mol.chains.residues.atoms if x.chargeSet])
                 if len_charged!=len(mol.chains.residues.atoms):
                     #charges could come from file or ?
-                    print("WARNING: some atoms in '%s' had no charge! Adding gasteiger charges to all..."%mol.name)
+                    print(f"WARNING: some atoms in '{mol.name}' had no charge! Adding gasteiger charges to all...")
+                    self.chargeCalculator.addCharges(mol.allAtoms)
                 if debug: print("no change to charges!")
             self.chargeType = mol.allAtoms[0].chargeSet
         else:
-            chargeCalculator.addCharges(mol.allAtoms)
+            self.chargeCalculator.addCharges(mol.allAtoms)
             if debug: print('added ' + charges_to_add + 'charges to ', mol.name)
 
 
