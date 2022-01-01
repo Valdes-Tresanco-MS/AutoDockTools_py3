@@ -11,7 +11,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 2/5/20 19:51                                                                 #
+#  Modification date: 1/1/22, 4:48 PM                                                              #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -21,7 +21,6 @@
 # $Header: /opt/cvs/python/packages/share1.5/AutoDockTools/Utilities24/prepare_gpf4.py,v 1.18 2011/06/14 17:25:51 rhuey Exp $
 #
 
-import _py2k_string as string
 import os.path
 import glob
 from MolKit import Read
@@ -145,10 +144,10 @@ if __name__ == '__main__':
             parameters.append("custom_parameter_file=1")
             break
     for p in parameters:
-        key,newvalue = string.split(p, '=')
+        key,newvalue = p.split('=')
         if key=='gridcenter' and newvalue.find(',')>-1:
             newvalue = newvalue.split(',')
-            newvalue = string.join(newvalue)
+            newvalue = ' '.join(newvalue)
         kw = {key:newvalue}
         gpfm.set_grid_parameters(*(), **kw)
     #gpfm.set_grid_parameters(spacing=1.0)

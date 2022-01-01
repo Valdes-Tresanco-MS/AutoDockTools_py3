@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 10/5/20 18:51                                                                #
+#  Modification date: 1/1/22, 4:48 PM                                                              #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -598,12 +598,9 @@ class GridParameters(UserDict):
                 return "#\n"
             else:
                 val_str = ""
-        elif ((vt == int) or
-              (vt == float) or
-              (vt == bytes)):
+        elif vt in [int, float, str]:
             val_str = str(p['value'])
-        elif ((vt == list) or
-              (vt == tuple)):
+        elif vt in [list, tuple]:
             val_str = ""
             for v in p['value']:
                 val_str = val_str + str(v) + " "
