@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 10/5/20 18:51                                                                #
+#  Modification date: 1/2/22, 5:32 PM                                                              #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -942,9 +942,7 @@ class DockingParameters(UserDict):
         if ligand is None:
             print("unable to read ", ligand_filename)
             return "ERROR"
-        d = {}
-        for a in ligand.allAtoms:
-            d[a.autodock_element] = 1
+        d = {a.autodock_element: 1 for a in ligand.allAtoms}
         keys = list(d.keys())
         type_str = keys[0]
         for t in keys[1:]:
@@ -958,9 +956,7 @@ class DockingParameters(UserDict):
         if ligand is None:
             print("unable to read ", ligand_filename)
             return "ERROR"
-        d = {}
-        for a in ligand.allAtoms:
-            d[a.autodock_element] = 1
+        d = {a.autodock_element: 1 for a in ligand.allAtoms}
         keys = list(d.keys())
         keys.sort()
         type_str = keys[0]
@@ -1000,9 +996,8 @@ class DockingParameters(UserDict):
         """
         self.dpf_filename = os.path.basename(filename)
         self.dpf_written_filename = filename
-        dpf_ptr = open(filename)
-        lines = dpf_ptr.readlines()
-        dpf_ptr.close()
+        with open(filename) as dpf_ptr:
+            lines = dpf_ptr.readlines()
         self._parse(lines)
 
     def _parse(self, lines):
@@ -1060,7 +1055,7 @@ class DockingParameters(UserDict):
                     self['reorient']['value'] = self._get_val(values[0])
                     self['reorient_flag']['value'] = True
                     found_reorient = True
-                elif p == 'epdb' or p == 'epdb_flag':
+                elif p in ['epdb', 'epdb_flag']:
                     # if len(values)>0:
                     #    self['epdb']['value'] = self._get_val(values[0])
                     self['epdb_flag']['value'] = True
@@ -1221,13 +1216,9 @@ class DockingParameters(UserDict):
                 return "#\n"
             else:
                 val_str = ""
-        elif ((vt == int) or
-              (vt == int) or
-              (vt == float) or
-              (vt == bytes)):
+        elif vt in [int, float, str]:
             val_str = str(p['value'])
-        elif ((vt == list) or
-              (vt == tuple)):
+        elif vt in [list, tuple]:
             val_str = ""
             for v in p['value']:
                 val_str = val_str + str(v) + " "
