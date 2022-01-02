@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 2/5/20 19:51                                                                 #
+#  Modification date: 1/2/22, 5:09 PM                                                              #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -28,7 +28,6 @@ import sys
 import tkinter
 from Canvas import Line, CanvasText, Rectangle
 import tkinter.filedialog
-import _py2k_string as string
 import math, os
 
 from mglutil.util.misc import ensureFontCase

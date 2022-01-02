@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 2/5/20 19:51                                                                 #
+#  Modification date: 1/2/22, 5:09 PM                                                              #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -24,7 +24,7 @@
 # $Header: /opt/cvs/python/packages/share1.5/AutoDockTools/AutoLigand.py,v 1.10.6.1 2016/02/11 09:23:36 annao Exp $
 #
 # $Id: AutoLigand.py,v 1.10.6.1 2016/02/11 09:23:36 annao Exp $
-import sys, _py2k_string as string
+import sys
 import getopt
 from numpy import zeros
 from math import sqrt

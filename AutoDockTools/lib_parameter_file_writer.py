@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 2/5/20 19:51                                                                 #
+#  Modification date: 1/2/22, 5:11 PM                                                              #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -19,7 +19,7 @@
 # $Id: lib_parameter_file_writer.py,v 1.4 2004/08/25 20:44:33 rhuey Exp $
 #
 
-import os, _py2k_string as string, glob
+import os, glob
 from MolKit import Read
 from AutoDockTools.GridParameters import GridParameters, grid_parameter_list
 from AutoDockTools.DockingParameters import DockingParameters
@@ -89,7 +89,7 @@ class LibraryGpfWriter:
                 current_types = self.alltypes[ctr*6:]
             else:
                 current_types = self.alltypes[ctr*6:last]
-            gpo['types']['value'] =  string.join(current_types,'')
+            gpo['types']['value'] =  ' '.join(current_types)
             if not gpo.receptor_stem:
                 gpo.receptor_stem = os.path.splitext(gpo['receptor']['value'])[0]
             outputfilename = self.prefix + gpo.receptor_stem + '_'+ str(ctr) + '_library.gpf'

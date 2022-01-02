@@ -11,7 +11,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 2/5/20 19:51                                                                 #
+#  Modification date: 1/2/22, 5:10 PM                                                              #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -21,7 +21,7 @@
 # $Header: /opt/cvs/python/packages/share1.5/AutoDockTools/Utilities24/prepare_dpf42.py,v 1.13.2.3 2016/03/11 00:52:51 annao Exp $
 #
 
-import _py2k_string as string
+
 import os.path
 from MolKit import Read
 from AutoDockTools.DockingParameters import DockingParameters, genetic_algorithm_list4_2, \
@@ -165,7 +165,7 @@ if __name__ == '__main__':
     #dm.set_docking_parameters( ga_num_evals=1750000,ga_pop_size=150, ga_run=20, rmstol=2.0)
     kw = {}
     for p in parameters:
-        key,newvalue = string.split(p, '=')
+        key,newvalue = p.split('=')
         #detect string reps of lists: eg "[1.,1.,1.]"
         if key=='parameter_file':
             if key in parameter_list:

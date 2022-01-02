@@ -11,7 +11,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 2/5/20 19:51                                                                 #
+#  Modification date: 1/2/22, 5:10 PM                                                              #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -22,7 +22,6 @@
 # $Id: prepare_configFile.py,v 1.1 2012/10/11 21:14:47 rhuey Exp $
 #
 
-import _py2k_string as string
 import os.path
 from MolKit import Read #?detect center of molecule+bounding box???
 from AutoDockTools.DockingParameters import ConfigFileMaker

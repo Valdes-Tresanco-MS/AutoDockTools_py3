@@ -11,7 +11,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 2/5/20 19:51                                                                 #
+#  Modification date: 1/2/22, 5:09 PM                                                              #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -20,7 +20,7 @@
 #
 # $Header: /opt/cvs/python/packages/share1.5/AutoDockTools/Utilities24/write_rigid_ligand.py,v 1.1 2008/05/28 16:48:41 rhuey Exp $
 #
-import os, _py2k_string as string
+import os
 from MolKit import Read
 
 
@@ -89,7 +89,7 @@ if __name__ == '__main__':
         elif l.find("A    between atoms:")>-1:
             ll = l.split()
             #REMARK,1,A,between,atoms:,N1_1517,and,C31_1555"
-            nl = ll[0] + "       I    " + string.join(ll[3:]) + "\n"
+            nl = ll[0] + "       I    " + ' '.join(ll[3:]) + "\n"
             optr.write(nl)
         elif l.find("TORSDOF")==0:
             nl = "ENDROOT\n"

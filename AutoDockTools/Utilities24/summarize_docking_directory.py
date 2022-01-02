@@ -11,7 +11,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 2/5/20 19:51                                                                 #
+#  Modification date: 1/2/22, 5:11 PM                                                              #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -21,7 +21,6 @@
 
 import logging as log
 import os, glob
-import _py2k_string as string
 
 from MolKit import Read
 from AutoDockTools.Docking import Docking
@@ -116,7 +115,7 @@ if __name__ == '__main__':
     # get absolute, normalized directory_path
     directory_pathname = os.path.abspath(directory) + "/"
     docking_pathname = os.path.dirname(directory_pathname)
-    docking_name = string.split(docking_pathname, '/')[-1]
+    docking_name = docking_pathname.split('/')[-1]
 
     log.debug("directory: %s" % directory)
     log.debug("directory_pathname: %s" % directory_pathname)
