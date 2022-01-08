@@ -9,7 +9,7 @@
 #  Please use this cite the original reference.                                                    #
 #  If you think my work helps you, just keep this note intact on your program.                     #
 #                                                                                                  #
-#  Modification date: 4/7/20 5:48                                                                  #
+#  Modification date: 1/7/22, 8:15 PM                                                              #
 #                                                                                                  #
 # ##################################################################################################
 
@@ -1221,10 +1221,10 @@ class Molecule(TreeNode):
         diff = c2 - c1
         dist = np.sum(diff * diff, 1)
         close = np.less_equal(dist, cut_off * cut_off)
-        closeAtoms = atomList[np.nonzero(close)]
+        closeAtoms = np.take(atomList, np.nonzero(close)[0])
         if sort:
-            d = dist[np.nonzero(close)]
-            closeAtoms = closeAtoms[np.argsort(d)]
+            d = np.take(dist, np.nonzero(close)[0])
+            closeAtoms = np.take(closeAtoms, np.argsort(d))
         return AtomSet(list(closeAtoms))
 
     def _atomRadius(self, atom, united=1):
