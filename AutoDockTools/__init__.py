@@ -596,3 +596,7 @@ split = str.split
 
 CRITICAL_DEPENDENCIES =['numpy', 'Pmw', 'mglutil', 'ViewerFramework', 'MolKit', 'DejaVu', 'opengltk', 'Pmv']
 NONCRITICAL_DEPENDENCIES =['ZSI', 'geomutils', 'UTpackages', 'SpatialLogic', 'bhtree', 'sff', 'PyBabel', 'Volume', 'mslib', 'Vision', 'NetworkEditor', 'ARTK', 'PIL', 'symserv','QSlimLib', 'AutoDockTools', 'PyMead', 'isocontour','Support', 'scenario', 'python_cluster', 'IPython', 'PyAutoDock']
+
+
+from . import _version
+__version__ = _version.get_versions()['version']

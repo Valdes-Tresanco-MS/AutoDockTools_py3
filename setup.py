@@ -14,17 +14,19 @@
 # ##################################################################################################
 
 from setuptools import setup
+import versioneer
 
 setup(
     name='AutoDockTools_py3',
-    version='1.5.7',
+    version = versioneer.get_version(),
+    cmdclass = versioneer.get_cmdclass(),
     packages=['MolKit', 'MolKit.data', 'MolKit.pdb2pqr', 'MolKit.pdb2pqr.src', 'MolKit.pdb2pqr.propka',
               'MolKit.pdb2pqr.pdb2pka', 'MolKit.pdb2pqr.pdb2pka.substruct', 'MolKit.pdb2pqr.pdb2pka.ligandclean',
               'MolKit.pdb2pqr.extensions', 'PyBabel', 'mglutil', 'mglutil.math', 'mglutil.util',
               'AutoDockTools', 'AutoDockTools.Utilities24'],
     url='https://github.com/Valdes-Tresanco-MS/AutoDockTools_py3',
     license='MGLTools LICENSE',
-    author='PhD Student MS Valdes-Trasanco and PhD Student ME Valdes-Tresanco ',
+    author='MS. Valdes-Trasanco and ME. Valdes-Tresanco ',
     author_email='bioinfobrothers@gmail.com',
-    description='Translation of ADT to python3.7'
+    description='Translation of ADT to python3.x'
 )
