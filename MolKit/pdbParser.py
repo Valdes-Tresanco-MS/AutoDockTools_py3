@@ -496,8 +496,7 @@ NOTE: The list currently registered parsers is in
 
         # handle atom names (calcium, hydrogen) and find element type
         # check validity of chemical element column and charge column
-        name, element, charge = self.getPDBAtomName(rec[12:16], rec[76:78],
-                                                    rec[78:80])
+        name, element, charge = self.getPDBAtomName(rec[12:16], rec[76:78], rec[78:80])
 
         if name == 'CA':
             # Set the flag hasCA to 1 if the atom name is CA
@@ -1291,19 +1290,9 @@ class PQRParser(PdbParser):
         We assume 'ATOM' num name resType resNum X Y Z charge radius"""
         orig_rec = rec
         rec = rec.split()
-        if len(rec) == 10:
-            use_split = True
-        else:
-            use_split = False
-
-        if use_split:
-            resName = rec[3]
-            resSeq = rec[4]
-            chainID = "UNK"
-        else:
-            resName = orig_rec[17:20]
-            resSeq = orig_rec[22:26].strip()
-            chainID = orig_rec[21]
+        resName = orig_rec[17:20]
+        resSeq = orig_rec[22:26].strip()
+        chainID = orig_rec[21]
 
         if not chainID:
             chainID = "UNK"
@@ -1332,10 +1321,7 @@ class PQRParser(PdbParser):
                 mol.curRes.hasCA = 0
                 mol.curRes.hasO = 0
 
-        if use_split:
-            name = rec[2]
-        else:
-            name = orig_rec[12:17].strip()
+        name = orig_rec[12:17].strip()
         if name == 'CA':
             # Set the flag hasCA to 1 if the atom name is CA
             mol.curRes.hasCA = 1
@@ -1344,42 +1330,26 @@ class PQRParser(PdbParser):
             # Set the hasO flag to 2 if atom name is O or OXT
             mol.curRes.hasO = 2
 
-        if use_split:
-            element = rec[2][0]
-        else:
-            element = name[0]
+        element = name[0]
         elem = element.lower()
         if elem == 'l':
             element = 'Xx'
         atom = Atom(name, mol.curRes, element, top=mol)
 
-        if use_split:
-            if rec[0] == 'ATOM':
-                atom.hetatm = 0
-            else:
-                atom.hetatm = 1
+        if orig_rec[0:4] == 'ATOM':
+            atom.hetatm = 0
         else:
-            if orig_rec[0:4] == 'ATOM':
-                atom.hetatm = 0
-            else:
-                atom.hetatm = 1
+            atom.hetatm = 1
         # atom.element = element   # done in Atom constructor
-        if use_split:
-            atom.number = int(rec[1])
-        else:
-            atom.number = int(orig_rec[7:12].strip())
+        atom.number = int(orig_rec[7:12].strip())
 
         mol.atmNum[atom.number] = atom
 
-        if use_split:
-            atom._coords = [[float(rec[5]), float(rec[6]), float(rec[7])]]
-            atom._charges['pqr'] = float(rec[8])
-            atom.radius = float(rec[9])
-        else:
-            atom._coords = [[float(orig_rec[30:38].strip()), float(orig_rec[38:46].strip()),
-                             float(orig_rec[46:54].strip())]]
-            atom._charges['pqr'] = float(orig_rec[55:62].strip())
-            atom.radius = float(orig_rec[63:])
+        atom._coords = [
+            [float(orig_rec[30:38].strip()), float(orig_rec[38:46].strip()), float(orig_rec[46:54].strip())]
+        ]
+        atom._charges['pqr'] = float(orig_rec[55:62].strip())
+        atom.radius = float(orig_rec[63:])
 
         atom.chargeSet = 'pqr'
         atom.pqrRadius = atom.radius
