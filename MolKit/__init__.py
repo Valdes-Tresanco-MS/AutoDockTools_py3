@@ -41,33 +41,25 @@ def Read(filename=None, alllines=None, dataformat='pdb', modelsAs='molecules'):
         ext = dataformat
         args = [None, alllines]
     else:
-        ext = filename.split('.')[1]
+        ext = filename.split('.')[-1]
         args = [filename, None]
     if ext == 'pdb':
         parser = PdbParser(*args, modelsAs=modelsAs)
-
     elif ext == 'pdbq':
         parser = PdbqParser(*args, modelsAs=modelsAs)
-
     elif ext == 'pdbqt':
         parser = PdbqtParser(*args, modelsAs=modelsAs)
-
     elif ext == 'pdbqs':
         parser = PdbqsParser(*args, modelsAs=modelsAs)
-
     elif ext == 'pqr':
         parser = PQRParser(*args, modelsAs=modelsAs)
-
     # FIXME: pass all lines???
     elif ext == 'mol2':
         parser = Mol2Parser(filename)  # ??should modelsAs be available for mol2 format??
-
     elif ext == 'cif':
         parser = MMCIFParser(filename)
-
     elif ext == 'f2d':
         parser = F2DParser(filename)
-
     else:
         print("File Format unknown can't parse it")
         return []
