@@ -113,7 +113,7 @@ class Mol2Parser(MoleculeParser):
             molList.append(self.mol)
 
         else:
-            atmlines = [x.strip() for x in self.allLines[self.keysAndLinesIndices['@<TRIPOS>ATOM'][
+            atmlines = [x.split() for x in self.allLines[self.keysAndLinesIndices['@<TRIPOS>ATOM'][
                                                              0]:self.keysAndLinesIndices['@<TRIPOS>ATOM'][1]]]
             self.build4LevelsTree({}, atmlines)
             ##              self.build2LevelsTree(map(string.split, self.allLines
