@@ -181,7 +181,7 @@ atom._charge dictionary and to set the atom.chargeSet to self.chtype
             # FIX THIS what if no CD?
             # CDatom = nres.atoms.get('CD')[0]
             CDatom = nres.atoms.get('CD')
-            if CDatom is not None:
+            if CDatom is not None and len(CDatom.data) != 0:
                 CDatom = CDatom[0]
                 CDatom._charges['Kollman'] = CDatom._charges['Kollman'] + .029
             else:
