@@ -70,9 +70,9 @@ example:
 reimplmentation of Babel1.6 in Python by Michel Sanner April 2000
 Original code by W. Patrick Walters and Matthew T. Stahl
 """
-
-from .atomTypes import TypeConverter
-from .util import *
+from MolKit.pdbWriter import PdbWriter
+from PyBabel.atomTypes import TypeConverter
+from PyBabel.util import *
 
 ONE_OVER_SQRT3 = 0.577350269
 SQRT_TWO_THIRDS = 0.816496581
@@ -550,14 +550,14 @@ class AddHydrogens:
 
 if __name__ == '__main__':
     import sys
-    from .cycle import RingFinder
-    from .bo import BondOrder
-    from .atomTypes import AtomHybridization
-    from .aromatic import Aromatic
+    from PyBabel.cycle import RingFinder
+    from PyBabel.bo import BondOrder
+    from PyBabel.atomTypes import AtomHybridization
+    from PyBabel.aromatic import Aromatic
 
-    from MolKit.pdbParser import NewPdbParser
+    from MolKit.pdbParser import PdbParser
 
-    parser = NewPdbParser("/tsri/pdb/struct/%s.pdb" % sys.argv[1])
+    parser = PdbParser(sys.argv[1])
     mols = parser.parse()
     mol = mols[0]
     mol.buildBondsByDistance()
@@ -613,3 +613,5 @@ if __name__ == '__main__':
     # mv = MoleculeViewer()
     # mv.addMolecule(mol)
     # mv.lines(mol)
+    writer = PdbWriter()
+    writer.write("/home/mario/test.pdb", mol)
