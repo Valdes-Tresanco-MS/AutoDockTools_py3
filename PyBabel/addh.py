@@ -614,4 +614,4 @@ if __name__ == '__main__':
     # mv.addMolecule(mol)
     # mv.lines(mol)
     writer = PdbWriter()
-    writer.write("/home/mario/test.pdb", mol)
+    writer.write(sys.argv[2], mol)
