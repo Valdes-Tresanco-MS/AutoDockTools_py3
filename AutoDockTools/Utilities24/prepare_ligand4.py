@@ -15,11 +15,12 @@
 
 from AutoDockTools.MoleculePreparation import AD4LigandPreparation
 from MolKit import Read
+import sys
+import getopt
 
-if __name__ == '__main__':
-    import sys
-    import getopt
 
+
+def main():
 
     def usage():
         """Print helpful, accurate usage statement to stdout."""
@@ -258,3 +259,6 @@ if __name__ == '__main__':
 
 # To execute this command type:
 # prepare_ligand4.py -l pdb_file -v
+
+if __name__ == '__main__':
+    main()

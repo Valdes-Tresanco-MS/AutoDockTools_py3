@@ -28,13 +28,10 @@ from MolKit.molecule import BondSet
 from MolKit.stringSelector import CompoundStringSelector
 
 from AutoDockTools.MoleculePreparation import AD4FlexibleReceptorPreparation
+import sys
+import getopt
 
-
-
-if __name__ == '__main__':
-    import sys
-    import getopt
-
+def main():
 
     def usage():
         "Print helpful, accurate usage statement to stdout."
@@ -241,6 +238,7 @@ if __name__ == '__main__':
 #../bin/pythonsh AutoDockTools/Utilities24/prepare_flexreceptor4.py -r hsg1.pdbqt -s hsg1:A:ARG8_ILE84,hsg1:B:THR4 -P "hsg1:A:ARG8:CA_CB" -g hsg1_rigid.pdbqt -x hsg1_flex.pdbqt
 
 
-
+if __name__ == '__main__':
+    main()
 
 

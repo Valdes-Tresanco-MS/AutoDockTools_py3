@@ -19,12 +19,11 @@ from MolKit import Read
 import MolKit.molecule
 import MolKit.protein
 from AutoDockTools.MoleculePreparation import AD4ReceptorPreparation
+import sys
+import getopt
 
 
-if __name__ == '__main__':
-    import sys
-    import getopt
-
+def main():
 
     def usage():
         "Print helpful, accurate usage statement to stdout."
@@ -225,3 +224,5 @@ if __name__ == '__main__':
 # To execute this command type:
 # prepare_receptor4.py -r pdb_file -o outputfilename -A checkhydrogens 
 
+if __name__ == '__main__':
+    main()

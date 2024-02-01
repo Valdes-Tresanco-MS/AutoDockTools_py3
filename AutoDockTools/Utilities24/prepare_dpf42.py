@@ -28,36 +28,35 @@ from AutoDockTools.DockingParameters import DockingParameters, genetic_algorithm
                 genetic_algorithm_local_search_list4_2, local_search_list4_2,\
                 simulated_annealing_list4_2, epdb_list4_2,\
                 DockingParameter42FileMaker
+import getopt
+import sys
 
 from AutoDockTools.atomTypeTools import AutoDock4_AtomTyper
 import numpy
 
-def usage():
-    print("Usage: prepare_dpf42.py -l pdbqt_file -r pdbqt_file")
-    print("Description of command...")
-    print("Prepare a docking parameter file (DPF) for AutoDock42: <ligand>_<receptor>.dpf")
-    print("  containing genetic_algorithm_local_search_list4_2 parameters (GALS)")
-    print("    -l ligand_filename")
-    print("    -r receptor_filename")
-    print()
-    print("Optional parameters:")
-    print("    [-o output dpf_filename]")
-    print("    [-i template dpf_filename]")
-    print("    [-x flexres_filename]")
-    print("    [-p parameter_name=new_value]")
-    print("    [-k list of parameters to write]")
-    print("    [-e write epdb dpf ]")
-    print("    [-v] verbose output")
-    print("    [-L] use local search parameters")
-    print("    [-S] use simulated annealing search parameters")
-    print("    [-s] seed population using ligand's present conformation")
-    print("    [-A] use only root atom coordinates to calculate about")
-    print()
+def main():
+    def usage():
+        print("Usage: prepare_dpf42.py -l pdbqt_file -r pdbqt_file")
+        print("Description of command...")
+        print("Prepare a docking parameter file (DPF) for AutoDock42: <ligand>_<receptor>.dpf")
+        print("  containing genetic_algorithm_local_search_list4_2 parameters (GALS)")
+        print("    -l ligand_filename")
+        print("    -r receptor_filename")
+        print()
+        print("Optional parameters:")
+        print("    [-o output dpf_filename]")
+        print("    [-i template dpf_filename]")
+        print("    [-x flexres_filename]")
+        print("    [-p parameter_name=new_value]")
+        print("    [-k list of parameters to write]")
+        print("    [-e write epdb dpf ]")
+        print("    [-v] verbose output")
+        print("    [-L] use local search parameters")
+        print("    [-S] use simulated annealing search parameters")
+        print("    [-s] seed population using ligand's present conformation")
+        print("    [-A] use only root atom coordinates to calculate about")
+        print()
 
-
-if __name__ == '__main__':
-    import getopt
-    import sys
 
     try:
         opt_list, args = getopt.getopt(sys.argv[1:], 'sLShveAl:r:i:o:x:p:k:')
@@ -230,3 +229,5 @@ if __name__ == '__main__':
 
 #prepare_dpf42.py -l indinavir.pdbqt -r 1hsg.pdbqt -p ga_num_evals=25000000 -p ga_pop_size=150 -p ga_run=17 -i ref.dpf -o testing.dpf
 
+if __name__ == '__main__':
+    main()

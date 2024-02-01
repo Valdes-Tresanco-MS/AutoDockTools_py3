@@ -28,5 +28,16 @@ setup(
     license='MGLTools LICENSE',
     author='MS. Valdes-Trasanco and ME. Valdes-Tresanco ',
     author_email='bioinfobrothers@gmail.com',
-    description='Translation of ADT to python3.x'
+    description='Translation of ADT to python3.x',
+    entry_points = {
+    'console_scripts': [
+        'prepare_ligand4 = AutoDockTools.Utilities24.prepare_ligand4:main',
+        'prepare_receptor4 = AutoDockTools.Utilities24.prepare_receptor4:main',
+        'prepare_gpf4 = AutoDockTools.Utilities24.prepare_gpf4:main',
+        'prepare_dpf4 = AutoDockTools.Utilities24.prepare_dpf4:main',
+        'prepare_flexreceptor4 = AutoDockTools.Utilities24.prepare_flexreceptor4:main',
+        'prepare_covalent_flexres = AutoDockTools.Utilities24.prepare_covalent_flexres:main',
+        'AutoLigand = AutoDockTools.AutoLigand:main',
+    ],
+},
 )

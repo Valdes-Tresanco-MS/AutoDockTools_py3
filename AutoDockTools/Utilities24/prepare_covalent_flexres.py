@@ -33,6 +33,8 @@ from math import sqrt
 from AutoDockTools.MoleculePreparation import AD4FlexibleReceptorPreparation, AD4LigandPreparation
 
 import numpy
+import sys
+import getopt
 
 def dist(a1, a2):
     c1 = numpy.array(a1.coords)
@@ -117,7 +119,7 @@ def setAutoFlexFields(res):
         res.sideChain = res.atoms
 
 
-def setRelativeTorsion(atom1, atom2, angle): #mov_atoms=None):
+def setRelativeTorsion(atom1, atom2, angle,mov_atoms=None):
     #rat1, rat2, ??30degrees??
     mol = atom1.top
     if mov_atoms is None:
@@ -140,11 +142,10 @@ def setRelativeTorsion(atom1, atom2, angle): #mov_atoms=None):
 
 
 
-if __name__ == '__main__':
-    import sys
-    import getopt
 
 
+
+def main():
     def usage():
         "Print helpful, accurate usage statement to stdout."
         print("Usage: prepare_covalent_flexres.py -r receptor_filename -l ligand_to_superimpose_filename -b atom1_atom2_atom3 -R residue_name")
@@ -501,6 +502,7 @@ if __name__ == '__main__':
 #python -i prepare_covalent_flexres.py -r 1pwc-protein.pdbqt -l 1pwc-ligand.pdbqt -b OG_CB -R SER62  -g 1pwc_rigid.pdbqt -x 1pwc_flex.pdbqt
 
 
-
+if __name__ == '__main__':
+    main()
 
 

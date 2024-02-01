@@ -27,33 +27,34 @@ from MolKit import Read
 from AutoDockTools.GridParameters import GridParameters, grid_parameter_list4
 from AutoDockTools.GridParameters import GridParameter4FileMaker
 from AutoDockTools.atomTypeTools import AutoDock4_AtomTyper
+import getopt
+import sys
 
 
-def usage():
-    print("Usage: prepare_gpf4.py -l pdbqt_file -r pdbqt_file ")
-    print("     -l ligand_filename")
-    print("     -r receptor_filename")
-    print()
-    print("Optional parameters:")
-    print("    [-i reference_gpf_filename]")
-    print("    [-o output_gpf_filename]")
-    print("    [-x flexres_filename]")
-    print("    [-p parameter=newvalue. For example: -p ligand_types='HD,Br,A,C,OA' or p npts='60,60,66' or gridcenter='2.5,6.5,-7.5']")
-    print("    [-d directory of ligands to use to set types]")
-    print("    [-y boolean to center grids on center of ligand]")
-    print("    [-n boolean to NOT size_box_to_include_ligand]")
-    print("    [-I increment npts in all 3 dimensions by this integer]")
-    print("    [-v]")
-    print()
-    print("Prepare a grid parameter file (GPF) for AutoDock4.")
-    print()
-    print("   The GPF will by default be <receptor>.gpf. This")
-    print("may be overridden using the -o flag.")
+def main():
+    def usage():
+        print("Usage: prepare_gpf4.py -l pdbqt_file -r pdbqt_file ")
+        print("     -l ligand_filename")
+        print("     -r receptor_filename")
+        print()
+        print("Optional parameters:")
+        print("    [-i reference_gpf_filename]")
+        print("    [-o output_gpf_filename]")
+        print("    [-x flexres_filename]")
+        print("    [-p parameter=newvalue. For example: -p ligand_types='HD,Br,A,C,OA' or p npts='60,60,66' or gridcenter='2.5,6.5,-7.5']")
+        print("    [-d directory of ligands to use to set types]")
+        print("    [-y boolean to center grids on center of ligand]")
+        print("    [-n boolean to NOT size_box_to_include_ligand]")
+        print("    [-I increment npts in all 3 dimensions by this integer]")
+        print("    [-v]")
+        print()
+        print("Prepare a grid parameter file (GPF) for AutoDock4.")
+        print()
+        print("   The GPF will by default be <receptor>.gpf. This")
+        print("may be overridden using the -o flag.")
 
 
-if __name__ == '__main__':
-    import getopt
-    import sys
+
 
     try:
         opt_list, args = getopt.getopt(sys.argv[1:], 'vl:r:i:x:o:p:d:ynI:')
@@ -166,3 +167,5 @@ if __name__ == '__main__':
 
 #prepare_gpf4.py -l 1ebg_lig.pdbqt -r 1ebg_rec.pdbqt -p spacing=0.4 -p ligand_types="HD,Br,A,C,OA" -p npts="60,60,60" -i ref.gpf -o testing.gpf
 
+if __name__ == '__main__':
+    main()
