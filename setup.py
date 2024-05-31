@@ -34,7 +34,7 @@ setup(
         'prepare_ligand4 = AutoDockTools.Utilities24.prepare_ligand4:main',
         'prepare_receptor4 = AutoDockTools.Utilities24.prepare_receptor4:main',
         'prepare_gpf4 = AutoDockTools.Utilities24.prepare_gpf4:main',
-        'prepare_dpf4 = AutoDockTools.Utilities24.prepare_dpf4:main',
+        'prepare_dpf42 = AutoDockTools.Utilities24.prepare_dpf42:main',
         'prepare_flexreceptor4 = AutoDockTools.Utilities24.prepare_flexreceptor4:main',
         'prepare_covalent_flexres = AutoDockTools.Utilities24.prepare_covalent_flexres:main',
         'AutoLigand = AutoDockTools.AutoLigand:main',
